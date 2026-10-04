@@ -4,7 +4,10 @@ extends Drill
 
 const CELL_FONT_RATIO := 0.42
 const MIN_CELL_FONT_SIZE := 12
-const WRONG_FLASH_SECONDS := 0.18
+const FLASH_HOLD_SECONDS := 0.12
+const FLASH_FADE_SECONDS := 0.45
+const COUNTER_PULSE_SECONDS := 0.5
+const FLASH_STATES: Array[StringName] = [&"normal", &"hover", &"pressed"]
 const COUNTDOWN_FROM := 3
 const DIM_FOUND_ALPHA := 0.3
 
@@ -14,11 +17,16 @@ const DIM_FOUND_ALPHA := 0.3
 @onready var _fixation_check: CheckBox = %FixationCheck
 @onready var _show_next_check: CheckBox = %ShowNextCheck
 @onready var _dim_found_check: CheckBox = %DimFoundCheck
+@onready var _show_errors_check: CheckBox = %ShowErrorsCheck
+@onready var _highlight_correct_check: CheckBox = %HighlightCorrectCheck
+@onready var _show_timer_check: CheckBox = %ShowTimerCheck
 @onready var _start_button: Button = %StartButton
 @onready var _setup_back_button: Button = %SetupBackButton
 @onready var _play_panel: Control = %PlayPanel
 @onready var _play_back_button: Button = %PlayBackButton
 @onready var _next_target_label: Label = %NextTargetLabel
+@onready var _error_count_label: Label = %ErrorCountLabel
+@onready var _timer_label: Label = %TimerLabel
 @onready var _grid: GridContainer = %Grid
 @onready var _fixation_dot: Control = %FixationDot
 @onready var _countdown_panel: Control = %CountdownPanel
@@ -28,6 +36,8 @@ var _config := SchulteConfig.new()
 var _logic: SchulteLogic
 var _cells: Array[Button] = []
 var _started_at_ms: int = 0
+## True between the grid appearing and the last correct click.
+var _running: bool = false
 ## Incremented whenever a run starts or stops so stale countdowns bail out.
 var _run_token: int = 0
 
@@ -52,6 +62,11 @@ func _on_setup(config: Dictionary, autostart: bool) -> void:
 		_show_setup()
 
 
+func _process(_delta: float) -> void:
+	if _running and _config.show_timer:
+		_timer_label.text = Format.seconds_short(Time.get_ticks_msec() - _started_at_ms)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _play_panel.visible or _countdown_panel.visible:
@@ -67,6 +82,9 @@ func _apply_config_to_controls() -> void:
 	_fixation_check.button_pressed = _config.fixation_dot
 	_show_next_check.button_pressed = _config.show_next_target
 	_dim_found_check.button_pressed = _config.dim_found
+	_show_errors_check.button_pressed = _config.show_errors
+	_highlight_correct_check.button_pressed = _config.highlight_correct
+	_show_timer_check.button_pressed = _config.show_timer
 
 
 func _read_config_from_controls() -> SchulteConfig:
@@ -76,11 +94,15 @@ func _read_config_from_controls() -> SchulteConfig:
 	config.fixation_dot = _fixation_check.button_pressed
 	config.show_next_target = _show_next_check.button_pressed
 	config.dim_found = _dim_found_check.button_pressed
+	config.show_errors = _show_errors_check.button_pressed
+	config.highlight_correct = _highlight_correct_check.button_pressed
+	config.show_timer = _show_timer_check.button_pressed
 	return config
 
 
 func _show_setup() -> void:
 	_run_token += 1
+	_running = false
 	_setup_panel.visible = true
 	_play_panel.visible = false
 	_countdown_panel.visible = false
@@ -103,13 +125,12 @@ func _on_play_back_pressed() -> void:
 func _begin_run() -> void:
 	_run_token += 1
 	var token := _run_token
+	_running = false
 	_setup_panel.visible = false
+	_play_panel.visible = false
 	_build_grid()
-	_play_panel.visible = true
-	_grid.visible = false
-	_fixation_dot.visible = false
-	_next_target_label.visible = false
 	if _config.countdown:
+		# Only the countdown is on screen; the play panel (with its Back button) follows it.
 		_countdown_panel.visible = true
 		for i in range(COUNTDOWN_FROM, 0, -1):
 			_countdown_label.text = str(i)
@@ -117,10 +138,15 @@ func _begin_run() -> void:
 			if token != _run_token or not is_inside_tree():
 				return
 		_countdown_panel.visible = false
+	_play_panel.visible = true
 	_grid.visible = true
 	_fixation_dot.visible = _config.fixation_dot
 	_started_at_ms = Time.get_ticks_msec()
+	_running = true
+	_timer_label.visible = _config.show_timer
+	_timer_label.text = Format.seconds_short(0)
 	_update_next_target()
+	_update_error_count()
 
 
 func _build_grid() -> void:
@@ -138,6 +164,8 @@ func _build_grid() -> void:
 		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cell.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		cell.focus_mode = Control.FOCUS_NONE
+		# Fire on press, not on release: faster and feels more direct.
+		cell.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 		cell.pressed.connect(_on_cell_pressed.bind(index))
 		_grid.add_child(cell)
 		_cells.append(cell)
@@ -154,7 +182,7 @@ func _update_cell_font_size() -> void:
 
 
 func _on_cell_pressed(index: int) -> void:
-	if _logic == null or not _grid.visible:
+	if _logic == null or not _running:
 		return
 	var elapsed := Time.get_ticks_msec() - _started_at_ms
 	match _logic.register_click(index, elapsed):
@@ -165,19 +193,60 @@ func _on_cell_pressed(index: int) -> void:
 			_mark_found(_cells[index])
 			_finish()
 		SchulteLogic.ClickOutcome.WRONG:
-			_flash_wrong(_cells[index])
+			if _config.show_errors:
+				_flash_cell(_cells[index], get_theme_color("wrong_flash", "SchulteCell"))
+				_update_error_count()
+				_pulse_label(_error_count_label, get_theme_color("wrong_flash", "SchulteCell"))
 
 
 func _mark_found(cell: Button) -> void:
+	if _config.highlight_correct:
+		_flash_cell(cell, get_theme_color("correct_flash", "SchulteCell"))
 	if _config.dim_found:
 		cell.modulate.a = DIM_FOUND_ALPHA
 
 
-func _flash_wrong(cell: Button) -> void:
-	cell.add_theme_stylebox_override("normal", get_theme_stylebox("wrong", "SchulteCell"))
-	await get_tree().create_timer(WRONG_FLASH_SECONDS).timeout
-	if is_instance_valid(cell):
-		cell.remove_theme_stylebox_override("normal")
+## Fills the cell with [param color] in every drawn state (the pointer still
+## hovers the cell after a click) and fades it back to the cell's own colour.
+func _flash_cell(cell: Button, color: Color) -> void:
+	_kill_tween_meta(cell, &"flash_tween")
+	var base := get_theme_stylebox("normal", "SchulteCell") as StyleBoxFlat
+	var style := base.duplicate() as StyleBoxFlat
+	style.bg_color = color
+	for state in FLASH_STATES:
+		cell.add_theme_stylebox_override(state, style)
+	var tween := cell.create_tween()
+	tween.tween_property(style, "bg_color", base.bg_color, FLASH_FADE_SECONDS).set_delay(FLASH_HOLD_SECONDS)
+	tween.tween_callback(_clear_flash.bind(cell))
+	cell.set_meta("flash_tween", tween)
+
+
+## Stops a still-running tween stored in [param key] so a new one can take over.
+func _kill_tween_meta(node: Node, key: StringName) -> void:
+	if not node.has_meta(key):
+		return
+	var previous: Tween = node.get_meta(key)
+	if previous != null and previous.is_valid():
+		previous.kill()
+
+
+func _clear_flash(cell: Button) -> void:
+	for state in FLASH_STATES:
+		cell.remove_theme_stylebox_override(state)
+
+
+func _pulse_label(label: Label, color: Color) -> void:
+	_kill_tween_meta(label, &"pulse_tween")
+	label.add_theme_color_override("font_color", color)
+	var tween := label.create_tween()
+	tween.tween_property(label, "theme_override_colors/font_color", get_theme_color("font_color", "Label"), COUNTER_PULSE_SECONDS)
+	tween.tween_callback(label.remove_theme_color_override.bind("font_color"))
+	label.set_meta("pulse_tween", tween)
+
+
+func _update_error_count() -> void:
+	_error_count_label.visible = _config.show_errors
+	_error_count_label.text = tr("SCHULTE_ERROR_COUNT") % _logic.error_count
 
 
 func _update_next_target() -> void:
@@ -187,4 +256,7 @@ func _update_next_target() -> void:
 
 func _finish() -> void:
 	_run_token += 1
+	_running = false
+	if _config.show_timer:
+		_timer_label.text = Format.seconds_short(_logic.total_time_ms())
 	finished.emit(_logic.build_result(definition.id, _config.to_dict()))

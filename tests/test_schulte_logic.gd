@@ -92,3 +92,8 @@ func test_config_round_trip_and_clamping() -> void:
 	assert_eq(SchulteConfig.from_dict({"grid_size": 1.0}).grid_size, SchulteConfig.MIN_GRID_SIZE)
 	assert_eq(SchulteConfig.from_dict(config.to_dict()).to_dict(), config.to_dict())
 	assert_eq(SchulteConfig.from_dict({}).grid_size, SchulteConfig.DEFAULT_GRID_SIZE)
+	assert_true(SchulteConfig.from_dict({}).show_errors)
+	assert_false(SchulteConfig.from_dict({}).highlight_correct)
+	assert_false(SchulteConfig.from_dict({"show_errors": false}).show_errors)
+	assert_false(SchulteConfig.from_dict({}).show_timer)
+	assert_true(SchulteConfig.from_dict({"show_timer": true}).show_timer)

@@ -13,7 +13,11 @@ SCHULTE_OPT_COUNTDOWN,Odpočet před startem,Countdown before start
 SCHULTE_OPT_FIXATION,Fixační bod uprostřed,Fixation dot in the centre
 SCHULTE_OPT_SHOW_NEXT,Zobrazovat hledané číslo,Show the number to find
 SCHULTE_OPT_DIM_FOUND,Ztlumit nalezená čísla,Dim found numbers
+SCHULTE_OPT_SHOW_ERRORS,Zvýraznit chyby a počítat je,Highlight errors and count them
+SCHULTE_OPT_HIGHLIGHT_CORRECT,Zeleně potvrdit správné číslo,Green flash on a correct number
+SCHULTE_OPT_SHOW_TIMER,Zobrazit běžící čas,Show running time
 SCHULTE_START,Start,Start
+SCHULTE_ERROR_COUNT,Chyby: %d,Errors: %d
 SCHULTE_NEXT_TARGET,Hledej: %d,Find: %d
 RESULT_TITLE,Výsledek,Result
 RESULT_TIME,Celkový čas,Total time

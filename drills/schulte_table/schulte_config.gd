@@ -12,6 +12,12 @@ var countdown: bool = true
 var fixation_dot: bool = false
 var show_next_target: bool = false
 var dim_found: bool = false
+## Red flash on a wrong cell plus a running error counter next to the target label.
+var show_errors: bool = true
+## Green flash on a correctly clicked cell.
+var highlight_correct: bool = false
+## Running timer in the top bar while playing.
+var show_timer: bool = false
 
 
 static func from_dict(data: Dictionary) -> SchulteConfig:
@@ -23,6 +29,9 @@ static func from_dict(data: Dictionary) -> SchulteConfig:
 	config.fixation_dot = data.get("fixation_dot", config.fixation_dot)
 	config.show_next_target = data.get("show_next_target", config.show_next_target)
 	config.dim_found = data.get("dim_found", config.dim_found)
+	config.show_errors = data.get("show_errors", config.show_errors)
+	config.highlight_correct = data.get("highlight_correct", config.highlight_correct)
+	config.show_timer = data.get("show_timer", config.show_timer)
 	return config
 
 
@@ -33,4 +42,7 @@ func to_dict() -> Dictionary:
 		"fixation_dot": fixation_dot,
 		"show_next_target": show_next_target,
 		"dim_found": dim_found,
+		"show_errors": show_errors,
+		"highlight_correct": highlight_correct,
+		"show_timer": show_timer,
 	}

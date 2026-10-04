@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=11 format=3]
+[gd_resource type="Theme" load_steps=10 format=3]
 
 [sub_resource type="StyleBoxFlat" id="button_normal"]
 content_margin_left = 20.0
@@ -85,13 +85,6 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="cell_wrong"]
-bg_color = Color(0.6, 0.2, 0.2, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
 [resource]
@@ -129,13 +122,14 @@ PrimaryButton/styles/hover = SubResource("primary_hover")
 PrimaryButton/styles/normal = SubResource("primary_normal")
 PrimaryButton/styles/pressed = SubResource("primary_normal")
 SchulteCell/base_type = &"Button"
+SchulteCell/colors/correct_flash = Color(0.18, 0.6, 0.32, 1)
 SchulteCell/colors/font_color = Color(0.96, 0.96, 0.97, 1)
 SchulteCell/colors/font_focus_color = Color(0.96, 0.96, 0.97, 1)
 SchulteCell/colors/font_hover_color = Color(0.96, 0.96, 0.97, 1)
 SchulteCell/colors/font_hover_pressed_color = Color(0.96, 0.96, 0.97, 1)
 SchulteCell/colors/font_pressed_color = Color(0.96, 0.96, 0.97, 1)
+SchulteCell/colors/wrong_flash = Color(0.78, 0.2, 0.2, 1)
 SchulteCell/styles/focus = SubResource("empty")
 SchulteCell/styles/hover = SubResource("cell")
 SchulteCell/styles/normal = SubResource("cell")
 SchulteCell/styles/pressed = SubResource("cell")
-SchulteCell/styles/wrong = SubResource("cell_wrong")
