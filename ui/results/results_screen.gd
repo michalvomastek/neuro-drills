@@ -2,6 +2,7 @@
 class_name ResultsScreen
 extends Control
 
+@onready var _heading_label: Label = %HeadingLabel
 @onready var _title_label: Label = %TitleLabel
 @onready var _rows: GridContainer = %Rows
 @onready var _again_button: Button = %AgainButton
@@ -22,7 +23,7 @@ var _rpe_group := ButtonGroup.new()
 func _ready() -> void:
 	_again_button.pressed.connect(_on_again_pressed)
 	_settings_button.pressed.connect(_on_settings_pressed)
-	_menu_button.pressed.connect(SceneRouter.show_menu)
+	_menu_button.pressed.connect(_on_menu_pressed)
 	_note_button.pressed.connect(_on_note_pressed)
 	Layout.watch(self, _relayout)
 
@@ -55,7 +56,22 @@ func setup(result: DrillResult) -> void:
 	_record = StatsStore.record(result)
 	_add_history_rows(_record)
 	_build_rpe_row()
+	_apply_training_mode()
 	_again_button.grab_focus()
+
+
+## Inside a training the primary button moves on to the next step (or the
+## summary) and the settings button makes no sense.
+func _apply_training_mode() -> void:
+	var training := SceneRouter.training
+	if training == null:
+		return
+	training.record_step(_record)
+	var done := training.finished_count()
+	var total := training.step_count()
+	_heading_label.text = tr("TRAINING_STEP_HEADING") % [done, total]
+	_settings_button.visible = false
+	_again_button.text = tr("TRAINING_NEXT") % [done + 1, total] if training.has_next() else tr("TRAINING_FINISH")
 
 
 ## Orientational level from the benchmark table, plus the bound of the next band.
@@ -167,7 +183,15 @@ func _result_context() -> Dictionary:
 
 
 func _on_again_pressed() -> void:
-	SceneRouter.start_drill(_result.drill_id, _result.config, true)
+	if SceneRouter.training != null:
+		SceneRouter.continue_training()
+	else:
+		SceneRouter.start_drill(_result.drill_id, _result.config, true)
+
+
+func _on_menu_pressed() -> void:
+	SceneRouter.abort_training()
+	SceneRouter.show_menu()
 
 
 func _on_settings_pressed() -> void:

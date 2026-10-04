@@ -1,0 +1,91 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/training/training_summary.gd" id="1_summary"]
+
+[node name="TrainingSummary" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_summary")
+
+[node name="Margin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 80
+theme_override_constants/margin_bottom = 32
+
+[node name="Panel" type="PanelContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeadingLabel" type="Label" parent="Margin/Panel/VBox"]
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+text = "TRAINING_TITLE"
+
+[node name="TitleLabel" type="Label" parent="Margin/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "TRAINING_SUMMARY_TITLE"
+
+[node name="Rows" type="GridContainer" parent="Margin/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="Separator" type="HSeparator" parent="Margin/Panel/VBox"]
+layout_mode = 2
+
+[node name="StepsScroll" type="ScrollContainer" parent="Margin/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Steps" type="GridContainer" parent="Margin/Panel/VBox/StepsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="Buttons" type="BoxContainer" parent="Margin/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MenuButton" type="Button" parent="Margin/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "COMMON_MENU"
+
+[node name="ProgressButton" type="Button" parent="Margin/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MENU_PROGRESS"
+
+[node name="Spacer" type="Control" parent="Margin/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AgainButton" type="Button" parent="Margin/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "TRAINING_AGAIN"

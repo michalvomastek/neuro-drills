@@ -377,3 +377,27 @@ FEEDBACK_EMPTY,Zatím žádná poznámka.,No notes yet.
 FEEDBACK_GENERAL,Obecné,General
 FEEDBACK_SAVE_AND_SEND,Uložit a poslat na GitHub,Save and send to GitHub
 FEEDBACK_SEND_GITHUB,Poslat na GitHub,Send to GitHub
+MENU_TRAINING,Trénink,Training
+TRAINING_TITLE,Trénink,Training
+TRAINING_SUBTITLE,Několik her za sebou. Nastav délku; hry navrhne aplikace podle slabších oblastí a můžeš je upravit nebo uložit jako sestavu.,Several drills in a row. Set the length; the app suggests drills from your weaker areas and you can edit them or save them as a plan.
+TRAINING_MINUTES,Délka tréninku,Training length
+TRAINING_MINUTES_VALUE,%d min,%d min
+TRAINING_SUGGEST,Navrhnout znovu,Suggest again
+TRAINING_ADD,Přidat,Add
+TRAINING_REMOVE,Odebrat,Remove
+TRAINING_SAVE,Uložit sestavu,Save plan
+TRAINING_SAVED_PLANS,Uložené sestavy,Saved plans
+TRAINING_LOAD,Načíst,Load
+TRAINING_DELETE,Smazat,Delete
+TRAINING_PLAN_NAME,Název sestavy,Plan name
+TRAINING_START,Spustit trénink,Start training
+TRAINING_ESTIMATE,Odhad %s · %d her,Estimate %s · %d drills
+TRAINING_EMPTY,Sestava je prázdná. Přidej hru nebo nech aplikaci navrhnout.,The plan is empty. Add a drill or let the app suggest one.
+TRAINING_NEXT,Další hra (%d / %d),Next drill (%d / %d)
+TRAINING_FINISH,Souhrn tréninku,Training summary
+TRAINING_STEP_HEADING,Trénink · hra %d / %d,Training · drill %d / %d
+TRAINING_SUMMARY_TITLE,Trénink hotový,Training done
+TRAINING_SUMMARY_TIME,Celkový čas,Total time
+TRAINING_SUMMARY_STEPS,Odehrané hry,Drills played
+TRAINING_AGAIN,Stejnou sestavu znovu,Same plan again
+TRAINING_STEP_TIME,%d s,%d s

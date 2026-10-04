@@ -8,9 +8,14 @@ const SETTINGS_PATH := "user://settings.cfg"
 const EXPORT_PATH := "user://neuro-drills-results.csv"
 const FEEDBACK_PATH := "user://feedback.jsonl"
 const FEEDBACK_EXPORT_PATH := "user://neuro-drills-feedback.txt"
+const PLANS_PATH := "user://plans.json"
 
 var history: StatsHistory = StatsHistory.new()
 var feedback: FeedbackLog = FeedbackLog.new()
+## Saved training plans: {"name", "steps"}.
+var plans: Array[Dictionary] = []
+## Length of a suggested training, minutes.
+var training_minutes: int = 10
 ## Whether the results screen asks for the perceived exertion (RPE 1-10).
 var rpe_enabled: bool = true
 
@@ -93,9 +98,39 @@ func export_feedback() -> String:
 
 func set_rpe_enabled(enabled: bool) -> void:
 	rpe_enabled = enabled
+	_set_setting("results", "rpe_enabled", enabled)
+
+
+func set_training_minutes(minutes: int) -> void:
+	training_minutes = clampi(minutes, TrainingPlan.MIN_MINUTES, TrainingPlan.MAX_MINUTES)
+	_set_setting("training", "minutes", training_minutes)
+
+
+## Adds or replaces the plan called [param plan_name].
+func save_plan(plan_name: String, steps: Array[Dictionary]) -> void:
+	delete_plan(plan_name)
+	plans.append({"name": plan_name, "steps": steps.duplicate(true)})
+	_write(PLANS_PATH, TrainingPlan.serialize_plans(plans))
+
+
+func delete_plan(plan_name: String) -> void:
+	for i in range(plans.size() - 1, -1, -1):
+		if plans[i]["name"] == plan_name:
+			plans.remove_at(i)
+	_write(PLANS_PATH, TrainingPlan.serialize_plans(plans))
+
+
+func find_plan(plan_name: String) -> Dictionary:
+	for plan in plans:
+		if plan["name"] == plan_name:
+			return plan
+	return {}
+
+
+func _set_setting(section: String, key: String, value: Variant) -> void:
 	var config := ConfigFile.new()
 	config.load(SETTINGS_PATH)
-	config.set_value("results", "rpe_enabled", enabled)
+	config.set_value(section, key, value)
 	config.save(SETTINGS_PATH)
 
 
@@ -105,9 +140,12 @@ func _load() -> void:
 		history = StatsHistory.parse(text)
 	if FileAccess.file_exists(FEEDBACK_PATH):
 		feedback = FeedbackLog.parse(FileAccess.get_file_as_string(FEEDBACK_PATH))
+	if FileAccess.file_exists(PLANS_PATH):
+		plans = TrainingPlan.parse_plans(FileAccess.get_file_as_string(PLANS_PATH))
 	var config := ConfigFile.new()
 	if config.load(SETTINGS_PATH) == OK:
 		rpe_enabled = config.get_value("results", "rpe_enabled", true)
+		training_minutes = config.get_value("training", "minutes", 10)
 
 
 func _save_all() -> void:

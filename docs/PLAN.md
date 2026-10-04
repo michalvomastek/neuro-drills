@@ -150,6 +150,10 @@ Historie a pokrok:
 
 Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index únavy u her, které neukládají časy pokusů (N-back, MOT).
 
+## 5h. Tréninkový režim (hotovo)
+
+`TrainingPlan` (`core/training_plan.gd`, čistá logika): odhad délky každé hry (`DURATION_S` + režie kroku), návrh sestavy pro zvolenou délku 1–30 min kolečkem přes kategorie (nejslabší podle posledních úrovní první, nehrané kategorie úplně první), uložené sestavy jako JSON (`user://plans.json` přes `StatsStore`). `TrainingSession` drží kroky, index a záznamy dokončených kol; `SceneRouter.start_training()` spouští kroky po sobě, výsledková obrazovka v tréninku nabízí „Další hra (n / m)“ a nakonec „Souhrn tréninku“ (`ui/training/training_summary`). Obrazovka Trénink (`ui/training/training_screen`): posuvník délky, návrh, přidání hry, přesun a odebrání kroků, uložení/načtení/smazání sestavy, odhad celkového času. Zpět ve hře během tréninku trénink ukončí a vrátí na nastavení tréninku.
+
 ## 5g. Rozložení pro telefon (hotovo)
 
 `core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav; audit všech 43 her v 430×660 (nástroj v historii chatu, kontaktní archy) odhalil jen přetékající podněty Stroopu a Flankeru, které si teď zmenšují písmo podle šířky (`TrialDrill._fit_stimulus_label`). 3D scény drží v portrétu zorné pole přes šířku (`Scene3D`). Ztráta fokusu okna během kola (hovor, přepnutí záložky) vrací do nastavení; na webu je při běžícím kole aktivní dotaz prohlížeče před zavřením stránky (`Drill.set_leave_guard`); optický tok si na iOS vyžádá povolení pohybových senzorů (`Drill.request_motion_permission`). Výsledky a panely nastavení jsou v posuvném kontejneru, protože prohlížeč s lištami ukáže na iPhonu jen asi 430×660 CSS px. Webový export má zapnutou virtuální klávesnici (bez ní se na telefonu u textového pole neobjeví). CI vykresluje menu i v rozměru 412×915.
@@ -222,7 +226,7 @@ Pracnost: M = do hodiny, S = půl dne, L = den a víc. Pořadí v rámci oblasti
 
 ### B. Tréninkový režim (priorita 2)
 Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu navrhne aplikace podle kategorií a slabších pásem, maintainer ji může upravit a uložit jako vlastní pojmenovanou sestavu (může jich být víc).
-- [ ] B6 (L) Sestava: hry za sebou bez návratu do menu, přechodová obrazovka mezi hrami, souhrn na konci (celkový čas, výsledky, úrovně, RPE).
+- [x] B6 (L) Sestava: hry za sebou bez návratu do menu, přechodová obrazovka mezi hrami, souhrn na konci (celkový čas, výsledky, úrovně, RPE).
 - [ ] B7 (S) Doporučená denní sestava podle kategorií a podle nejslabšího pásma; během týdne se vystřídají všechny kategorie.
 - [ ] B8 (S) Adaptivní obtížnost: po dvou kolech v pásmu „zkušený“ nabídnout těžší variantu (větší mřížka, vyšší N-back, kratší expozice).
 - [ ] B9 (S) Týdenní souhrn na obrazovce Pokrok: kola, minuty, zlepšení za týden.

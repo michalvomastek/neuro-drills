@@ -35,3 +35,8 @@ static func ratio(value: float) -> String:
 	if TranslationServer.get_locale().begins_with("cs"):
 		text = text.replace(".", ",")
 	return text
+
+
+## Seconds as "m:ss min" for durations of a whole training.
+static func minutes_seconds(seconds: int) -> String:
+	return "%d:%02d min" % [seconds / 60, seconds % 60]
