@@ -4,6 +4,10 @@
 class_name FeedbackLog
 extends RefCounted
 
+## Repository that receives notes as issues (prefilled "new issue" page).
+const ISSUE_REPO := "michalvomastek/neuro-drills"
+const ISSUE_LABEL := "feedback"
+
 var notes: Array[Dictionary] = []
 
 
@@ -88,6 +92,18 @@ static func format_note(note: Dictionary) -> String:
 	lines.append("")
 	lines.append(FeedbackLog.text_of(note["text"]))
 	return "\n".join(lines)
+
+
+## Link to a prefilled GitHub "new issue" form for the note. Opening it in
+## the browser and confirming files the note where the maintainer collects
+## feedback from every device; no token lives in the app.
+static func issue_url(note: Dictionary) -> String:
+	var context: Dictionary = note["context"]
+	var at: int = note["at"]
+	var subject := text_of(context.get("drill", ""))
+	var title := "[feedback] %s %s" % [subject, Time.get_datetime_string_from_unix_time(at, true)]
+	var body := format_note(note) + "\n\n_Sent from Neuro drills_"
+	return "https://github.com/%s/issues/new?labels=%s&title=%s&body=%s" % [ISSUE_REPO, ISSUE_LABEL, title.strip_edges().uri_encode(), body.uri_encode()]
 
 
 func serialize() -> String:

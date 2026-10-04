@@ -152,7 +152,7 @@ Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index úna
 
 ## 5f. Zpětná vazba v aplikaci (hotovo)
 
-Tlačítko „Poznámka“ na výsledkové obrazovce otevře dialog; k textu se automaticky přiloží hra, varianta, řádky výsledku, úroveň, konfigurace, platforma, rozlišení, jazyk a dostupnost dotyku. Obrazovka „Zpětná vazba“ (z menu) umožňuje psát obecné poznámky, číst a mazat uložené a jedním tlačítkem je zkopírovat do schránky nebo stáhnout jako text (`user://neuro-drills-feedback.txt`, na webu stažení). Poznámky zůstávají v zařízení (`user://feedback.jsonl`); maintainer je vloží do chatu. Žádný server.
+Tlačítko „Poznámka“ na výsledkové obrazovce otevře dialog; k textu se automaticky přiloží hra, varianta, řádky výsledku, úroveň, konfigurace, platforma, rozlišení, jazyk a dostupnost dotyku. Obrazovka „Zpětná vazba“ (z menu) umožňuje psát obecné poznámky, číst a mazat uložené a jedním tlačítkem je zkopírovat do schránky nebo stáhnout jako text (`user://neuro-drills-feedback.txt`, na webu stažení). Poznámky zůstávají v zařízení (`user://feedback.jsonl`). „Poslat na GitHub“ (v dialogu i u každé uložené poznámky) otevře předvyplněný formulář nového issue v repozitáři se štítkem `feedback`; po potvrzení v prohlížeči je poznámka centrálně v Issues, odkud ji Claude čte. V aplikaci není žádný token ani server; na zařízení je potřeba přihlášení na GitHub.
 
 ## 5e. Export a nasazení (hotovo)
 

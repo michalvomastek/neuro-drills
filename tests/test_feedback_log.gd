@@ -20,3 +20,12 @@ func test_notes_roundtrip_and_text() -> void:
 	assert_false(loaded.remove(first_id))
 	assert_eq(loaded.notes.size(), 1)
 	assert_true(FeedbackLog.new().to_text().is_empty())
+
+
+func test_issue_url() -> void:
+	var note := FeedbackLog.make_note("Flash too weak", {"drill": "Schulte", "variant": "7×7", "platform": "Web"}, 1700000000)
+	var url := FeedbackLog.issue_url(note)
+	assert_true(url.begins_with("https://github.com/" + FeedbackLog.ISSUE_REPO + "/issues/new?labels=feedback&title="), url)
+	assert_true(url.contains("%5Bfeedback%5D%20Schulte%202023-11-14"), url)
+	assert_true(url.contains("Flash%20too%20weak"), url)
+	assert_false(url.contains(" "), "spaces are encoded")

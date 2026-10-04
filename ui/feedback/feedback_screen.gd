@@ -61,6 +61,11 @@ func _make_entry(note: Dictionary) -> Control:
 	meta.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	meta.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	header.add_child(meta)
+	var send_button := Button.new()
+	send_button.text = tr("FEEDBACK_SEND_GITHUB")
+	send_button.flat = true
+	send_button.pressed.connect(func() -> void: OS.shell_open(FeedbackLog.issue_url(note)))
+	header.add_child(send_button)
 	var delete_button := Button.new()
 	delete_button.text = tr("FEEDBACK_DELETE")
 	delete_button.flat = true
