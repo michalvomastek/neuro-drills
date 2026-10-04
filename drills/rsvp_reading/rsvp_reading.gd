@@ -37,13 +37,19 @@ func _on_start_pressed() -> void:
 	super()
 
 
+func _relayout_setup() -> void:
+	super()
+	if _question_box != null:
+		_question_box.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0), 0)
+
+
 func _build_play_area(parent: Control) -> void:
 	_word = _make_stimulus_label(parent, 72)
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	parent.add_child(center)
 	_question_box = VBoxContainer.new()
-	_question_box.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0), 0)
+	_relayout_setup()
 	_question_box.add_theme_constant_override("separation", 16)
 	center.add_child(_question_box)
 	_question_label = Label.new()

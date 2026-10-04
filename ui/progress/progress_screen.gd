@@ -62,6 +62,7 @@ func _relayout() -> void:
 	_list_scroll.custom_minimum_size = Vector2(0, 150) if narrow else Vector2(320, 0)
 	_list_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
 	_detail.custom_minimum_size = Vector2(0, 0) if narrow else Vector2(320, 0)
+	_detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_footer.vertical = narrow
 
 
