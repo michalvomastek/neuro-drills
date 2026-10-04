@@ -359,3 +359,19 @@ VARIANT_BACKWARD,pozpátku,backward
 VARIANT_ADAPTIVE,adaptivní,adaptive
 VARIANT_NUMBERS,čísla,numbers
 VARIANT_LETTERS,písmena,letters
+MENU_FEEDBACK,Zpětná vazba,Feedback
+RESULT_NOTE,Poznámka,Note
+RESULT_NOTE_SAVED,Poznámka uložena,Note saved
+FEEDBACK_TITLE,Zpětná vazba,Feedback
+FEEDBACK_SUBTITLE,Poznámky k hrám a nápady na vylepšení. Ukládají se jen v tomto zařízení; tlačítkem Kopírovat je vložíš do chatu.,Notes about the drills and ideas for improvements. They stay on this device; the Copy button puts them on the clipboard for the chat.
+FEEDBACK_NOTE_TITLE,Poznámka k tomuto kolu,Note about this run
+FEEDBACK_HINT,Co bylo špatně nebo co by šlo lépe? Výsledek a prostředí se k poznámce přiloží samy.,What was wrong or could be better? The result and the environment are attached automatically.
+FEEDBACK_PLACEHOLDER,Napiš poznámku…,Write a note…
+FEEDBACK_SAVE,Uložit,Save
+FEEDBACK_SAVED,Uloženo,Saved
+FEEDBACK_DELETE,Smazat,Delete
+FEEDBACK_COPY,Kopírovat vše,Copy all
+FEEDBACK_COPIED,Zkopírováno do schránky,Copied to the clipboard
+FEEDBACK_EXPORT,Stáhnout jako text,Download as text
+FEEDBACK_EMPTY,Zatím žádná poznámka.,No notes yet.
+FEEDBACK_GENERAL,Obecné,General

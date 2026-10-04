@@ -4,6 +4,7 @@ extends Node
 const MAIN_MENU_SCENE_PATH := "res://ui/main_menu/main_menu.tscn"
 const RESULTS_SCENE_PATH := "res://ui/results/results_screen.tscn"
 const PROGRESS_SCENE_PATH := "res://ui/progress/progress_screen.tscn"
+const FEEDBACK_SCENE_PATH := "res://ui/feedback/feedback_screen.tscn"
 
 var _host: Control
 var _current: Node
@@ -32,6 +33,10 @@ func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = fals
 	drill.aborted.connect(show_menu)
 	_swap(drill)
 	drill.setup(definition, config, autostart)
+
+
+func show_feedback() -> void:
+	_swap(_instantiate(FEEDBACK_SCENE_PATH))
 
 
 func show_progress() -> void:

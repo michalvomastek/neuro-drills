@@ -4,6 +4,7 @@ extends Control
 @onready var _tabs: TabContainer = %Tabs
 @onready var _language_button: Button = %LanguageButton
 @onready var _progress_button: Button = %ProgressButton
+@onready var _feedback_button: Button = %FeedbackButton
 @onready var _quit_button: Button = %QuitButton
 
 var _first_buttons: Array[Button] = []
@@ -19,6 +20,7 @@ func _ready() -> void:
 	_tabs.tab_changed.connect(_on_tab_changed)
 	_language_button.pressed.connect(_on_language_pressed)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
+	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
 	_focus_current_tab()

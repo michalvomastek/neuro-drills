@@ -9,6 +9,7 @@ extends Control
 @onready var _menu_button: Button = %MenuButton
 @onready var _rpe_box: HBoxContainer = %RpeBox
 @onready var _rpe_buttons: HBoxContainer = %RpeButtons
+@onready var _note_button: Button = %NoteButton
 
 var _result: DrillResult
 var _record: Dictionary = {}
@@ -19,6 +20,7 @@ func _ready() -> void:
 	_again_button.pressed.connect(_on_again_pressed)
 	_settings_button.pressed.connect(_on_settings_pressed)
 	_menu_button.pressed.connect(SceneRouter.show_menu)
+	_note_button.pressed.connect(_on_note_pressed)
 
 
 func setup(result: DrillResult) -> void:
@@ -111,6 +113,33 @@ func _add_row(label_key: String, value: String) -> void:
 	value_label.text = tr(value)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_rows.add_child(value_label)
+
+
+## Opens a small dialog for a feedback note; the result and the environment
+## are attached automatically so the note explains itself later.
+func _on_note_pressed() -> void:
+	var dialog := NoteDialog.new()
+	add_child(dialog)
+	dialog.open(_result_context())
+	dialog.saved.connect(func() -> void: _note_button.text = tr("RESULT_NOTE_SAVED"))
+
+
+func _result_context() -> Dictionary:
+	var definition := DrillRegistry.find(_result.drill_id)
+	var rows := PackedStringArray()
+	for row in _result.summary_rows:
+		rows.append("%s %s" % [tr(row[0]), tr(row[1])])
+	var verdict := Benchmarks.evaluate(_result)
+	var level: int = verdict.get("level", -1)
+	if level >= 0:
+		rows.append("%s %s" % [tr("RESULT_LEVEL"), tr(Benchmarks.LEVEL_KEYS[level])])
+	var variant: String = _record.get("variant", MetricCatalog.variant_key(_result.drill_id, _result.config))
+	return {
+		"drill": tr(definition.title_key) if definition != null else String(_result.drill_id),
+		"variant": MetricCatalog.variant_label(variant),
+		"result": " · ".join(rows),
+		"config": JSON.stringify(_result.config),
+	}
 
 
 func _on_again_pressed() -> void:

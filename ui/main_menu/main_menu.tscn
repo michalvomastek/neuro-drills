@@ -65,6 +65,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "MENU_PROGRESS"
 
+[node name="FeedbackButton" type="Button" parent="Center/Panel/VBox/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MENU_FEEDBACK"
+
 [node name="Spacer" type="Control" parent="Center/Panel/VBox/Footer"]
 layout_mode = 2
 size_flags_horizontal = 3
