@@ -46,4 +46,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_PREMATURE", str(premature_count)]),
 	]
 	result.details = {"times_ms": stats.times_ms.duplicate(), "premature": premature_count}
+	result.metrics = {"median_rt_ms": stats.median(), "error_rate": float(premature_count) / maxi(1, trials)}
 	return result

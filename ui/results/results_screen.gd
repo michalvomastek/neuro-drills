@@ -23,7 +23,24 @@ func setup(result: DrillResult) -> void:
 	_title_label.text = tr(definition.title_key) if definition != null else String(result.drill_id)
 	for row in result.summary_rows:
 		_add_row(row[0], row[1])
+	_add_benchmark_rows(result)
 	_again_button.grab_focus()
+
+
+## Orientational level from the benchmark table, plus the bound of the next band.
+func _add_benchmark_rows(result: DrillResult) -> void:
+	var verdict := Benchmarks.evaluate(result)
+	if verdict.is_empty():
+		return
+	var level: int = verdict["level"]
+	if level < 0:
+		return
+	_add_row("RESULT_LEVEL", tr(Benchmarks.LEVEL_KEYS[level]))
+	var next: float = verdict["next"]
+	if next >= 0.0:
+		var unit: String = verdict["unit"]
+		var next_key := Benchmarks.LEVEL_KEYS[mini(level + 1, Benchmarks.LEVEL_KEYS.size() - 1)]
+		_add_row("RESULT_NEXT_LEVEL", "%s: %s" % [tr(next_key), Benchmarks.format_bound(next, unit)])
 
 
 func _add_row(label_key: String, value: String) -> void:

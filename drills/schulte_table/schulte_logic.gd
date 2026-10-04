@@ -199,6 +199,7 @@ func build_result(drill_id: StringName, config_dict: Dictionary) -> DrillResult:
 		"found_at_ms": found_at_ms.duplicate(),
 		"errors_by_target": errors_by_target.duplicate(),
 	}
+	result.metrics = {"total_ms": float(result.total_ms), "errors": float(error_count)}
 	return result
 
 
@@ -240,5 +241,6 @@ static func build_test_result(drill_id: StringName, config_dict: Dictionary, tab
 	rows.append(PackedStringArray(["RESULT_ERRORS", str(errors)]))
 	result.summary_rows = rows
 	result.details = {"table_times_ms": table_times_ms.duplicate(), "er_ms": er, "wu": wu, "ps": ps}
+	result.metrics = {"total_ms": er, "errors": float(errors)}
 	return result
 

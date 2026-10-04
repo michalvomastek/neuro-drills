@@ -137,6 +137,10 @@ Všechny drilly kromě Schulte stojí na společné třídě `core/trial_drill.g
 - **Expanding Optical Tunnel**: subjektivní bez měřitelného výstupu; vynecháno.
 - **Flash Memory / Grid Pattern Shift** je totéž co paměťová matice; **Visual Search / Cancellation** pokrývá vizuální hledání a hledání reflektorem.
 
+## 5d. Metriky a pásma
+
+Každý výsledek nese standardizované metriky (`DrillResult.metrics`), nad nimiž `core/benchmarks.gd` určuje orientační úroveň začátečník / pokročilý / zkušený (tabulka v `docs/BENCHMARKS.md`). Stejné metriky budou základem fáze 2: ukládání historie, klouzavé průměry a trend na výsledkové obrazovce.
+
 ## 6. Nástroje, testování, kvalita
 
 Co už je připravené v této větvi:

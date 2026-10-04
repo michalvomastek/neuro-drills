@@ -118,6 +118,7 @@ func _finish() -> void:
 		PackedStringArray(["TRACKING_MAX", "%.1f" % _stats.max_distance]),
 	]
 	result.details = {"mean": _stats.mean(), "max": _stats.max_distance}
+	result.metrics = {"on_target": _on_target_fraction()}
 	_complete(result)
 
 

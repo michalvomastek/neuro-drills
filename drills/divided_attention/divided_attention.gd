@@ -147,6 +147,7 @@ func _build_result() -> DrillResult:
 	result.summary_rows.push_front(PackedStringArray(["TRACKING_MEAN_DISTANCE", Format.percent(_tracking.mean())]))
 	result.details["tracking_mean"] = _tracking.mean()
 	result.details["tracking_rms"] = _tracking.rms()
+	result.metrics["tracking_mean"] = _tracking.mean()
 	return result
 
 

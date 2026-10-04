@@ -61,4 +61,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["SPOTLIGHT_PER_TARGET", Format.seconds(roundi(float(total_time_ms()) / maxi(1, target_count)))]),
 	]
 	result.details = {"found_at_ms": found_at_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"ms_per_target": float(total_time_ms()) / maxi(1, target_count)}
 	return result

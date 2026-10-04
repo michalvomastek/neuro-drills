@@ -102,4 +102,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["ARITH_CORRECT", "%d (%d %s)" % [problems_correct, problems_wrong, TranslationServer.translate("DUAL_WRONG_SHORT")]]),
 	]
 	result.details = {"taps_ms": taps_ms.duplicate(), "problems_correct": problems_correct, "problems_wrong": problems_wrong}
+	result.metrics = {"interference_percent": interference_percent()}
 	return result

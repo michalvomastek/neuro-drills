@@ -117,4 +117,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_AVERAGE_PER_NUMBER", Format.seconds(roundi(float(total_time_ms()) / count))]),
 	]
 	result.details = {"found_at_ms": found_at_ms.duplicate(), "order": order}
+	result.metrics = {"total_ms": float(total_time_ms()), "errors": float(error_count)}
 	return result

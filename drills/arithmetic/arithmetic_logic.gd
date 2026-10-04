@@ -76,4 +76,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["ARITH_PER_ANSWER", Format.seconds(roundi(answer_times.mean()))]),
 	]
 	result.details = {"correct": correct_count, "wrong": wrong_count, "duration_s": duration_s}
+	result.metrics = {"ms_per_answer": answer_times.mean(), "error_rate": float(wrong_count) / maxi(1, correct_count + wrong_count)}
 	return result

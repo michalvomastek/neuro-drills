@@ -69,4 +69,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["STAIRCASE_FINAL", "%.2f" % speed()]),
 	]
 	result.details = {"best_speed": best_speed(), "correct": correct_count}
+	result.metrics = {"best_speed": best_speed()}
 	return result

@@ -95,4 +95,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["TTC_POSITION_ERROR", Format.percent(mean_position_error())]),
 	]
 	result.details = {"time_errors_ms": time_errors_ms.duplicate(), "position_errors": position_errors.duplicate()}
+	result.metrics = {"time_error_ms": mean_abs_time_error_ms(), "position_error": mean_position_error()}
 	return result

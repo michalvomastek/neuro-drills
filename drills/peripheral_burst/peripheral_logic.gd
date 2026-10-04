@@ -92,4 +92,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["PERIPHERAL_CENTRE", "%d / %d" % [reported_changes, centre_change_count]]),
 	]
 	result.details = {"times_ms": detect_stats.times_ms.duplicate(), "misses": misses, "centre_changes": centre_change_count, "reported": reported_changes}
+	result.metrics = {"detection_rate": detection_rate(), "centre_error": float(absi(reported_changes - centre_change_count))}
 	return result

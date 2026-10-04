@@ -70,4 +70,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_WRONG", str(wrong_count)]),
 	]
 	result.details = {"times_ms": stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"median_rt_ms": stats.median(), "error_rate": 1.0 - accuracy()}
 	return result

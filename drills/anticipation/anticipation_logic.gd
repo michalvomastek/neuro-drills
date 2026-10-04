@@ -88,6 +88,7 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["ANTICIPATION_BEST", Format.millis(best)]),
 	]
 	result.details = {"errors_ms": errors_ms.duplicate()}
+	result.metrics = {"mean_abs_error_ms": mean_abs_error_ms()}
 	return result
 
 

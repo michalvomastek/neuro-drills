@@ -50,4 +50,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_ROUNDS", "%d / %d" % [tracker.correct_rounds, tracker.rounds]]),
 	]
 	result.details = {"span": tracker.span, "rounds": tracker.rounds}
+	result.metrics = {"span": float(tracker.span)}
 	return result

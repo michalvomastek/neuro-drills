@@ -58,4 +58,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["READING_REDS", "%d / %d" % [reported_red, red_count]]),
 	]
 	result.details = {"target": target_letter, "occurrences": target_occurrences, "reds": red_count, "reported_letters": reported_letters, "reported_red": reported_red}
+	result.metrics = {"letters_error": float(absi(reported_letters - target_occurrences)), "reds_error": float(absi(reported_red - red_count))}
 	return result

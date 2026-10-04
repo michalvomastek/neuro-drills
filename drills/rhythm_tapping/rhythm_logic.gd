@@ -81,4 +81,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RHYTHM_JITTER", Format.millis(jitter_ms())]),
 	]
 	result.details = {"taps_ms": taps_ms.duplicate(), "drift": drift_percent(), "jitter": jitter_ms()}
+	result.metrics = {"jitter_ms": jitter_ms(), "drift_percent": drift_percent()}
 	return result

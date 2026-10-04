@@ -89,4 +89,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["POSNER_EFFECT", Format.millis(validity_effect_ms())]),
 	]
 	result.details = {"valid_ms": valid_stats.times_ms.duplicate(), "invalid_ms": invalid_stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"validity_effect_ms": validity_effect_ms(), "error_rate": 1.0 - accuracy()}
 	return result

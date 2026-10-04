@@ -90,4 +90,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_FALSE_ALARMS", str(false_alarms)]),
 	]
 	result.details = {"n": n, "hits": hits, "misses": misses, "false_alarms": false_alarms}
+	result.metrics = {"level": float(n), "accuracy": accuracy()}
 	return result

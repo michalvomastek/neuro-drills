@@ -83,4 +83,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		"incongruent_ms": incongruent_stats.times_ms.duplicate(),
 		"wrong": wrong_count,
 	}
+	result.metrics = {"interference_ms": interference_ms(), "error_rate": 1.0 - accuracy()}
 	return result

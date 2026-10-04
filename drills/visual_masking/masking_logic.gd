@@ -74,4 +74,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["STAIRCASE_FINAL", Format.millis(staircase.value)]),
 	]
 	result.details = {"threshold_ms": staircase.best if staircase.has_threshold() else -1, "correct": correct_count}
+	result.metrics = {"threshold_ms": staircase.best if staircase.has_threshold() else -1.0}
 	return result

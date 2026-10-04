@@ -61,4 +61,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_ACCURACY", Format.percent(float(correct_count) / trials if trials > 0 else 0.0)]),
 	]
 	result.details = {"threshold": threshold, "correct": correct_count}
+	result.metrics = {"threshold": threshold}
 	return result

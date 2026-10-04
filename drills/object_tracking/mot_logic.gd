@@ -131,4 +131,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_ACCURACY", Format.percent(accuracy())]),
 	]
 	result.details = {"correct": correct_total, "rounds": rounds}
+	result.metrics = {"accuracy": accuracy()}
 	return result

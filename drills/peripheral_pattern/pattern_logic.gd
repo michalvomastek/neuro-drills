@@ -85,4 +85,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["PERIPHERAL_CENTRE", "%d / %d" % [reported_changes, centre_change_count]]),
 	]
 	result.details = {"correct": correct, "centre_changes": centre_change_count, "reported": reported_changes}
+	result.metrics = {"accuracy": float(correct) / maxi(1, trials), "centre_error": float(absi(reported_changes - centre_change_count))}
 	return result

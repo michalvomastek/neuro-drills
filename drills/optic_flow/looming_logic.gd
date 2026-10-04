@@ -70,4 +70,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["LOOMING_FIRST_MOVE", Format.millis(reaction_stats.mean())]),
 	]
 	result.details = {"evaded": evaded, "first_move_ms": reaction_stats.times_ms.duplicate()}
+	result.metrics = {"evasion_rate": float(evaded) / maxi(1, trials)}
 	return result

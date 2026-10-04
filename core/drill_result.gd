@@ -13,6 +13,9 @@ var error_count: int = 0
 var finished_at_unix: int = 0
 ## Rows for the results screen, in order: each entry is [translation_key, value_text].
 var summary_rows: Array[PackedStringArray] = []
+## Standardised numbers for comparison and benchmarks: String -> float
+## (e.g. "median_rt_ms", "error_rate", "span"). See Benchmarks for the keys in use.
+var metrics: Dictionary = {}
 ## Drill-specific raw numbers (split times and the like) for later analysis.
 var details: Dictionary = {}
 
@@ -24,5 +27,6 @@ func to_dict() -> Dictionary:
 		"total_ms": total_ms,
 		"error_count": error_count,
 		"finished_at_unix": finished_at_unix,
+		"metrics": metrics,
 		"details": details,
 	}

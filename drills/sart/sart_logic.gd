@@ -81,4 +81,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_RT_SD", Format.millis(go_stats.std_dev())]),
 	]
 	result.details = {"commissions": commissions, "omissions": omissions, "go_times_ms": go_stats.times_ms.duplicate()}
+	result.metrics = {"mean_rt_ms": go_stats.mean(), "commission_rate": float(commissions) / maxi(1, no_go_count())}
 	return result

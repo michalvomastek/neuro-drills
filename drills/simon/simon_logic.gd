@@ -54,4 +54,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_SEQUENCE_LENGTH", str(best_length())]),
 	]
 	result.details = {"best_length": best_length(), "failed": failed}
+	result.metrics = {"best_length": float(best_length())}
 	return result

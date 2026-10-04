@@ -58,4 +58,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_ROUNDS", "%d / %d" % [rounds_correct, rounds_done]]),
 	]
 	result.details = {"max_distance": max_distance, "rounds_correct": rounds_correct}
+	result.metrics = {"max_width": max_distance * 2.0}
 	return result

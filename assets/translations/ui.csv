@@ -309,3 +309,8 @@ CATEGORY_MOTOR_SHORT,Koordinace,Coordination
 CATEGORY_3D_SHORT,3D,3D
 CATEGORY_DUAL_SHORT,Dvojité úlohy,Dual tasks
 CATEGORY_OTHER_SHORT,Ostatní,Other
+RESULT_LEVEL,Úroveň (orientačně),Level (indicative)
+RESULT_NEXT_LEVEL,Další úroveň od,Next level from
+LEVEL_BEGINNER,Začátečník,Beginner
+LEVEL_ADVANCED,Pokročilý,Advanced
+LEVEL_ELITE,Zkušený,Elite

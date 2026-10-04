@@ -87,4 +87,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["SWITCH_COST", Format.millis(switch_cost_ms())]),
 	]
 	result.details = {"repeat_ms": repeat_stats.times_ms.duplicate(), "switch_ms": switch_stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"switch_cost_ms": switch_cost_ms(), "error_rate": 1.0 - accuracy()}
 	return result

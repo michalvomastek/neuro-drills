@@ -52,4 +52,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RSVP_COMPREHENSION", "RSVP_CORRECT" if answered_correctly else "RSVP_WRONG"]),
 	]
 	result.details = {"wpm": wpm, "words": words.size(), "correct": answered_correctly}
+	result.metrics = {"wpm": float(wpm), "comprehension": 1.0 if answered_correctly else 0.0}
 	return result

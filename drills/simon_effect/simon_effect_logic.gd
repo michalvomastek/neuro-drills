@@ -82,4 +82,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["SIMON_EFFECT", Format.millis(simon_effect_ms())]),
 	]
 	result.details = {"congruent_ms": congruent_stats.times_ms.duplicate(), "incongruent_ms": incongruent_stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"interference_ms": simon_effect_ms(), "error_rate": 1.0 - accuracy()}
 	return result

@@ -92,4 +92,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["BROCK_LONG_JUMP_RT", Format.millis(jump_stats.mean())]),
 	]
 	result.details = {"times_ms": stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"jump_rt_ms": jump_stats.mean() if jump_stats.count() > 0 else stats.median(), "accuracy": accuracy()}
 	return result

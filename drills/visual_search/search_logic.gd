@@ -57,4 +57,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["SEARCH_SET_SIZE", str(set_size)]),
 	]
 	result.details = {"times_ms": stats.times_ms.duplicate(), "wrong": wrong_count}
+	result.metrics = {"median_rt_ms": stats.median(), "error_rate": float(wrong_count) / maxi(1, trials + wrong_count)}
 	return result

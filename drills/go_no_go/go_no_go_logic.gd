@@ -80,6 +80,14 @@ func is_done() -> bool:
 	return current >= trials
 
 
+func _go_count() -> int:
+	var count := 0
+	for go in is_go:
+		if go:
+			count += 1
+	return count
+
+
 func accuracy() -> float:
 	return float(trials - misses - false_alarms) / trials if trials > 0 else 0.0
 
@@ -105,4 +113,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		"false_alarms": false_alarms,
 		"correct_rejections": correct_rejections,
 	}
+	result.metrics = {"mean_rt_ms": hit_stats.mean(), "false_alarm_rate": float(false_alarms) / maxi(1, trials - _go_count()), "threshold_ms": staircase.best if adaptive and staircase.has_threshold() else -1.0}
 	return result

@@ -69,4 +69,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["OKN_FALSE_ALARMS", str(false_alarms)]),
 	]
 	result.details = {"times_ms": detect_stats.times_ms.duplicate(), "misses": misses, "false_alarms": false_alarms}
+	result.metrics = {"detection_rate": float(detect_stats.count()) / maxi(1, changes)}
 	return result

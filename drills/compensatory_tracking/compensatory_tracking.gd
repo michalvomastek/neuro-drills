@@ -11,7 +11,10 @@ const MOUSE_GAIN := 0.0025
 
 var _duration: int = DEFAULT_DURATION
 var _duration_option: OptionButton
+const ON_TARGET_RADIUS := 0.15
+
 var _stats := TrackingStats.new()
+var _on_target_samples: int = 0
 var _stage: Control
 var _cross: Label
 var _dot: Panel
@@ -98,6 +101,8 @@ func _process(delta: float) -> void:
 	_offset += keys * KEY_SPEED * delta
 	_offset = _offset.clamp(Vector2(-1, -1), Vector2(1, 1))
 	_stats.add(_offset.length())
+	if _offset.length() <= ON_TARGET_RADIUS:
+		_on_target_samples += 1
 	var half := minf(_stage.size.x, _stage.size.y) * 0.5
 	_dot.position = _stage.size * 0.5 + _offset * half - _dot.size * 0.5
 	var remaining := maxi(0, _ends_at_ms - Time.get_ticks_msec())
@@ -108,6 +113,7 @@ func _process(delta: float) -> void:
 
 func _run_trials() -> void:
 	_stats = TrackingStats.new()
+	_on_target_samples = 0
 	_noise.seed = _rng.randi()
 	_offset = Vector2.ZERO
 	_time = 0.0
@@ -126,6 +132,10 @@ func _exit_tree() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
+func _on_target_fraction() -> float:
+	return float(_on_target_samples) / _stats.samples if _stats.samples > 0 else 0.0
+
+
 func _finish() -> void:
 	_playing = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -138,6 +148,8 @@ func _finish() -> void:
 		PackedStringArray(["TRACKING_MEAN_DISTANCE", Format.percent(_stats.mean())]),
 		PackedStringArray(["TRACKING_RMS", Format.percent(_stats.rms())]),
 		PackedStringArray(["TRACKING_MAX", Format.percent(_stats.max_distance)]),
+		PackedStringArray(["PURSUIT_ON_TARGET", Format.percent(_on_target_fraction())]),
 	]
 	result.details = {"mean": _stats.mean(), "rms": _stats.rms(), "max": _stats.max_distance}
+	result.metrics = {"on_target": _on_target_fraction(), "mean_distance": _stats.mean()}
 	_complete(result)

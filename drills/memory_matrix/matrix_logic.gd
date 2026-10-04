@@ -97,4 +97,5 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_ACCURACY", Format.percent(accuracy())]),
 	]
 	result.details = {"max_level": max_level, "rounds_correct": rounds_correct}
+	result.metrics = {"max_level": float(max_level)}
 	return result
