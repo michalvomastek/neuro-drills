@@ -208,3 +208,50 @@ Všechny předpoklady níže platí, s jedinou změnou: u otázky 6 je téma **t
 9. **Pracovní postup.** Mám pro každou funkci otevírat pull request k review, nebo pushovat do své větve a ty si ji mergeuješ sám? Kód a commity anglicky, komunikace česky?
    Předpoklad: větev `claude/…`, pull request jen na vyžádání; kód a commity anglicky, komunikace česky.
 
+
+## 8. Backlog (zapsáno 4. 10. 2026, priority potvrzeny maintainerem)
+
+Pracnost: M = do hodiny, S = půl dne, L = den a víc. Pořadí v rámci oblasti je návrh.
+
+### A. Mobil a web (priorita 1)
+- [ ] A1 (S) Projít všech 43 her na výšku v rozměru Safari 430×660 a opravit, co přetéká.
+- [ ] A2 (S) Dotyk a senzory u her čtoucích polohu ukazatele: plynulé a kompenzační sledování, Brockův provázek, optický tok s nakláněním. Ověřit na telefonu.
+- [ ] A3 (M) Posuvný kontejner u nastavení her s mnoha volbami ověřit (Trail Making, RSVP, 3D hry).
+- [ ] A4 (M) Pauza časovače při přepnutí aplikace do pozadí; varování při zavření záložky uprostřed kola.
+- [ ] A5 (M) Ikona pro Windows exe (rcedit v CI).
+
+### B. Tréninkový režim (priorita 2)
+Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu navrhne aplikace podle kategorií a slabších pásem, maintainer ji může upravit a uložit jako vlastní pojmenovanou sestavu (může jich být víc).
+- [ ] B6 (L) Sestava: hry za sebou bez návratu do menu, přechodová obrazovka mezi hrami, souhrn na konci (celkový čas, výsledky, úrovně, RPE).
+- [ ] B7 (S) Doporučená denní sestava podle kategorií a podle nejslabšího pásma; během týdne se vystřídají všechny kategorie.
+- [ ] B8 (S) Adaptivní obtížnost: po dvou kolech v pásmu „zkušený“ nabídnout těžší variantu (větší mřížka, vyšší N-back, kratší expozice).
+- [ ] B9 (S) Týdenní souhrn na obrazovce Pokrok: kola, minuty, zlepšení za týden.
+
+### C. Data a pokrok
+- [ ] C10 (M) Import historie ze souboru (spojení mobilu a počítače).
+- [ ] C11 (M) Index únavy u N-back a MOT (ukládat časy pokusů).
+- [ ] C12 (M) U prahových her „nejlepší 3 z posledních 5 dní“ místo jediného rekordu.
+- [ ] C13 (M) Graf v Pokroku s delší historií (20 / 50 / vše) a s hranicemi pásem.
+- [ ] C14 (M) Revize pásem v `docs/BENCHMARKS.md` podle reálných dat (po pár týdnech hraní).
+
+### D. Zvuk
+- [ ] D15 (S) Tóny správně / špatně, zapnutelné v nastavení.
+- [ ] D16 (S) Slyšitelný metronom u rytmického ťukání; sluchové varianty reakčních her (reakce na tón, sluchový Go/No-Go).
+
+### E. Aplikace jako celek
+- [ ] E17 (M) Jedna obrazovka Nastavení: jazyk, RPE, zvuk, velikost písma, smazání dat.
+- [ ] E18 (S) Nápověda u každé hry: jak na to a co měří.
+- [ ] E19 (M) Vlastní písmo s podporou češtiny.
+- [ ] E20 (L) Automatický test, který každou hru dohraje do konce a ověří výsledek.
+
+### F. Hry
+- [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`).
+- [ ] F22 Nové hry jen pokud nějaká citelně chybí.
+
+### G. Gamifikace a hravější grafika (na vedlejší větvi)
+Zadání od maintainera: hry jsou monotónní a jednotvárné; chce hravější, roztomilé provedení (dětský styl, karikatura, kreslení rukou) a lepší gamifikaci. Vznikne na větvi bokem, aby šlo styl zahodit, kdyby se nelíbil.
+- [ ] G23 (S) Návrh stylu: paleta, tvary, písmo, ilustrační jazyk; ukázka na menu, Schulte a jedné reakční hře jako obrázky ke schválení před plošnou implementací.
+- [ ] G24 (L) Druhý motiv (`ui/theme/playful_theme.tres`) s přepínačem v nastavení, aby šel tmavý minimalistický a hravý styl střídat.
+- [ ] G25 (L) Vizuální prvky her: ručně kreslené buňky a terče, animace správně/špatně, maskot nebo postavička na výsledcích a v tréninku.
+- [ ] G26 (S) Gamifikace: denní série, body za kolo, odznaky za pásma a milníky, denní cíl; ukládané ve `StatsStore`, zobrazené v menu a v souhrnu tréninku.
+- [ ] G27 (M) Zvukové efekty ladící se stylem (navazuje na D15).
