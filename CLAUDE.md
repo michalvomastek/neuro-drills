@@ -28,6 +28,7 @@ Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it f
 | `docs` | dump the engine class reference XML to `~/.cache/neuro-drills/apidocs/`; grep it instead of guessing an API |
 | `smoke` | start every registered drill with the countdown on under Xvfb and verify it is running (`tools/smoke_drills.gd`); catches start-up regressions the logic tests cannot |
 | `screenshot <scene> <out.png> [WxH] [frames]` | render a scene with software OpenGL (Xvfb when there is no display) and save a PNG; `SCREENSHOT_LOCALE=cs` picks the language |
+| `icons` | render `icon.svg` into `assets/icon/icon_{144,180,512}.png` for the web manifest and the boot splash (`tools/make_icons.gd`) |
 | `templates` | download and install the 4.7 export templates (about 1 GB, GitHub release) |
 | `export <preset> [out]` | release export with a preset from `export_presets.cfg` (`Web`, `Windows Desktop`); output defaults to the preset's `export_path` under `build/` (ignored by git) |
 | `exec [args]` | pass arbitrary arguments to the binary |
@@ -61,6 +62,7 @@ Run `import`, `check`, `test` and `smoke` before every commit. `check` is also t
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.
+- 2026-10-04: PWA (manifest, service worker, offline page, standalone display) in the Web preset, own icon (`icon.svg`, PNGs via `godot.sh icons`), dark boot splash; `build/.gdignore` keeps exported files out of the importer.
 - 2026-10-04: phone layout: `Layout` scaling (480 design units across in portrait), narrow variants of menu, results, progress, feedback, TrialDrill and Schulte setup panels; CI renders the menu at 412x915 too.
 - 2026-10-04: in-app feedback notes with automatic context (drill, variant, result rows, platform, screen, locale, touch), copy-to-clipboard and text download; no backend, the maintainer pastes the text into the chat.
 - 2026-10-04: export presets (`export_presets.cfg`: Web single-threaded so GitHub Pages works without COOP/COEP headers, Windows x86_64 with embedded pck) and `.github/workflows/release.yml` (push to main: Pages deploy; tag `v*`: release with both zips). Pages must be switched to "GitHub Actions" once in the repository settings.

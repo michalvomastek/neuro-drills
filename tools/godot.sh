@@ -15,6 +15,7 @@
 #   screenshot <scene> <out.png> [WxH] [frames]
 #                           render a scene with software OpenGL (Xvfb when there is no display)
 #                           and save the main viewport as PNG
+#   icons                   render icon.svg into assets/icon/icon_{144,180,512}.png for the web manifest
 #   templates               install the export templates of $GODOT_VERSION (GitHub download)
 #   export <preset> [out]   release export with a preset from export_presets.cfg ("Web",
 #                           "Windows Desktop"); installs the templates first; out defaults
@@ -168,6 +169,11 @@ templates_dir() {
   printf '%s/export_templates/%s\n' "$data_dir" "${GODOT_VERSION/-/.}"
 }
 
+cmd_icons() {
+  "$GODOT" --headless --path "$REPO_ROOT" -s res://tools/make_icons.gd 2>&1 | grep -vE '^Godot Engine v|^$'
+  return "${PIPESTATUS[0]}"
+}
+
 cmd_templates() {
   local dir
   dir="$(templates_dir)"
@@ -211,6 +217,8 @@ cmd_export() {
   fi
   case "$out" in /*) ;; *) out="$REPO_ROOT/$out" ;; esac
   mkdir -p "$(dirname "$out")"
+  # Keep the editor and the exporter from importing the build output as project resources.
+  touch "$REPO_ROOT/build/.gdignore"
   rm -f "$out"
   log "Importing project ..."
   run_import >/dev/null 2>&1 || die "import failed; run 'tools/godot.sh import' to see why"
@@ -244,6 +252,7 @@ main() {
     docs) cmd_docs "$@" ;;
     screenshot) cmd_screenshot "$@" ;;
     smoke) cmd_smoke "$@" ;;
+    icons) cmd_icons "$@" ;;
     templates) cmd_templates "$@" ;;
     export) cmd_export "$@" ;;
     exec) cmd_exec "$@" ;;

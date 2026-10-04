@@ -164,6 +164,7 @@ Tlačítko „Poznámka“ na výsledkové obrazovce otevře dialog; k textu se 
 - `tools/godot.sh export <preset>` stáhne šablony a vyexportuje do `build/` (v `.gitignore`).
 - `.github/workflows/release.yml`: při pushi do `main` sestaví web i Windows, web nasadí na GitHub Pages (`https://<uživatel>.github.io/neuro-drills/`), oba buildy nechá jako artefakt; při tagu `v*` je navíc připojí k GitHub release. Ručně jde spustit přes „Run workflow“.
 - Jednorázově nutné: v nastavení repozitáře Settings → Pages → Source: GitHub Actions.
+- PWA: webový preset má zapnutou progresivní webovou aplikaci (manifest, service worker, offline stránka `assets/icon/offline.html`, ikony 144/180/512 z `assets/icon/`, barva motivu `#1b1e26`, režim standalone, libovolná orientace). Na telefonu jde aplikaci „Přidat na plochu“ a spouští se bez adresního řádku; service worker drží poslední načtenou verzi, nová verze se stáhne při dalším otevření. Vlastní ikona je `icon.svg` (mřížka s modrou buňkou), PNG velikosti generuje `tools/godot.sh icons`; stejná ikona slouží jako boot splash na tmavém pozadí. Složka `build/` má `.gdignore`, aby exportované soubory neimportoval editor.
 - Webový build byl ověřen v headless Chromiu (menu, Pokrok, bez chyb v konzoli). Na webu se historie ukládá do IndexedDB prohlížeče (Godot `user://`), export CSV se stáhne jako soubor.
 
 ## 6. Nástroje, testování, kvalita
