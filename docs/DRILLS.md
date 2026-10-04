@@ -7,7 +7,7 @@
 **Schulteho tabulka** – najdi symboly popořadě co nejrychleji, pohled na středu, hledání periferním viděním.
 - Velikost mřížky 3×3 až 7×7; symboly čísla nebo písmena (písmena do 5×5).
 - Varianty: obrácené pořadí; přemíchat tabulku po každém správném kliku; červeno-černá Gorbov–Schulte 7×7 (25 bílých vzestupně a 24 červených sestupně, střídavě); Schulteho test (5 tabulek za sebou, indexy ER = průměrný čas, WU = T1/ER, PS = T4/ER).
-- Zobrazení: odpočet, běžící čas, fixační bod uprostřed, zobrazovat hledané číslo, zvýraznit chyby a počítat je (červený záblesk + počítadlo), zeleně potvrdit správné číslo, ztlumit nalezená čísla.
+- Zobrazení: odpočet, běžící čas, fixační bod uprostřed, zobrazovat hledané číslo, zvýraznit chyby a počítat je (červený záblesk + počítadlo), zeleně potvrdit správné číslo (výchozí zapnuto), ztlumit nalezená čísla.
 - Výsledek: celkový čas, chybné kliky, průměr na číslo, nejpomalejší číslo, čas do prvního čísla; v testu časy T1–T5 a indexy.
 
 **Trail Making** – spoj kolečka v zadaném pořadí.

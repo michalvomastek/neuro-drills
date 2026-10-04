@@ -24,7 +24,7 @@ var dim_found: bool = false
 ## Red flash on a wrong cell plus a running error counter next to the target label.
 var show_errors: bool = true
 ## Green flash on a correctly clicked cell.
-var highlight_correct: bool = false
+var highlight_correct: bool = true
 ## Running timer in the top bar while playing.
 var show_timer: bool = false
 ## Search from the highest symbol down to 1.
