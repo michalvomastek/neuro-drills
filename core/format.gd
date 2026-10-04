@@ -27,3 +27,11 @@ static func millis(ms: float) -> String:
 ## Fraction 0..1 as a percentage.
 static func percent(fraction: float) -> String:
 	return "%d %%" % roundi(fraction * 100.0)
+
+
+## Dimensionless ratio with two decimals, locale decimal separator.
+static func ratio(value: float) -> String:
+	var text := "%.2f" % value
+	if TranslationServer.get_locale().begins_with("cs"):
+		text = text.replace(".", ",")
+	return text

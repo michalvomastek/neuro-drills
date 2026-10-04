@@ -13,6 +13,11 @@ const DIM_FOUND_ALPHA := 0.3
 
 @onready var _setup_panel: Control = %SetupPanel
 @onready var _grid_size_option: OptionButton = %GridSizeOption
+@onready var _symbols_option: OptionButton = %SymbolsOption
+@onready var _reverse_check: CheckBox = %ReverseCheck
+@onready var _shuffle_check: CheckBox = %ShuffleCheck
+@onready var _red_black_check: CheckBox = %RedBlackCheck
+@onready var _test_mode_check: CheckBox = %TestModeCheck
 @onready var _countdown_check: CheckBox = %CountdownCheck
 @onready var _fixation_check: CheckBox = %FixationCheck
 @onready var _show_next_check: CheckBox = %ShowNextCheck
@@ -36,6 +41,10 @@ var _config := SchulteConfig.new()
 var _logic: SchulteLogic
 var _cells: Array[Button] = []
 var _started_at_ms: int = 0
+## Schulte test: times of the finished tables and errors across them.
+var _table_times_ms: Array[int] = []
+var _test_errors: int = 0
+var _table_index: int = 0
 ## True between the grid appearing and the last correct click.
 var _running: bool = false
 ## Incremented whenever a run starts or stops so stale countdowns bail out.
@@ -45,6 +54,9 @@ var _run_token: int = 0
 func _ready() -> void:
 	for size in range(SchulteConfig.MIN_GRID_SIZE, SchulteConfig.MAX_GRID_SIZE + 1):
 		_grid_size_option.add_item("%d × %d" % [size, size], size)
+	_symbols_option.add_item(tr("SCHULTE_SYMBOLS_NUMBERS"), 0)
+	_symbols_option.add_item(tr("SCHULTE_SYMBOLS_LETTERS"), 1)
+	_red_black_check.toggled.connect(_on_red_black_toggled)
 	_start_button.pressed.connect(_on_start_pressed)
 	_setup_back_button.pressed.connect(_on_setup_back_pressed)
 	_play_back_button.pressed.connect(_on_play_back_pressed)
@@ -85,6 +97,18 @@ func _apply_config_to_controls() -> void:
 	_show_errors_check.button_pressed = _config.show_errors
 	_highlight_correct_check.button_pressed = _config.highlight_correct
 	_show_timer_check.button_pressed = _config.show_timer
+	_symbols_option.select(1 if _config.symbols == SchulteConfig.SYMBOLS_LETTERS else 0)
+	_reverse_check.button_pressed = _config.reverse
+	_shuffle_check.button_pressed = _config.shuffle_after_click
+	_red_black_check.button_pressed = _config.red_black
+	_test_mode_check.button_pressed = _config.test_mode
+	_on_red_black_toggled(_config.red_black)
+
+
+## The red-black table has a fixed size and numbers only.
+func _on_red_black_toggled(enabled: bool) -> void:
+	_grid_size_option.disabled = enabled
+	_symbols_option.disabled = enabled
 
 
 func _read_config_from_controls() -> SchulteConfig:
@@ -97,6 +121,12 @@ func _read_config_from_controls() -> SchulteConfig:
 	config.show_errors = _show_errors_check.button_pressed
 	config.highlight_correct = _highlight_correct_check.button_pressed
 	config.show_timer = _show_timer_check.button_pressed
+	config.symbols = SchulteConfig.SYMBOLS_LETTERS if _symbols_option.get_selected_id() == 1 else SchulteConfig.SYMBOLS_NUMBERS
+	config.reverse = _reverse_check.button_pressed
+	config.shuffle_after_click = _shuffle_check.button_pressed
+	config.red_black = _red_black_check.button_pressed
+	config.test_mode = _test_mode_check.button_pressed
+	config.normalize()
 	return config
 
 
@@ -123,12 +153,27 @@ func _on_play_back_pressed() -> void:
 
 
 func _begin_run() -> void:
+	_table_times_ms.clear()
+	_test_errors = 0
+	_table_index = 0
+	_begin_table()
+
+
+## Starts one table; the Schulte test calls this five times in a row.
+func _begin_table() -> void:
 	_run_token += 1
 	var token := _run_token
 	_running = false
 	_setup_panel.visible = false
 	_play_panel.visible = false
 	_build_grid()
+	if _config.test_mode:
+		_countdown_panel.visible = true
+		_countdown_label.text = "%d / %d" % [_table_index + 1, SchulteConfig.TEST_TABLE_COUNT]
+		await get_tree().create_timer(1.2).timeout
+		if token != _run_token or not is_inside_tree():
+			return
+		_countdown_panel.visible = false
 	if _config.countdown:
 		# Only the countdown is on screen; the play panel (with its Back button) follows it.
 		_countdown_panel.visible = true
@@ -155,11 +200,10 @@ func _build_grid() -> void:
 	_cells.clear()
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	_logic = SchulteLogic.new(_config.grid_size, rng)
-	_grid.columns = _config.grid_size
-	for index in _logic.cells.size():
+	_logic = SchulteLogic.new(_config, rng)
+	_grid.columns = _logic.grid_size
+	for index in _logic.cell_values.size():
 		var cell := Button.new()
-		cell.text = str(_logic.cells[index])
 		cell.theme_type_variation = &"SchulteCell"
 		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cell.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -169,13 +213,26 @@ func _build_grid() -> void:
 		cell.pressed.connect(_on_cell_pressed.bind(index))
 		_grid.add_child(cell)
 		_cells.append(cell)
+	_refresh_cells()
 	_update_cell_font_size()
+
+
+## Writes the current symbol layout into the buttons (again after each reshuffle).
+func _refresh_cells() -> void:
+	for index in _cells.size():
+		var cell := _cells[index]
+		cell.text = _logic.label_for(index)
+		if _logic.is_red(index):
+			cell.add_theme_color_override("font_color", get_theme_color("red", "SchulteCell"))
+		else:
+			cell.remove_theme_color_override("font_color")
+		cell.modulate.a = DIM_FOUND_ALPHA if _config.dim_found and _logic.is_found(index) else 1.0
 
 
 func _update_cell_font_size() -> void:
 	if _cells.is_empty():
 		return
-	var cell_height := _grid.size.y / _config.grid_size
+	var cell_height := _grid.size.y / _logic.grid_size
 	var font_size := maxi(MIN_CELL_FONT_SIZE, int(cell_height * CELL_FONT_RATIO))
 	for cell in _cells:
 		cell.add_theme_font_size_override("font_size", font_size)
@@ -188,6 +245,8 @@ func _on_cell_pressed(index: int) -> void:
 	match _logic.register_click(index, elapsed):
 		SchulteLogic.ClickOutcome.CORRECT:
 			_mark_found(_cells[index])
+			if _config.shuffle_after_click:
+				_refresh_cells()
 			_update_next_target()
 		SchulteLogic.ClickOutcome.COMPLETED:
 			_mark_found(_cells[index])
@@ -251,7 +310,11 @@ func _update_error_count() -> void:
 
 func _update_next_target() -> void:
 	_next_target_label.visible = _config.show_next_target
-	_next_target_label.text = tr("SCHULTE_NEXT_TARGET") % _logic.next_target
+	_next_target_label.text = tr("SCHULTE_NEXT_TARGET_TEXT") % _logic.next_target_text()
+	if _logic.next_target_is_red():
+		_next_target_label.add_theme_color_override("font_color", get_theme_color("red", "SchulteCell"))
+	else:
+		_next_target_label.remove_theme_color_override("font_color")
 
 
 func _finish() -> void:
@@ -259,4 +322,13 @@ func _finish() -> void:
 	_running = false
 	if _config.show_timer:
 		_timer_label.text = Format.seconds_short(_logic.total_time_ms())
-	finished.emit(_logic.build_result(definition.id, _config.to_dict()))
+	if not _config.test_mode:
+		finished.emit(_logic.build_result(definition.id, _config.to_dict()))
+		return
+	_table_times_ms.append(_logic.total_time_ms())
+	_test_errors += _logic.error_count
+	_table_index += 1
+	if _table_index < SchulteConfig.TEST_TABLE_COUNT:
+		_begin_table()
+	else:
+		finished.emit(SchulteLogic.build_test_result(definition.id, _config.to_dict(), _table_times_ms, _test_errors))

@@ -150,3 +150,22 @@ ARITH_DESCRIPTION,"Sčítání, odčítání a násobení proti času. Napiš v�
 ARITH_DURATION,Délka (sekundy),Duration (seconds)
 ARITH_CORRECT,Správné odpovědi,Correct answers
 ARITH_PER_ANSWER,Čas na odpověď,Time per answer
+SCHULTE_SYMBOLS,Symboly,Symbols
+SCHULTE_SYMBOLS_NUMBERS,Čísla,Numbers
+SCHULTE_SYMBOLS_LETTERS,Písmena,Letters
+SCHULTE_OPT_REVERSE,Obrácené pořadí,Reverse order
+SCHULTE_OPT_SHUFFLE,Přemíchat po každém kliku,Reshuffle after each click
+SCHULTE_OPT_RED_BLACK,Červeno-černá (Gorbov),Red-black (Gorbov)
+SCHULTE_OPT_TEST_MODE,Schulteho test (5 tabulek),Schulte test (5 tables)
+SCHULTE_NEXT_TARGET_TEXT,Hledej: %s,Find: %s
+SCHULTE_VARIANT_NUMBERS,Čísla,Numbers
+SCHULTE_VARIANT_LETTERS,Písmena,Letters
+SCHULTE_VARIANT_RED_BLACK,Červeno-černá,Red-black
+SCHULTE_TEST_T1,Tabulka 1,Table 1
+SCHULTE_TEST_T2,Tabulka 2,Table 2
+SCHULTE_TEST_T3,Tabulka 3,Table 3
+SCHULTE_TEST_T4,Tabulka 4,Table 4
+SCHULTE_TEST_T5,Tabulka 5,Table 5
+SCHULTE_TEST_ER,Efektivita práce (ER),Work efficiency (ER)
+SCHULTE_TEST_WU,Zapracování (WU = T1/ER),Warm-up (WU = T1/ER)
+SCHULTE_TEST_PS,Psychická stabilita (PS = T4/ER),Psychic stability (PS = T4/ER)

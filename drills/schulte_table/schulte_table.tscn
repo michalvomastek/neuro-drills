@@ -25,7 +25,7 @@ grow_vertical = 2
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="SetupPanel/Panel"]
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
 theme_override_constants/separation = 12
 
@@ -53,40 +53,79 @@ text = "SCHULTE_GRID_SIZE"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="CountdownCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="SymbolsRow" type="HBoxContainer" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SymbolsLabel" type="Label" parent="SetupPanel/Panel/VBox/SymbolsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCHULTE_SYMBOLS"
+
+[node name="SymbolsOption" type="OptionButton" parent="SetupPanel/Panel/VBox/SymbolsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Options" type="GridContainer" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="CountdownCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_COUNTDOWN"
 
-[node name="FixationCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="ShowTimerCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_SHOW_TIMER"
+
+[node name="FixationCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_FIXATION"
 
-[node name="ShowNextCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="ShowNextCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHOW_NEXT"
 
-[node name="DimFoundCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "SCHULTE_OPT_DIM_FOUND"
-
-[node name="ShowErrorsCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="ShowErrorsCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHOW_ERRORS"
 
-[node name="HighlightCorrectCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="HighlightCorrectCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_HIGHLIGHT_CORRECT"
 
-[node name="ShowTimerCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+[node name="DimFoundCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "SCHULTE_OPT_SHOW_TIMER"
+text = "SCHULTE_OPT_DIM_FOUND"
+
+[node name="ReverseCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_REVERSE"
+
+[node name="ShuffleCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_SHUFFLE"
+
+[node name="RedBlackCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_RED_BLACK"
+
+[node name="TestModeCheck" type="CheckBox" parent="SetupPanel/Panel/VBox/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_TEST_MODE"
 
 [node name="Buttons" type="HBoxContainer" parent="SetupPanel/Panel/VBox"]
 layout_mode = 2
