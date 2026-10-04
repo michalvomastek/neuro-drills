@@ -105,10 +105,8 @@ static func evaluate(result: DrillResult) -> Dictionary:
 	if entry.is_empty():
 		return {}
 	var metric: String = entry["metric"]
-	if not result.metrics.has(metric):
-		return {}
-	var value: float = result.metrics[metric]
-	if value < 0.0 and metric.ends_with("_ms"):
+	var value := MetricCatalog.metric_value(result, metric)
+	if is_nan(value):
 		return {}
 	var lower: bool = entry["lower"]
 	var elite: float = entry["elite"]

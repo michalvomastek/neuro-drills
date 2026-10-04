@@ -314,3 +314,48 @@ RESULT_NEXT_LEVEL,Další úroveň od,Next level from
 LEVEL_BEGINNER,Začátečník,Beginner
 LEVEL_ADVANCED,Pokročilý,Advanced
 LEVEL_ELITE,Zkušený,Elite
+RESULT_FIRST_RUN,první kolo této varianty,first run of this variant
+RESULT_TREND,Oproti průměru posledních kol,Versus recent average
+RESULT_BEST,Osobní rekord,Personal best
+RESULT_NEW_BEST,Nový rekord!,New record!
+RESULT_BETTER,lepší,better
+RESULT_WORSE,horší,worse
+RESULT_VARIABILITY,Kolísání reakcí (SD),Reaction variability (SD)
+RESULT_FATIGUE,Index únavy (konec / začátek),Fatigue index (end / start)
+RESULT_RPE,Namáhavost (1–10),Exertion (1–10)
+MENU_PROGRESS,Pokrok,Progress
+PROGRESS_TITLE,Pokrok,Progress
+PROGRESS_SUBTITLE,Historie kol podle hry a varianty,Run history per drill and variant
+PROGRESS_EMPTY,Zatím žádné dokončené kolo. Odehraj libovolnou hru a výsledek se tu objeví.,No finished run yet. Play any drill and its result will show up here.
+PROGRESS_DEFAULT_VARIANT,výchozí nastavení,default settings
+PROGRESS_RUNS,Odehraných kol,Runs played
+PROGRESS_LAST,Poslední kolo,Last run
+PROGRESS_BEST,Nejlepší,Best
+PROGRESS_RECENT_MEAN,Průměr posledních 10,Average of last 10
+PROGRESS_CHANGE,Změna oproti předchozím 10,Change versus previous 10
+PROGRESS_LEVEL,Úroveň posledního kola,Level of last run
+PROGRESS_LAST_RPE,Namáhavost posledního kola,Exertion of last run
+PROGRESS_CHART,Posledních 20 kol (vpravo nejnovější),Last 20 runs (newest on the right)
+PROGRESS_RPE_ENABLED,Ptát se na namáhavost po každém kole,Ask for exertion after every run
+PROGRESS_EXPORT,Exportovat CSV,Export CSV
+PROGRESS_EXPORTED,Uloženo: %s,Saved: %s
+PROGRESS_EXPORT_FAILED,Export se nezdařil,Export failed
+PROGRESS_CLEAR,Smazat historii,Delete history
+PROGRESS_CLEAR_CONFIRM,Opravdu smazat všechna uložená kola? Tohle nejde vrátit.,Really delete every stored run? This cannot be undone.
+VARIANT_GRID,%s×%s,%s×%s
+VARIANT_TRIALS,%s položek,%s items
+VARIANT_N_BACK,%s-back,%s-back
+VARIANT_BPM,%s BPM,%s BPM
+VARIANT_DURATION,%s s,%s s
+VARIANT_RADIUS,poloměr %s %%,radius %s %%
+VARIANT_SET_SIZE,%s znaků,%s symbols
+VARIANT_WPM,%s slov/min,%s wpm
+VARIANT_SPEED,rychlost %s,speed %s
+VARIANT_RED_BLACK,červeno-černá,red-black
+VARIANT_REVERSE,pozpátku,reverse
+VARIANT_SHUFFLE,přeskupování,reshuffle
+VARIANT_TEST_MODE,test 5 tabulek,5-table test
+VARIANT_BACKWARD,pozpátku,backward
+VARIANT_ADAPTIVE,adaptivní,adaptive
+VARIANT_NUMBERS,čísla,numbers
+VARIANT_LETTERS,písmena,letters

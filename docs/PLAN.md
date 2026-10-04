@@ -137,9 +137,18 @@ Všechny drilly kromě Schulte stojí na společné třídě `core/trial_drill.g
 - **Expanding Optical Tunnel**: subjektivní bez měřitelného výstupu; vynecháno.
 - **Flash Memory / Grid Pattern Shift** je totéž co paměťová matice; **Visual Search / Cancellation** pokrývá vizuální hledání a hledání reflektorem.
 
-## 5d. Metriky a pásma
+## 5d. Metriky, pásma a pokrok (fáze 2, hotovo)
 
-Každý výsledek nese standardizované metriky (`DrillResult.metrics`), nad nimiž `core/benchmarks.gd` určuje orientační úroveň začátečník / pokročilý / zkušený (tabulka v `docs/BENCHMARKS.md`). Stejné metriky budou základem fáze 2: ukládání historie, klouzavé průměry a trend na výsledkové obrazovce.
+Každý výsledek nese standardizované metriky (`DrillResult.metrics`), nad nimiž `core/benchmarks.gd` určuje orientační úroveň začátečník / pokročilý / zkušený (tabulka v `docs/BENCHMARKS.md`).
+
+Historie a pokrok:
+- `MetricCatalog` (`core/metric_catalog.gd`): hlavní metrika a směr („méně je lépe“) pro každou hru, klíč varianty z konfigurace (kosmetické volby jako odpočet, zobrazení času nebo chyb se nepočítají, vypnuté přepínače také ne), SD a index únavy (průměr poslední třetiny pokusů / první třetiny) z časů jednotlivých pokusů v `details`.
+- `StatsHistory` (`core/stats_history.gd`): čistá logika nad záznamy; `summary()` porovná kolo s průměrem posledních 10 kol stejné varianty a s osobním rekordem, `overview()` dává čísla pro obrazovku pokroku (poslední, nejlepší, průměr posledních 10, změna oproti předchozím 10, posledních 20 hodnot pro graf).
+- `StatsStore` (autoload): `user://results.jsonl` (jeden JSON řádek na kolo: čas, hra, varianta, konfigurace, hlavní hodnota, chyby, SD, únava, úroveň, RPE, metriky, surová data) a `user://settings.cfg` (zda se ptát na RPE).
+- Výsledková obrazovka: řádky „Oproti průměru posledních kol“, „Osobní rekord“, „Kolísání reakcí (SD)“, „Index únavy“ a volitelný řádek RPE 1–10 (uloží se hned po kliknutí).
+- Obrazovka Pokrok (`ui/progress/`): seznam variant podle poslední hry (popisky z `MetricCatalog.OPTION_LABELS` / `VALUE_LABELS`, klíče `VARIANT_*`), detail s čísly a sparkline posledních 20 kol (lepší je vždy nahoře, nejlepší kolo zeleně), přepínač RPE, export CSV (`user://neuro-drills-results.csv`, na webu stažení v prohlížeči) a smazání historie s potvrzením.
+
+Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index únavy u her, které neukládají časy pokusů (N-back, MOT).
 
 ## 6. Nástroje, testování, kvalita
 
