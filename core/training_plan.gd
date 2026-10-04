@@ -20,6 +20,16 @@ const DURATION_S: Dictionary = {
 	"peripheral_reading": 40,
 }
 const DEFAULT_DURATION_S := 60
+## Harder settings offered once the default variant was played at the elite
+## level twice in a row (adaptive difficulty).
+const HARDER: Dictionary = {
+	"schulte_table": {"grid_size": 7}, "n_back": {"n": 3}, "visual_search": {"set_size": 64},
+	"memory_matrix": {"size": 6}, "spotlight_search": {"radius": 8}, "okn_stripes": {"speed": 3},
+	"pursuit_tracking": {"speed": 3}, "rsvp_reading": {"wpm": 500}, "trail_making": {"order": 2},
+	"digit_span": {"backward": true}, "go_no_go": {"adaptive": true},
+}
+const ELITE_STREAK_FOR_HARDER := 2
+const DAY_S := 86400
 ## Results screen, breathing, tapping Next: counted once per step.
 const STEP_OVERHEAD_S := 12
 const MIN_MINUTES := 1
@@ -43,20 +53,48 @@ static func make_step(drill_id: StringName, config: Dictionary = {}) -> Dictiona
 	return {"drill_id": String(drill_id), "config": config.duplicate()}
 
 
-## Categories ordered weakest first: unplayed categories lead, then the
-## ascending mean of the last level reached in each drill of the category.
-static func weak_categories(definitions: Array[DrillDefinition], history: StatsHistory, order: Array[String]) -> Array[String]:
+## Drills whose default variant reached the elite band in its last
+## ELITE_STREAK_FOR_HARDER runs, mapped to the harder config to use instead.
+static func harder_configs(history: StatsHistory) -> Dictionary:
+	var out: Dictionary = {}
+	for drill_id: String in HARDER:
+		var runs := history.for_variant(drill_id)
+		if runs.size() < ELITE_STREAK_FOR_HARDER:
+			continue
+		var all_elite := true
+		for i in range(runs.size() - ELITE_STREAK_FOR_HARDER, runs.size()):
+			var level: int = runs[i]["level"]
+			if level != Benchmarks.Level.ELITE:
+				all_elite = false
+		if all_elite:
+			var config: Dictionary = HARDER[drill_id]
+			out[drill_id] = config.duplicate()
+	return out
+
+
+## Categories ordered by training need: categories not trained in the last
+## week lead (so a week covers all of them), then the ascending mean of the
+## last level reached in each drill, and categories already trained today go
+## last. [param now_unix] is the current time; 0 means "ignore recency".
+static func weak_categories(definitions: Array[DrillDefinition], history: StatsHistory, order: Array[String], now_unix: int = 0) -> Array[String]:
+	var category_of: Dictionary = {}
+	for definition in definitions:
+		category_of[String(definition.id)] = definition.category_key
 	var last_level: Dictionary = {}
+	var last_played: Dictionary = {}
 	for variant in history.variants():
 		var overview := history.overview(variant)
 		if overview.is_empty():
 			continue
-		var level: int = overview["last_level"]
-		if level < 0:
-			continue
 		var drill_id := String(MetricCatalog.drill_id_of(variant))
-		var known: int = last_level.get(drill_id, -1)
-		last_level[drill_id] = maxi(known, level)
+		var level: int = overview["last_level"]
+		if level >= 0:
+			var known: int = last_level.get(drill_id, -1)
+			last_level[drill_id] = maxi(known, level)
+		var category: String = category_of.get(drill_id, "")
+		var at: int = overview["last_at"]
+		var known_at: int = last_played.get(category, 0)
+		last_played[category] = maxi(known_at, at)
 	var score: Dictionary = {}
 	for category in order:
 		var total := 0.0
@@ -68,7 +106,19 @@ static func weak_categories(definitions: Array[DrillDefinition], history: StatsH
 				var level: int = last_level[String(definition.id)]
 				total += level
 				count += 1
-		score[category] = -1.0 if count == 0 else total / count
+		var level_score := -1.0 if count == 0 else total / count
+		var played_at: int = last_played.get(category, 0)
+		var rank := 1.0
+		if now_unix > 0 and played_at > 0:
+			if now_unix - played_at < DAY_S:
+				rank = 2.0
+			elif now_unix - played_at < 7 * DAY_S:
+				rank = 1.0
+			else:
+				rank = 0.0
+		elif now_unix > 0:
+			rank = 0.0
+		score[category] = rank * 10.0 + level_score
 	var out := order.duplicate()
 	out.sort_custom(func(a: String, b: String) -> bool:
 		var sa: float = score[a]
@@ -83,7 +133,7 @@ static func weak_categories(definitions: Array[DrillDefinition], history: StatsH
 ## round robin, takes one unused drill from each (random, seeded by [param rng])
 ## and stops when the next step would overrun the budget. Always returns at
 ## least one step when any drill exists.
-static func suggest(definitions: Array[DrillDefinition], minutes: int, category_order: Array[String], rng: RandomNumberGenerator) -> Array[Dictionary]:
+static func suggest(definitions: Array[DrillDefinition], minutes: int, category_order: Array[String], rng: RandomNumberGenerator, harder: Dictionary = {}) -> Array[Dictionary]:
 	var budget := clampi(minutes, MIN_MINUTES, MAX_MINUTES) * 60
 	var pools: Dictionary = {}
 	for category in category_order:
@@ -117,7 +167,11 @@ static func suggest(definitions: Array[DrillDefinition], minutes: int, category_
 		skipped_in_row = 0
 		var pick := fitting[rng.randi_range(0, fitting.size() - 1)]
 		pool.erase(pick)
-		steps.append(make_step(pick.id))
+		var config: Dictionary = harder.get(String(pick.id), {})
+		var step := make_step(pick.id, config)
+		if not config.is_empty():
+			step["harder"] = true
+		steps.append(step)
 		used += estimate_seconds(pick.id)
 		if pool.is_empty():
 			pools.erase(category)

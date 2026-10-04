@@ -401,3 +401,6 @@ TRAINING_SUMMARY_TIME,Celkový čas,Total time
 TRAINING_SUMMARY_STEPS,Odehrané hry,Drills played
 TRAINING_AGAIN,Stejnou sestavu znovu,Same plan again
 TRAINING_STEP_TIME,%d s,%d s
+MENU_TRAINING_MINUTES,Trénink · %d min,Training · %d min
+TRAINING_HARDER,↑ těžší,↑ harder
+PROGRESS_WEEK,Posledních 7 dní: %d kol · %d min · %d her · %d zlepšení,Last 7 days: %d runs · %d min · %d drills · %d improved

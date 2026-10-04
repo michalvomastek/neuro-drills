@@ -227,9 +227,9 @@ Pracnost: M = do hodiny, S = půl dne, L = den a víc. Pořadí v rámci oblasti
 ### B. Tréninkový režim (priorita 2)
 Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu navrhne aplikace podle kategorií a slabších pásem, maintainer ji může upravit a uložit jako vlastní pojmenovanou sestavu (může jich být víc).
 - [x] B6 (L) Sestava: hry za sebou bez návratu do menu, přechodová obrazovka mezi hrami, souhrn na konci (celkový čas, výsledky, úrovně, RPE).
-- [ ] B7 (S) Doporučená denní sestava podle kategorií a podle nejslabšího pásma; během týdne se vystřídají všechny kategorie.
-- [ ] B8 (S) Adaptivní obtížnost: po dvou kolech v pásmu „zkušený“ nabídnout těžší variantu (větší mřížka, vyšší N-back, kratší expozice).
-- [ ] B9 (S) Týdenní souhrn na obrazovce Pokrok: kola, minuty, zlepšení za týden.
+- [x] B7 (S) Doporučená denní sestava podle kategorií a podle nejslabšího pásma; během týdne se vystřídají všechny kategorie.
+- [x] B8 (S) Adaptivní obtížnost: po dvou kolech v pásmu „zkušený“ nabídnout těžší variantu (větší mřížka, vyšší N-back, kratší expozice).
+- [x] B9 (S) Týdenní souhrn na obrazovce Pokrok: kola, minuty, zlepšení za týden.
 
 ### C. Data a pokrok
 - [ ] C10 (M) Import historie ze souboru (spojení mobilu a počítače).

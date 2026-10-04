@@ -49,6 +49,11 @@ layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "PROGRESS_SUBTITLE"
 
+[node name="WeekLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
 [node name="BackButton" type="Button" parent="Margin/Panel/VBox/Header"]
 unique_name_in_owner = true
 layout_mode = 2

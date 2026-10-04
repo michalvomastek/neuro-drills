@@ -20,6 +20,7 @@ extends Control
 @onready var _body: BoxContainer = %Body
 @onready var _list_scroll: ScrollContainer = %ListScroll
 @onready var _footer: BoxContainer = %Footer
+@onready var _week_label: Label = %WeekLabel
 
 var _buttons: Array[Button] = []
 
@@ -34,6 +35,10 @@ func _ready() -> void:
 	_clear_dialog.ok_button_text = tr("PROGRESS_CLEAR")
 	_clear_dialog.cancel_button_text = tr("COMMON_BACK")
 	Layout.watch(self, _relayout)
+	var week := StatsStore.history.week_summary(int(Time.get_unix_time_from_system()))
+	var week_runs: int = week["runs"]
+	_week_label.visible = week_runs > 0
+	_week_label.text = tr("PROGRESS_WEEK") % [week_runs, week["minutes"], week["drills"], week["improved"]]
 	var variants := StatsStore.history.variants()
 	_empty_label.visible = variants.is_empty()
 	_detail.visible = not variants.is_empty()

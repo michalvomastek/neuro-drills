@@ -160,6 +160,35 @@ func overview(variant: String, window: int = TREND_WINDOW) -> Dictionary:
 	}
 
 
+## Activity of the last seven days: {"runs", "minutes" (sum of run times),
+## "drills" (distinct drill ids), "improved" (variants whose latest run in
+## the window beat the mean of the runs before it)}.
+func week_summary(now_unix: int) -> Dictionary:
+	var since := now_unix - 7 * 86400
+	var runs := 0
+	var total_ms := 0
+	var drills: Dictionary = {}
+	var latest_in_window: Dictionary = {}
+	for record in records:
+		var at: int = record["at"]
+		if at < since:
+			continue
+		runs += 1
+		var ms: int = record.get("total_ms", 0)
+		total_ms += ms
+		drills[record["drill_id"]] = true
+		if _has_value(record):
+			latest_in_window[record["variant"]] = record
+	var improved := 0
+	for variant: String in latest_in_window:
+		var record: Dictionary = latest_in_window[variant]
+		var s := summary(record)
+		var delta: float = s["delta"]
+		if not is_nan(delta) and s["improved"]:
+			improved += 1
+	return {"runs": runs, "minutes": roundi(total_ms / 60000.0), "drills": drills.size(), "improved": improved}
+
+
 func serialize() -> String:
 	var lines := PackedStringArray()
 	for record in records:

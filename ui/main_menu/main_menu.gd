@@ -25,6 +25,7 @@ func _ready() -> void:
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_training_button.pressed.connect(SceneRouter.show_training)
+	_training_button.text = tr("MENU_TRAINING_MINUTES") % StatsStore.training_minutes
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
 	Layout.watch(self, _relayout)

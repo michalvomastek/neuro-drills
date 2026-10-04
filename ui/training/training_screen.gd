@@ -82,8 +82,10 @@ func _update_minutes_label() -> void:
 ## New proposal from the weakest categories for the chosen length.
 func _suggest() -> void:
 	var definitions := DrillRegistry.get_all()
-	var order := TrainingPlan.weak_categories(definitions, StatsStore.history, DrillRegistry.CATEGORY_ORDER)
-	_steps = TrainingPlan.suggest(definitions, _minutes(), order, _rng)
+	var now := int(Time.get_unix_time_from_system())
+	var order := TrainingPlan.weak_categories(definitions, StatsStore.history, DrillRegistry.CATEGORY_ORDER, now)
+	var harder := TrainingPlan.harder_configs(StatsStore.history)
+	_steps = TrainingPlan.suggest(definitions, _minutes(), order, _rng, harder)
 	_plan_name = ""
 	_rebuild_steps()
 
@@ -113,6 +115,12 @@ func _make_step_row(index: int) -> Control:
 	var definition := DrillRegistry.find(StringName(drill_id))
 	var title := Label.new()
 	title.text = tr(definition.title_key) if definition != null else drill_id
+	var config: Dictionary = step["config"]
+	var label := MetricCatalog.variant_label(MetricCatalog.variant_key(StringName(drill_id), config))
+	if not label.is_empty():
+		title.text += " · " + label
+	if step.get("harder", false):
+		title.text += " " + tr("TRAINING_HARDER")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	row.add_child(title)
