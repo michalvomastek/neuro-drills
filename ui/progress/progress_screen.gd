@@ -120,6 +120,8 @@ func _select(variant: String) -> void:
 	if last_rpe > 0:
 		_add_row("PROGRESS_LAST_RPE", "%d / 10" % last_rpe)
 	_sparkline.lower_is_better = lower
+	_sparkline.unit = unit
+	_sparkline.dates = overview["dates"]
 	_sparkline.values = overview["values"]
 
 

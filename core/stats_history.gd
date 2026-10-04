@@ -124,17 +124,20 @@ func summary(record: Dictionary, window: int = TREND_WINDOW) -> Dictionary:
 
 ## Aggregate for the progress screen: {"runs", "last", "best", "recent_mean",
 ## "change" (recent window mean minus the window before it, NAN when there is
-## no earlier window), "last_level", "values" (last SPARKLINE_RUNS values)}.
+## no earlier window), "last_level", "values" and "dates" (last SPARKLINE_RUNS runs)}.
 func overview(variant: String, window: int = TREND_WINDOW) -> Dictionary:
 	var runs := for_variant(variant)
 	if runs.is_empty():
 		return {}
 	var lower: bool = runs[0]["lower"]
 	var values := PackedFloat64Array()
+	var ats := PackedInt64Array()
 	var best: float = runs[0]["value"]
 	for run in runs:
 		var v: float = run["value"]
+		var at: int = run["at"]
 		values.append(v)
+		ats.append(at)
 		best = minf(best, v) if lower else maxf(best, v)
 	var recent_start := maxi(0, values.size() - window)
 	var recent_mean := _mean(values, recent_start, values.size())
@@ -153,6 +156,7 @@ func overview(variant: String, window: int = TREND_WINDOW) -> Dictionary:
 		"lower": lower,
 		"unit": last["unit"],
 		"values": values.slice(maxi(0, values.size() - SPARKLINE_RUNS)),
+		"dates": ats.slice(maxi(0, ats.size() - SPARKLINE_RUNS)),
 	}
 
 

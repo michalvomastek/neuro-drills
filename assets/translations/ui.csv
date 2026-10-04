@@ -335,7 +335,7 @@ PROGRESS_RECENT_MEAN,Průměr posledních 10,Average of last 10
 PROGRESS_CHANGE,Změna oproti předchozím 10,Change versus previous 10
 PROGRESS_LEVEL,Úroveň posledního kola,Level of last run
 PROGRESS_LAST_RPE,Namáhavost posledního kola,Exertion of last run
-PROGRESS_CHART,Posledních 20 kol (vpravo nejnovější),Last 20 runs (newest on the right)
+PROGRESS_CHART,Posledních 20 kol · čas zleva doprava · lepší výsledek výš,Last 20 runs · time left to right · better results higher
 PROGRESS_RPE_ENABLED,Ptát se na namáhavost po každém kole,Ask for exertion after every run
 PROGRESS_EXPORT,Exportovat CSV,Export CSV
 PROGRESS_EXPORTED,Uloženo: %s,Saved: %s

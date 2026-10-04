@@ -109,6 +109,9 @@ func test_overview_and_variants_order() -> void:
 	assert_eq(o["last"], 276.0)
 	assert_eq(o["best"], 276.0)
 	assert_eq((o["values"] as PackedFloat64Array).size(), StatsHistory.SPARKLINE_RUNS)
+	var dates: PackedInt64Array = o["dates"]
+	assert_eq(dates.size(), StatsHistory.SPARKLINE_RUNS)
+	assert_eq(dates[dates.size() - 1], 124)
 	var change: float = o["change"]
 	assert_true(absf(change + 10.0) < 0.001, "last ten vs the ten before")
 	assert_true(history.overview("unknown").is_empty())
