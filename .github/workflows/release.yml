@@ -1,0 +1,85 @@
+name: Build and deploy
+
+# Builds the Web and Windows exports. The web build goes to GitHub Pages on
+# every push to main; a tag "v*" additionally attaches both builds to a GitHub
+# release. Pages must be enabled once in the repository settings with
+# "Source: GitHub Actions".
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Export Web and Windows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/neuro-drills/godot
+            ~/.cache/neuro-drills/templates
+          key: godot-4.7-stable-export
+
+      - name: Export Web
+        run: tools/godot.sh export Web
+
+      - name: Export Windows
+        run: tools/godot.sh export "Windows Desktop"
+
+      - name: Package
+        run: |
+          cd build
+          zip -qr neuro-drills-web.zip web
+          zip -qr neuro-drills-windows.zip windows
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: |
+            build/neuro-drills-web.zip
+            build/neuro-drills-windows.zip
+
+  deploy:
+    name: Deploy web build to GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  release:
+    name: Attach builds to the release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: builds
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            neuro-drills-web.zip
+            neuro-drills-windows.zip

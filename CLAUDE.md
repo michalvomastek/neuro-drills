@@ -28,6 +28,8 @@ Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it f
 | `docs` | dump the engine class reference XML to `~/.cache/neuro-drills/apidocs/`; grep it instead of guessing an API |
 | `smoke` | start every registered drill with the countdown on under Xvfb and verify it is running (`tools/smoke_drills.gd`); catches start-up regressions the logic tests cannot |
 | `screenshot <scene> <out.png> [WxH] [frames]` | render a scene with software OpenGL (Xvfb when there is no display) and save a PNG; `SCREENSHOT_LOCALE=cs` picks the language |
+| `templates` | download and install the 4.7 export templates (about 1 GB, GitHub release) |
+| `export <preset> [out]` | release export with a preset from `export_presets.cfg` (`Web`, `Windows Desktop`); output defaults to the preset's `export_path` under `build/` (ignored by git) |
 | `exec [args]` | pass arbitrary arguments to the binary |
 
 Run `import`, `check`, `test` and `smoke` before every commit. `check` is also the fastest way to find out whether an API or a member exists in 4.7.
@@ -58,6 +60,7 @@ Run `import`, `check`, `test` and `smoke` before every commit. `check` is also t
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.
+- 2026-10-04: export presets (`export_presets.cfg`: Web single-threaded so GitHub Pages works without COOP/COEP headers, Windows x86_64 with embedded pck) and `.github/workflows/release.yml` (push to main: Pages deploy; tag `v*`: release with both zips). Pages must be switched to "GitHub Actions" once in the repository settings.
 - 2026-10-04: phase 2 (progress) delivered: `StatsStore` + `StatsHistory` + `MetricCatalog`, trend / record / variability / fatigue rows and optional RPE on the results screen, progress screen with sparkline (`MENU_PROGRESS`). Variant key = drill id + non-cosmetic config keys, switched-off flags left out.
 - 2026-10-04: menu tabs per category; Trail Making order modes; Gorbov hover fix; `DrillResult.metrics` + `Benchmarks` level bands on the results screen (`docs/BENCHMARKS.md`, `docs/DRILLS.md`).
 - 2026-10-03: batches 4g (3D: time to contact, Brock string, 3D rotation via `Scene3D`; optic flow with device tilt) and 4h (dual task, divided attention, peripheral pattern, peripheral reading) delivered: 43 drills, 9 categories. The smoke test covers them all.

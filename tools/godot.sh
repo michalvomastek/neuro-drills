@@ -15,6 +15,10 @@
 #   screenshot <scene> <out.png> [WxH] [frames]
 #                           render a scene with software OpenGL (Xvfb when there is no display)
 #                           and save the main viewport as PNG
+#   templates               install the export templates of $GODOT_VERSION (GitHub download)
+#   export <preset> [out]   release export with a preset from export_presets.cfg ("Web",
+#                           "Windows Desktop"); installs the templates first; out defaults
+#                           to the preset's export_path
 #   exec [args...]          run the Godot binary with arbitrary arguments
 #
 # Binary resolution order:
@@ -153,6 +157,72 @@ cmd_smoke() {
   return "${PIPESTATUS[0]}"
 }
 
+# Godot looks for templates in <data dir>/export_templates/<version>/ ("4.7.stable").
+templates_dir() {
+  local data_dir
+  case "$(uname -s)" in
+    Darwin) data_dir="$HOME/Library/Application Support/Godot" ;;
+    MINGW*|MSYS*|CYGWIN*) data_dir="${APPDATA:-$HOME/AppData/Roaming}/Godot" ;;
+    *) data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/godot" ;;
+  esac
+  printf '%s/export_templates/%s\n' "$data_dir" "${GODOT_VERSION/-/.}"
+}
+
+cmd_templates() {
+  local dir
+  dir="$(templates_dir)"
+  if [[ -f "$dir/web_nothreads_release.zip" && -f "$dir/windows_release_x86_64.exe" ]]; then
+    log "export templates present in $dir"
+    return
+  fi
+  local url="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+  local tpz="$CACHE_DIR/templates/Godot_v${GODOT_VERSION}_export_templates.tpz"
+  mkdir -p "$(dirname "$tpz")" "$dir"
+  if [[ ! -f "$tpz" ]]; then
+    log "Downloading export templates $GODOT_VERSION (about 1 GB) ..."
+    curl -fsSL --retry 3 -o "$tpz.part" "$url" && mv "$tpz.part" "$tpz"
+  fi
+  log "Installing export templates to $dir ..."
+  # The archive holds a single "templates/" folder; unpack it into the version folder.
+  python3 - "$tpz" "$dir" <<'PYEOF'
+import sys, zipfile, os
+tpz, dest = sys.argv[1], sys.argv[2]
+with zipfile.ZipFile(tpz) as z:
+    for info in z.infolist():
+        name = info.filename
+        if not name.startswith("templates/") or name.endswith("/"):
+            continue
+        target = os.path.join(dest, name[len("templates/"):])
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with z.open(info) as src, open(target, "wb") as out:
+            out.write(src.read())
+PYEOF
+  [[ -f "$dir/version.txt" ]] || die "templates did not unpack as expected"
+}
+
+cmd_export() {
+  [[ $# -ge 1 ]] || die "usage: tools/godot.sh export <preset> [out]"
+  local preset="$1"
+  local out="${2:-}"
+  cmd_templates
+  if [[ -z "$out" ]]; then
+    out="$(awk -v p="$preset" -F'"' '/^name=/ { current = $2 } /^export_path=/ && current == p { print $2; exit }' "$REPO_ROOT/export_presets.cfg")"
+    [[ -n "$out" ]] || die "preset '$preset' not found in export_presets.cfg"
+  fi
+  case "$out" in /*) ;; *) out="$REPO_ROOT/$out" ;; esac
+  mkdir -p "$(dirname "$out")"
+  rm -f "$out"
+  log "Importing project ..."
+  run_import >/dev/null 2>&1 || die "import failed; run 'tools/godot.sh import' to see why"
+  log "Exporting '$preset' to $out ..."
+  # The exporter prints one progress line per packed file; keep only errors and warnings.
+  "$GODOT" --headless --path "$REPO_ROOT" --export-release "$preset" "$out" 2>&1 \
+    | sed 's/\x1b\[[0-9;]*m//g' | grep -vE '^Godot Engine v|^\s*$|^\[ *[0-9]+% \]|^\[ DONE \]' || true
+  [[ "${PIPESTATUS[0]}" -eq 0 ]] || die "export of '$preset' failed"
+  [[ -s "$out" ]] || die "export produced no file at $out"
+  log "done: $out"
+}
+
 cmd_exec() {
   "$GODOT" "$@"
 }
@@ -174,6 +244,8 @@ main() {
     docs) cmd_docs "$@" ;;
     screenshot) cmd_screenshot "$@" ;;
     smoke) cmd_smoke "$@" ;;
+    templates) cmd_templates "$@" ;;
+    export) cmd_export "$@" ;;
     exec) cmd_exec "$@" ;;
     *) die "unknown command: $command" ;;
   esac

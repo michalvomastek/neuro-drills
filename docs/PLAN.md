@@ -150,6 +150,14 @@ Historie a pokrok:
 
 Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index únavy u her, které neukládají časy pokusů (N-back, MOT).
 
+## 5e. Export a nasazení (hotovo)
+
+- `export_presets.cfg`: preset **Web** (GL Compatibility, bez vláken, takže běží i na GitHub Pages, které neumí nastavit COOP/COEP hlavičky; bez PWA) a **Windows Desktop** (x86_64, pck vložený do exe, bez podpisu a bez změny ikony, aby export nepotřeboval rcedit). Složky `tools/`, `tests/`, `docs/` se do balíčku nedávají.
+- `tools/godot.sh export <preset>` stáhne šablony a vyexportuje do `build/` (v `.gitignore`).
+- `.github/workflows/release.yml`: při pushi do `main` sestaví web i Windows, web nasadí na GitHub Pages (`https://<uživatel>.github.io/neuro-drills/`), oba buildy nechá jako artefakt; při tagu `v*` je navíc připojí k GitHub release. Ručně jde spustit přes „Run workflow“.
+- Jednorázově nutné: v nastavení repozitáře Settings → Pages → Source: GitHub Actions.
+- Webový build byl ověřen v headless Chromiu (menu, Pokrok, bez chyb v konzoli). Na webu se historie ukládá do IndexedDB prohlížeče (Godot `user://`), export CSV se stáhne jako soubor.
+
 ## 6. Nástroje, testování, kvalita
 
 Co už je připravené v této větvi:
