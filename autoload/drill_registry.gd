@@ -4,7 +4,7 @@ extends Node
 
 const CATEGORY_ORDER: Array[String] = [
 	"CATEGORY_ATTENTION", "CATEGORY_REACTION", "CATEGORY_EXECUTIVE", "CATEGORY_MEMORY",
-	"CATEGORY_VISION", "CATEGORY_TIMING", "CATEGORY_MOTOR", "CATEGORY_OTHER",
+	"CATEGORY_VISION", "CATEGORY_TIMING", "CATEGORY_MOTOR", "CATEGORY_3D", "CATEGORY_DUAL", "CATEGORY_OTHER",
 ]
 
 var _definitions: Array[DrillDefinition] = []
@@ -86,6 +86,22 @@ func _init() -> void:
 		"res://drills/contrast_sensitivity/contrast_sensitivity.tscn", "CATEGORY_VISION"))
 	register(DrillDefinition.new(&"okn_stripes", "OKN_TITLE", "OKN_DESCRIPTION",
 		"res://drills/okn_stripes/okn_stripes.tscn", "CATEGORY_VISION"))
+	register(DrillDefinition.new(&"time_to_contact", "TTC_TITLE", "TTC_DESCRIPTION",
+		"res://drills/time_to_contact/time_to_contact.tscn", "CATEGORY_3D"))
+	register(DrillDefinition.new(&"brock_string", "BROCK_TITLE", "BROCK_DESCRIPTION",
+		"res://drills/brock_string/brock_string.tscn", "CATEGORY_3D"))
+	register(DrillDefinition.new(&"rotation_3d", "ROT3D_TITLE", "ROT3D_DESCRIPTION",
+		"res://drills/rotation_3d/rotation_3d.tscn", "CATEGORY_3D"))
+	register(DrillDefinition.new(&"optic_flow", "LOOMING_TITLE", "LOOMING_DESCRIPTION",
+		"res://drills/optic_flow/optic_flow.tscn", "CATEGORY_3D"))
+	register(DrillDefinition.new(&"dual_task", "DUAL_TITLE", "DUAL_DESCRIPTION",
+		"res://drills/dual_task/dual_task.tscn", "CATEGORY_DUAL"))
+	register(DrillDefinition.new(&"divided_attention", "DIVIDED_TITLE", "DIVIDED_DESCRIPTION",
+		"res://drills/divided_attention/divided_attention.tscn", "CATEGORY_DUAL"))
+	register(DrillDefinition.new(&"peripheral_pattern", "PATTERN_TITLE", "PATTERN_DESCRIPTION",
+		"res://drills/peripheral_pattern/peripheral_pattern.tscn", "CATEGORY_VISION"))
+	register(DrillDefinition.new(&"peripheral_reading", "READING_TITLE", "READING_DESCRIPTION",
+		"res://drills/peripheral_reading/peripheral_reading.tscn", "CATEGORY_VISION"))
 
 
 func register(definition: DrillDefinition) -> void:

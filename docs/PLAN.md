@@ -1,6 +1,6 @@
 # Neuro drills – plán projektu
 
-Stav: **fáze 1, 3 a 4 hotové** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6). Aplikace má 35 drillů v sedmi kategoriích; další je fáze 2 (historie výsledků a přehled pokroku) a fáze 5 (export).
+Stav: **fáze 1, 3 a 4 hotové** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6). Aplikace má 43 drillů v devíti kategoriích včetně 3D, senzorových a dvojitých úloh; další je fáze 2 (historie výsledků a přehled pokroku) a fáze 5 (export).
 
 ## 1. Vize
 
@@ -62,6 +62,8 @@ res://
 | 4d | Z dokumentu „Neuro training drills“: anti-sakáda, Simonův efekt, Posnerova nápověda, periferní záblesky, vizuální maskování, časové pořadí, adaptivní Go/No-Go | hotovo |
 | 4e | Pohybové: sledování více objektů, odhad průsečíku, kompenzační sledování, plynulé sledování, dynamická ostrost, rytmické ťukání, pohyblivý Trail Making | hotovo |
 | 4f | Mentální rotace, hledání reflektorem (shader mlhy), kontrastní citlivost (Gaborův shader), optokinetické pruhy (shader) | hotovo |
+| 4g | 3D a senzorové: čas do kontaktu (3D), Brockův provázek (3D), mentální rotace 3D, optický tok s úhybem (náklon zařízení, nebo šipky a myš) | hotovo |
+| 4h | Kombinované: dvojitá úloha (rytmus + počítání), rozdělená pozornost (sledování + Go/No-Go), periferní vzor, periferní čtení | hotovo |
 | 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
 
 Fáze 1 a 2 lze podle odpovědi na otázku 3 částečně prohodit.
@@ -129,10 +131,10 @@ Všechny drilly kromě Schulte stojí na společné třídě `core/trial_drill.g
 
 ## 5c. Co z dokumentu „Neuro training drills“ není implementováno a proč
 
-- **3D drilly** (Brock string, Time to Contact ve 3D, konvergence/divergence): vyžadují 3D scénu, kameru s hloubkou ostrosti a jinou architekturu; mentální rotace je udělaná ve 2D s pentominy.
-- **Senzorové drilly** (Optic flow / Looming s gyroskopem): potřebují mobilní export a senzory.
-- **Zvukové varianty** (dual N-back se zvukem, zvukový metronom): v projektu zatím nejsou zvuky (rozhodnutí z otázky 6); rytmické ťukání používá vizuální metronom.
-- **Expanding Optical Tunnel, Peripheral Reading, Peripheral „Where's Waldo“, ADAT, Dual-Task interference**: subjektivní nebo velmi složité na vyhodnocení; kandidáti na další fázi, až bude jasné, jak je měřit.
+- **3D drilly** jsou hotové ve zjednodušené podobě (`core/scene_3d.gd`: SubViewport s vlastním světem). Renderer GL Compatibility nemá hloubku ostrosti, proto Brockův provázek „rozmazání“ nahrazuje ztlumením písmen mimo zvýrazněný korálek. Skutečnou konvergenci očí plochá obrazovka vyvolat nedokáže; jde o trénink přeostřování pozornosti mezi hloubkami.
+- **Optický tok s úhybem** používá gravitační senzor (`Input.get_gravity()`) na mobilu; na desktopu šipky nebo myš. Na mobilu zatím neotestováno.
+- **Zvukové varianty** (dual N-back se zvukem, zvukový metronom): v projektu nejsou zvuky (rozhodnutí z otázky 6); rytmické drilly používají vizuální metronom.
+- **Expanding Optical Tunnel**: subjektivní bez měřitelného výstupu; vynecháno.
 - **Flash Memory / Grid Pattern Shift** je totéž co paměťová matice; **Visual Search / Cancellation** pokrývá vizuální hledání a hledání reflektorem.
 
 ## 6. Nástroje, testování, kvalita

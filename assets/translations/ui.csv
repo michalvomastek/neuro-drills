@@ -253,3 +253,39 @@ CATEGORY_VISION,Zrak a periferní vidění,Vision and peripheral sight
 CATEGORY_TIMING,Časování a anticipace,Timing and anticipation
 CATEGORY_MOTOR,Oko-ruka koordinace,Hand-eye coordination
 CATEGORY_OTHER,Ostatní,Other
+CATEGORY_3D,Prostor a vestibulární trénink,Space and vestibular training
+TTC_TITLE,Čas do kontaktu (3D),Time to contact (3D)
+TTC_DESCRIPTION,"Míč letí na tebe a v polovině dráhy zmizí. Klikni přesně tam a tehdy, kde a kdy by prorazil obrazovku.","A ball flies at you and vanishes halfway. Click exactly where and when it would break through the screen."
+TTC_POSITION_ERROR,Odchylka místa dopadu (z výšky obrazovky),Impact position error (of screen height)
+BROCK_TITLE,Brockův provázek (3D),Brock string (3D)
+BROCK_DESCRIPTION,"Na provázku jsou tři korálky v různé hloubce. Zvýrazněný korálek nese písmeno, přečti ho a vyber dole (nebo napiš). Ostatní písmena jsou rozmazaná.","Three beads sit on a string at different depths. The highlighted bead carries a letter; read it and pick it below (or type it). The other letters are faded."
+BROCK_LONG_JUMP_RT,Reakce při skoku blízko ↔ daleko,Reaction on near ↔ far jumps
+ROT3D_TITLE,Mentální rotace 3D,3D mental rotation
+ROT3D_DESCRIPTION,"Dvě kostkové figury se pomalu otáčejí. Je pravá jen otočená levá, nebo její zrcadlový obraz? Šipka vlevo = stejná, vpravo = zrcadlová.","Two cube figures turn slowly. Is the right one the left one rotated, or its mirror image? Left arrow = same, right arrow = mirrored."
+LOOMING_TITLE,Optický tok a úhyb,Optic flow and evasion
+LOOMING_DESCRIPTION,"Pruhy proudí ze středu jako při jízdě vpřed. Když se k tobě začne blížit překážka, uhni: nakloněním zařízení, šipkami nebo pohybem myši.","Streaks rush from the centre as if you were moving forward. When an obstacle swells towards you, steer away: tilt the device, use the arrow keys or move the mouse."
+LOOMING_HINT_TILT,Uhýbej nakloněním zařízení,Steer by tilting the device
+LOOMING_HINT_KEYS,Uhýbej šipkami nebo myší,Steer with the arrow keys or the mouse
+LOOMING_EVADED,Úspěšné úhyby,Successful evasions
+LOOMING_FIRST_MOVE,Čas do prvního pohybu,Time to first movement
+CATEGORY_DUAL,Rozdělená pozornost a dvojité úlohy,Divided attention and dual tasks
+DUAL_TITLE,Dvojitá úloha,Dual task
+DUAL_DESCRIPTION,"Ťukej do rytmu (levá plocha nebo mezerník). Po chvíli se vpravo objeví příklady, které řešíš klávesnicí, ale ťukání nesmí přestat. Měří se, jak moc počítání rozhodí rytmus.","Tap the rhythm (left pad or space). After a while arithmetic problems appear on the right, answered with the keypad, but the tapping must go on. Measures how much the arithmetic disturbs the rhythm."
+DUAL_HINT_TAP,Ťukej do rytmu kolečka,Tap with the pulsing disc
+DUAL_HINT_SOLVE,Ťukej dál a řeš příklady,Keep tapping and solve the problems
+DUAL_JITTER_BASE,Kolísání rytmu bez zátěže,Rhythm jitter without load
+DUAL_JITTER_LOAD,Kolísání rytmu při počítání,Rhythm jitter while solving
+DUAL_INTERFERENCE,Zhoršení rytmu,Rhythm degradation
+DUAL_WRONG_SHORT,chybně,wrong
+DIVIDED_TITLE,Rozdělená pozornost,Divided attention
+DIVIDED_DESCRIPTION,"Levá ruka: myší drž ujíždějící tečku u kříže. Pravá ruka: mezerník na zelené kolečko, na červené nic. Obě úlohy běží naráz.","Left hand: keep the drifting dot at the cross with the mouse. Right hand: space on a green disc, nothing on a red one. Both tasks run at once."
+PATTERN_TITLE,Periferní vzor,Peripheral pattern
+PATTERN_DESCRIPTION,"Dívej se jen na číslici uprostřed. Kolem ní bliknou vzory v osmi sektorech. Stiskni číslo sektoru, kde byly tři modré čárky. Na konci napiš, kolikrát se číslice změnila.","Keep your eyes on the centre digit. Patterns flash in eight sectors around it. Press the number of the sector with three blue bars. At the end, type how many times the digit changed."
+PATTERN_FOUND,Správně určené sektory,Sectors identified
+READING_TITLE,Periferní čtení,Peripheral reading
+READING_DESCRIPTION,"Uprostřed běží písmena, počítej, kolikrát se objeví cílové písmeno. Po stranách padají kolečka, počítej červená. Na konci zadáš oba počty.","Letters stream in the middle; count how often the target letter appears. Discs fall along the sides; count the red ones. Enter both counts at the end."
+READING_TARGET_HINT,Počítej písmeno %s a červená kolečka,Count the letter %s and the red discs
+READING_Q_LETTERS,Kolikrát se objevilo písmeno %s?,How many times did the letter %s appear?
+READING_Q_REDS,Kolik bylo červených koleček?,How many red discs were there?
+READING_LETTERS,Cílová písmena (tvůj odhad / skutečnost),Target letters (your count / actual)
+READING_REDS,Červená kolečka (tvůj odhad / skutečnost),Red discs (your count / actual)
