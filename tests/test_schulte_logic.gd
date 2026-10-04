@@ -78,7 +78,8 @@ func test_build_result_carries_times_and_config() -> void:
 	assert_eq(result.total_ms, 900)
 	assert_eq(result.error_count, 1)
 	assert_eq(result.config, {"grid_size": 3})
-	assert_eq(result.summary_rows.size(), 3)
+	assert_eq(result.summary_rows.size(), 5)
+	assert_eq(result.summary_rows[0][0], "RESULT_TIME")
 	assert_eq(result.details["found_at_ms"], [100, 200, 300, 400, 500, 600, 700, 800, 900] as Array[int])
 	assert_true(result.finished_at_unix > 0)
 

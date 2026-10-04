@@ -11,6 +11,16 @@ func _init() -> void:
 		"SCHULTE_DESCRIPTION",
 		"res://drills/schulte_table/schulte_table.tscn",
 	))
+	register(DrillDefinition.new(&"reaction_time", "REACTION_TITLE", "REACTION_DESCRIPTION",
+		"res://drills/reaction_time/reaction_time.tscn"))
+	register(DrillDefinition.new(&"choice_reaction", "CHOICE_TITLE", "CHOICE_DESCRIPTION",
+		"res://drills/choice_reaction/choice_reaction.tscn"))
+	register(DrillDefinition.new(&"go_no_go", "GONOGO_TITLE", "GONOGO_DESCRIPTION",
+		"res://drills/go_no_go/go_no_go.tscn"))
+	register(DrillDefinition.new(&"stroop", "STROOP_TITLE", "STROOP_DESCRIPTION",
+		"res://drills/stroop/stroop.tscn"))
+	register(DrillDefinition.new(&"flanker", "FLANKER_TITLE", "FLANKER_DESCRIPTION",
+		"res://drills/flanker/flanker.tscn"))
 
 
 func register(definition: DrillDefinition) -> void:

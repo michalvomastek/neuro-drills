@@ -91,6 +91,8 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 	var slowest := slowest_target()
 	var times := search_times_ms()
 	result.summary_rows = [
+		PackedStringArray(["RESULT_TIME", Format.seconds(result.total_ms)]),
+		PackedStringArray(["RESULT_ERRORS", str(error_count)]),
 		PackedStringArray(["RESULT_AVERAGE_PER_NUMBER", Format.seconds(int(average_ms_per_target()))]),
 		PackedStringArray(["RESULT_SLOWEST_NUMBER", "%d (%s)" % [slowest, Format.seconds(times[slowest - 1])]]),
 		PackedStringArray(["RESULT_FIRST_CLICK", Format.seconds(found_at_ms[0])]),

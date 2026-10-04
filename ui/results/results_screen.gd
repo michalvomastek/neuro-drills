@@ -21,8 +21,6 @@ func setup(result: DrillResult) -> void:
 	_result = result
 	var definition := DrillRegistry.find(result.drill_id)
 	_title_label.text = tr(definition.title_key) if definition != null else String(result.drill_id)
-	_add_row("RESULT_TIME", Format.seconds(result.total_ms))
-	_add_row("RESULT_ERRORS", str(result.error_count))
 	for row in result.summary_rows:
 		_add_row(row[0], row[1])
 	_again_button.grab_focus()

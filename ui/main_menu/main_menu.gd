@@ -1,7 +1,7 @@
 ## Lists the registered drills and offers a language toggle.
 extends Control
 
-@onready var _drill_list: VBoxContainer = %DrillList
+@onready var _drill_list: GridContainer = %DrillList
 @onready var _language_button: Button = %LanguageButton
 @onready var _quit_button: Button = %QuitButton
 
@@ -21,6 +21,7 @@ func _ready() -> void:
 
 func _add_drill_entry(definition: DrillDefinition) -> Button:
 	var entry := VBoxContainer.new()
+	entry.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry.add_theme_constant_override("separation", 4)
 	var button := Button.new()
 	button.text = tr(definition.title_key)
@@ -32,6 +33,8 @@ func _add_drill_entry(definition: DrillDefinition) -> Button:
 	description.text = tr(definition.description_key)
 	description.theme_type_variation = &"DimLabel"
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.custom_minimum_size = Vector2(0, 0)
+	description.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry.add_child(description)
 	_drill_list.add_child(entry)
 	return button

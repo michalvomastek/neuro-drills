@@ -7,10 +7,11 @@ extends RefCounted
 var drill_id: StringName
 ## The drill configuration that produced this result; lets the player repeat the run.
 var config: Dictionary = {}
+## Headline time of the run: total time for timed drills, median reaction for reaction drills.
 var total_ms: int = 0
 var error_count: int = 0
 var finished_at_unix: int = 0
-## Extra rows for the results screen: each entry is [translation_key, value_text].
+## Rows for the results screen, in order: each entry is [translation_key, value_text].
 var summary_rows: Array[PackedStringArray] = []
 ## Drill-specific raw numbers (split times and the like) for later analysis.
 var details: Dictionary = {}

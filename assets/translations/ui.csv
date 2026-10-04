@@ -27,3 +27,36 @@ RESULT_SLOWEST_NUMBER,Nejpomalejší číslo,Slowest number
 RESULT_FIRST_CLICK,Čas do prvního čísla,Time to first number
 RESULT_AGAIN,Znovu,Again
 RESULT_SETTINGS,Nastavení,Settings
+COMMON_START,Start,Start
+TRIAL_COUNT,Počet pokusů,Trials
+OPT_COUNTDOWN,Odpočet před startem,Countdown before start
+REACTION_TITLE,Reakční čas,Reaction time
+REACTION_DESCRIPTION,"Počkej, až plocha zezelená, a klikni nebo stiskni mezerník co nejrychleji. Klik před signálem se počítá jako předčasný.","Wait for the pad to turn green, then click or press space as fast as you can. A click before the signal counts as premature."
+REACTION_WAIT,Čekej…,Wait…
+REACTION_GO,TEĎ!,NOW!
+REACTION_EARLY,Předčasně!,Too early!
+REACTION_MS,%d ms,%d ms
+CHOICE_TITLE,Výběrová reakce,Choice reaction
+CHOICE_DESCRIPTION,"Objeví se šipka doleva nebo doprava. Stiskni odpovídající stranu: šipky na klávesnici, nebo klik na polovinu obrazovky.","An arrow points left or right. Press the matching side: arrow keys, or click that half of the screen."
+GONOGO_TITLE,Go/No-Go,Go/No-Go
+GONOGO_DESCRIPTION,"Zelený kruh: klikni nebo stiskni mezerník co nejrychleji. Červený kruh: nereaguj.","Green disc: click or press space as fast as you can. Red disc: do nothing."
+STROOP_TITLE,Stroopův test,Stroop test
+STROOP_DESCRIPTION,"Odpověz barvou písma, ne významem slova. Tlačítka dole nebo klávesy 1 až 4.","Answer with the ink colour, not the meaning of the word. Buttons below or keys 1 to 4."
+FLANKER_TITLE,Flanker,Flanker
+FLANKER_DESCRIPTION,"Reaguj jen na prostřední šipku, okolní ignoruj. Šipky na klávesnici, nebo klik na polovinu obrazovky.","Respond to the middle arrow only and ignore the others. Arrow keys, or click that half of the screen."
+COLOR_RED,ČERVENÁ,RED
+COLOR_GREEN,ZELENÁ,GREEN
+COLOR_BLUE,MODRÁ,BLUE
+COLOR_YELLOW,ŽLUTÁ,YELLOW
+RESULT_MEDIAN_RT,Medián reakce,Median reaction
+RESULT_MEAN_RT,Průměrná reakce,Mean reaction
+RESULT_BEST_RT,Nejrychlejší reakce,Fastest reaction
+RESULT_PREMATURE,Předčasné starty,Premature starts
+RESULT_ACCURACY,Úspěšnost,Accuracy
+RESULT_WRONG,Chybné odpovědi,Wrong answers
+RESULT_HITS_RT,Reakce na zelenou,Reaction to green
+RESULT_MISSES,Zmeškané zelené,Missed green
+RESULT_FALSE_ALARMS,Reakce na červenou,Reactions to red
+RESULT_RT_CONGRUENT,Reakce při shodě,Reaction when congruent
+RESULT_RT_INCONGRUENT,Reakce při neshodě,Reaction when incongruent
+RESULT_INTERFERENCE,Interference (rozdíl),Interference (difference)

@@ -11,19 +11,22 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_menu")
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 32
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel"]
-custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 theme_override_constants/separation = 16
 
@@ -46,10 +49,18 @@ layout_mode = 2
 layout_mode = 2
 text = "MENU_CHOOSE_DRILL"
 
-[node name="DrillList" type="VBoxContainer" parent="Center/Panel/VBox"]
+[node name="Scroll" type="ScrollContainer" parent="Center/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="DrillList" type="GridContainer" parent="Center/Panel/VBox/Scroll"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 12
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 2
 
 [node name="Footer" type="HBoxContainer" parent="Center/Panel/VBox"]
 layout_mode = 2

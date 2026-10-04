@@ -17,3 +17,13 @@ static func seconds_short(ms: int) -> String:
 	if TranslationServer.get_locale().begins_with("cs"):
 		text = text.replace(".", ",")
 	return text
+
+
+## Milliseconds as a whole number with unit, for reaction times.
+static func millis(ms: float) -> String:
+	return "%d ms" % roundi(ms)
+
+
+## Fraction 0..1 as a percentage.
+static func percent(fraction: float) -> String:
+	return "%d %%" % roundi(fraction * 100.0)

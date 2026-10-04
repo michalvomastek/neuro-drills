@@ -56,7 +56,9 @@ res://
 | 1 | Jádro (`Drill`, `DrillResult`, `DrillRegistry`, router) + minimální shell (menu, hra, výsledek) + **Schulte table v1** + lokalizace CZ/EN + testy logiky + CI | hotovo |
 | 2 | Shell aplikace: hlavní menu, nastavení, ukládání historie, přehled pokroku (graf) | použitelná aplikace |
 | 3 | Varianty Schulte: velikost 3×3 až 8×8, přesouvání čísel po kliknutí, skrývání nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy | plná Schulte sada |
-| 4 | Další drilly, vždy po jednom: Stroop, reakční čas, N-back, Go/No-Go, Trail Making, Corsi / Memory matrix, Simon, Flanker, vizuální hledání | rostoucí knihovna |
+| 4a | Reakční rodina na společném základu `TrialDrill`: reakční čas, výběrová reakce, Go/No-Go, Stroop, Flanker | hotovo |
+| 4b | Paměťová rodina: N-back, Corsi bloky, rozsah číslic, paměťová matice, Simon | další |
+| 4c | Pozornost a čtení: Trail Making, vizuální hledání, SART, přepínání úloh, RSVP čtení, číselná pyramida, blikající číslo, počítání | poté |
 | 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
 
 Fáze 1 a 2 lze podle odpovědi na otázku 3 částečně prohodit.
@@ -117,6 +119,10 @@ Známé varianty:
 - `SchulteLogic.new(config, rng)` vygeneruje permutaci 1..N²; se seedem je reprodukovatelná.
 - `register_click(cell_index, time_ms)` vrátí výsledek tahu (správně / chyba / dokončeno) a ukládá split times a chyby.
 - `get_result()` vrátí `DrillResult`.
+
+## 5b. Drilly z pokusů (`TrialDrill`)
+
+Reakční čas, výběrová reakce, Go/No-Go, Stroop a Flanker stojí na společné třídě `core/trial_drill.gd`: panel nastavení (počet pokusů, odpočet, případné další volby), herní rám s tlačítkem Zpět a průběhem „3 / 20“, odpočet, zrušitelné čekání `_wait()` a pomocné plochy (`_make_pad`, `_make_side_pads`, `_make_stimulus_label`). Každý drill má logiku v samostatné třídě (`*_logic.gd`, testovaná headless) a jen tenký skript scény. Reakční časy shrnuje `ReactionStats` (průměr, medián, nejlepší, směrodatná odchylka). Výsledková obrazovka zobrazuje jen řádky, které drill sám dodá v `summary_rows`.
 
 ## 6. Nástroje, testování, kvalita
 
