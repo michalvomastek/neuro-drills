@@ -21,6 +21,16 @@ func _init() -> void:
 		"res://drills/stroop/stroop.tscn"))
 	register(DrillDefinition.new(&"flanker", "FLANKER_TITLE", "FLANKER_DESCRIPTION",
 		"res://drills/flanker/flanker.tscn"))
+	register(DrillDefinition.new(&"n_back", "NBACK_TITLE", "NBACK_DESCRIPTION",
+		"res://drills/n_back/n_back.tscn"))
+	register(DrillDefinition.new(&"corsi_blocks", "CORSI_TITLE", "CORSI_DESCRIPTION",
+		"res://drills/corsi_blocks/corsi_blocks.tscn"))
+	register(DrillDefinition.new(&"digit_span", "DIGIT_TITLE", "DIGIT_DESCRIPTION",
+		"res://drills/digit_span/digit_span.tscn"))
+	register(DrillDefinition.new(&"memory_matrix", "MATRIX_TITLE", "MATRIX_DESCRIPTION",
+		"res://drills/memory_matrix/memory_matrix.tscn"))
+	register(DrillDefinition.new(&"simon", "SIMON_TITLE", "SIMON_DESCRIPTION",
+		"res://drills/simon/simon.tscn"))
 
 
 func register(definition: DrillDefinition) -> void:

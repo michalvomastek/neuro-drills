@@ -60,3 +60,29 @@ RESULT_FALSE_ALARMS,Reakce na červenou,Reactions to red
 RESULT_RT_CONGRUENT,Reakce při shodě,Reaction when congruent
 RESULT_RT_INCONGRUENT,Reakce při neshodě,Reaction when incongruent
 RESULT_INTERFERENCE,Interference (rozdíl),Interference (difference)
+NBACK_TITLE,N-back,N-back
+NBACK_DESCRIPTION,"Čtverec se rozsvěcí v mřížce 3×3. Klikni nebo stiskni mezerník, když je na stejném místě jako před N kroky.","A square lights up in a 3×3 grid. Click or press space when it is in the same place as N steps ago."
+NBACK_LEVEL,Úroveň N,N level
+RESULT_NBACK_LEVEL,Úroveň,Level
+RESULT_HITS,Zásahy / cíle,Hits / targets
+CORSI_TITLE,Corsi bloky,Corsi blocks
+CORSI_DESCRIPTION,"Bloky se postupně rozsvítí. Pak je klikni ve stejném pořadí. Řada se prodlužuje, dvě chyby za sebou končí.","Blocks light up one after another. Then click them in the same order. The sequence grows; two misses in a row end the run."
+DIGIT_TITLE,Rozsah číslic,Digit span
+DIGIT_DESCRIPTION,"Číslice se ukážou jedna po druhé. Pak je napiš zpaměti, popředu nebo pozpátku.","Digits appear one at a time. Then type them from memory, forward or backward."
+DIGIT_OPT_BACKWARD,Pozpátku,Backward
+DIGIT_PROMPT_FORWARD,Napiš číslice,Type the digits
+DIGIT_PROMPT_BACKWARD,Napiš číslice pozpátku,Type the digits backward
+DIGIT_FORWARD,popředu,forward
+DIGIT_BACKWARD,pozpátku,backward
+RESULT_DIRECTION,Směr,Direction
+MATRIX_TITLE,Paměťová matice,Memory matrix
+MATRIX_DESCRIPTION,"Několik políček se na chvíli rozsvítí. Pak je označ. Po správném kole přibude políčko, po chybě ubude.","A few cells light up briefly. Then mark them. A correct round adds a cell, a wrong one removes it."
+MATRIX_SIZE,Velikost mřížky,Grid size
+MATRIX_LEVEL,Políček:,Cells:
+RESULT_MAX_LEVEL,Nejvíc políček,Most cells
+SIMON_TITLE,Simon,Simon
+SIMON_DESCRIPTION,"Sleduj barevnou sekvenci a zopakuj ji. Každé kolo přibude jeden krok, první chyba končí.","Watch the colour sequence and repeat it. Each round adds one step; the first mistake ends the run."
+SPAN_LENGTH,Délka: %d,Length: %d
+RESULT_SPAN,Rozsah (span),Span
+RESULT_ROUNDS,Správná kola,Correct rounds
+RESULT_SEQUENCE_LENGTH,Nejdelší sekvence,Longest sequence

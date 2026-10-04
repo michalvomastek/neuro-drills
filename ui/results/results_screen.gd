@@ -33,7 +33,7 @@ func _add_row(label_key: String, value: String) -> void:
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_rows.add_child(label)
 	var value_label := Label.new()
-	value_label.text = value
+	value_label.text = tr(value)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_rows.add_child(value_label)
 

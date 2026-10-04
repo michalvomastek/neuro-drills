@@ -57,7 +57,7 @@ res://
 | 2 | Shell aplikace: hlavní menu, nastavení, ukládání historie, přehled pokroku (graf) | použitelná aplikace |
 | 3 | Varianty Schulte: velikost 3×3 až 8×8, přesouvání čísel po kliknutí, skrývání nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy | plná Schulte sada |
 | 4a | Reakční rodina na společném základu `TrialDrill`: reakční čas, výběrová reakce, Go/No-Go, Stroop, Flanker | hotovo |
-| 4b | Paměťová rodina: N-back, Corsi bloky, rozsah číslic, paměťová matice, Simon | další |
+| 4b | Paměťová rodina: N-back, Corsi bloky, rozsah číslic, paměťová matice, Simon (sdílený `SpanTracker` pro adaptivní délku) | hotovo |
 | 4c | Pozornost a čtení: Trail Making, vizuální hledání, SART, přepínání úloh, RSVP čtení, číselná pyramida, blikající číslo, počítání | poté |
 | 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
 

@@ -54,3 +54,4 @@ Run `import`, `check` and `test` before every commit. `check` is also the fastes
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.
+- 2026-10-03: batch 2 (memory family: N-back, Corsi, digit span, memory matrix, Simon) delivered. Span drills hide the trial-count row via `_uses_trial_count()` and share `SpanTracker`. Theme type `Board` holds cell/lit/selected colours.

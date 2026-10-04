@@ -20,6 +20,7 @@ var _rng := RandomNumberGenerator.new()
 var _setup_panel: CenterContainer
 var _title_label: Label
 var _description_label: Label
+var _trials_row: HBoxContainer
 var _trials_option: OptionButton
 var _countdown_check: CheckBox
 var _extras_box: VBoxContainer
@@ -48,6 +49,11 @@ func _trial_options() -> Array[int]:
 
 func _default_trials() -> int:
 	return 20
+
+
+## False for drills whose length adapts to the player (span tasks): hides the trial count row.
+func _uses_trial_count() -> bool:
+	return true
 
 
 ## Add drill-specific setup controls here.
@@ -86,6 +92,7 @@ func _on_setup(config: Dictionary, autostart: bool) -> void:
 	var requested: int = config.get("trials", _default_trials())
 	if _trial_options().has(requested):
 		trials = requested
+	_trials_row.visible = _uses_trial_count()
 	countdown = config.get("countdown", true)
 	_apply_extra_config(config)
 	_trials_option.select(_trials_option.get_item_index(trials))
@@ -158,6 +165,37 @@ func _set_progress(done: int) -> void:
 	_progress_label.text = "%d / %d" % [done, trials]
 
 
+func _set_progress_text(text: String) -> void:
+	_progress_label.text = text
+
+
+## A labelled OptionButton row for drill-specific setup choices; returns the OptionButton.
+func _add_option_row(parent: VBoxContainer, label_key: String, values: Array[int], selected: int) -> OptionButton:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = tr(label_key)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+	var option := OptionButton.new()
+	for value in values:
+		option.add_item(str(value), value)
+	option.select(option.get_item_index(selected))
+	row.add_child(option)
+	return option
+
+
+## A square board centred in [param parent]; children laid out by the caller.
+func _make_square_board(parent: Control) -> Control:
+	var aspect := AspectRatioContainer.new()
+	aspect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	parent.add_child(aspect)
+	var board := Control.new()
+	aspect.add_child(board)
+	return board
+
+
 func _complete(result: DrillResult) -> void:
 	_run_token += 1
 	_running = false
@@ -187,18 +225,19 @@ func _build_ui() -> void:
 	_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(_description_label)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
-	vbox.add_child(row)
+	_trials_row = HBoxContainer.new()
+	_trials_row.add_theme_constant_override("separation", 16)
+	_trials_row.visible = _uses_trial_count()
+	vbox.add_child(_trials_row)
 	var trials_label := Label.new()
 	trials_label.text = tr("TRIAL_COUNT")
 	trials_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(trials_label)
+	_trials_row.add_child(trials_label)
 	_trials_option = OptionButton.new()
 	for option in _trial_options():
 		_trials_option.add_item(str(option), option)
 	_trials_option.select(_trials_option.get_item_index(trials))
-	row.add_child(_trials_option)
+	_trials_row.add_child(_trials_option)
 
 	_countdown_check = CheckBox.new()
 	_countdown_check.text = tr("OPT_COUNTDOWN")
