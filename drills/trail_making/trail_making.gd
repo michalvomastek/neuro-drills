@@ -58,13 +58,14 @@ func _build_extras(parent: VBoxContainer) -> void:
 	grid.add_child(_show_errors_check)
 
 
-## A labelled OptionButton whose items are translated keys with ids 0..n-1.
+## The option checkboxes form one column on a phone.
 func _relayout_setup() -> void:
 	super()
 	if _option_grid != null:
 		_option_grid.columns = 1 if Layout.is_narrow(self) else 2
 
 
+## A labelled OptionButton whose items are translated keys with ids 0..n-1.
 func _add_labelled_option(parent: VBoxContainer, label_key: String, item_keys: Array[String]) -> OptionButton:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
