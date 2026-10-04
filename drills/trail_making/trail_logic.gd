@@ -1,7 +1,10 @@
-## Trail Making: connect scattered nodes in order. Part A: 1, 2, 3...
-## Part B: 1, A, 2, B, ... alternating numbers and letters.
+## Trail Making: connect scattered nodes in order. Part A: numbers only,
+## ascending or descending. Part B: numbers and letters alternating, where the
+## two series can run in the same or opposite directions.
 class_name TrailLogic
 extends RefCounted
+
+enum Order { NUMBERS_ASC, NUMBERS_DESC, NUMBERS_ASC_LETTERS_DESC, NUMBERS_DESC_LETTERS_ASC }
 
 const LETTERS := "ABCDEFGHIJKLM"
 const MIN_DISTANCE := 0.17
@@ -9,6 +12,8 @@ const PLACEMENT_ATTEMPTS := 400
 const MARGIN := 0.06
 
 var count: int
+var order: Order
+## True for the alternating number/letter variants.
 var part_b: bool
 var labels: Array[String] = []
 ## Node centres in board-relative coordinates.
@@ -19,15 +24,32 @@ var found_at_ms: Array[int] = []
 var finished: bool = false
 
 
-func _init(p_count: int, p_part_b: bool, rng: RandomNumberGenerator) -> void:
+func _init(p_count: int, p_order: Order, rng: RandomNumberGenerator) -> void:
 	count = p_count
-	part_b = p_part_b
-	for i in count:
-		if part_b and i % 2 == 1:
-			labels.append(LETTERS[i / 2])
-		else:
-			labels.append(str(i / 2 + 1 if part_b else i + 1))
+	order = p_order
+	part_b = order == Order.NUMBERS_ASC_LETTERS_DESC or order == Order.NUMBERS_DESC_LETTERS_ASC
+	labels = build_labels(count, order)
 	positions = _scatter(count, rng)
+
+
+## The sequence of labels for [param n] nodes in the given order.
+static func build_labels(n: int, p_order: Order) -> Array[String]:
+	var out: Array[String] = []
+	if p_order == Order.NUMBERS_ASC or p_order == Order.NUMBERS_DESC:
+		for i in n:
+			out.append(str(i + 1 if p_order == Order.NUMBERS_ASC else n - i))
+		return out
+	var number_count := (n + 1) / 2
+	var letter_count := n / 2
+	var numbers_ascending := p_order == Order.NUMBERS_ASC_LETTERS_DESC
+	for i in n:
+		if i % 2 == 0:
+			var k := i / 2
+			out.append(str(k + 1 if numbers_ascending else number_count - k))
+		else:
+			var k := i / 2
+			out.append(LETTERS[k] if not numbers_ascending else LETTERS[letter_count - 1 - k])
+	return out
 
 
 ## Rejection sampling with a shrinking distance so placement always terminates.
@@ -66,6 +88,17 @@ func register_click(index: int, elapsed_ms: int) -> bool:
 	return true
 
 
+static func order_key(p_order: Order) -> String:
+	match p_order:
+		Order.NUMBERS_DESC:
+			return "TRAIL_ORDER_NUM_DESC"
+		Order.NUMBERS_ASC_LETTERS_DESC:
+			return "TRAIL_ORDER_NUM_ASC_LET_DESC"
+		Order.NUMBERS_DESC_LETTERS_ASC:
+			return "TRAIL_ORDER_NUM_DESC_LET_ASC"
+	return "TRAIL_ORDER_NUM_ASC"
+
+
 func total_time_ms() -> int:
 	return found_at_ms[found_at_ms.size() - 1] if not found_at_ms.is_empty() else 0
 
@@ -78,10 +111,10 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 	result.error_count = error_count
 	result.finished_at_unix = int(Time.get_unix_time_from_system())
 	result.summary_rows = [
-		PackedStringArray(["RESULT_PART", "TRAIL_PART_B" if part_b else "TRAIL_PART_A"]),
+		PackedStringArray(["RESULT_PART", order_key(order)]),
 		PackedStringArray(["RESULT_TIME", Format.seconds(total_time_ms())]),
 		PackedStringArray(["RESULT_ERRORS", str(error_count)]),
 		PackedStringArray(["RESULT_AVERAGE_PER_NUMBER", Format.seconds(roundi(float(total_time_ms()) / count))]),
 	]
-	result.details = {"found_at_ms": found_at_ms.duplicate(), "part_b": part_b}
+	result.details = {"found_at_ms": found_at_ms.duplicate(), "order": order}
 	return result

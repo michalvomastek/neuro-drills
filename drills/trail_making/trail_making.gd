@@ -2,13 +2,21 @@
 extends TrialDrill
 
 const NODE_SIZE := 0.1
-const DRIFT_SPEED := 0.06
+const DRIFT_SPEEDS: Array[float] = [0.0, 0.06, 0.14]
+const SPEED_LEVELS: Array[int] = [0, 1, 2]
+const ORDER_KEYS: Array[String] = ["TRAIL_ORDER_NUM_ASC", "TRAIL_ORDER_NUM_DESC", "TRAIL_ORDER_NUM_ASC_LET_DESC", "TRAIL_ORDER_NUM_DESC_LET_ASC"]
 
-var _part_b: bool = false
-var _part_b_check: CheckBox
-## Kinetic variant: nodes drift slowly and bounce off the board edges.
-var _moving: bool = false
-var _moving_check: CheckBox
+var _order: TrailLogic.Order = TrailLogic.Order.NUMBERS_ASC
+var _order_option: OptionButton
+## Kinetic variant: 0 = still, 1 = slow drift, 2 = fast drift; nodes bounce off the edges.
+var _speed: int = 0
+var _speed_option: OptionButton
+var _show_next: bool = true
+var _show_next_check: CheckBox
+var _show_timer: bool = false
+var _show_timer_check: CheckBox
+var _show_errors: bool = true
+var _show_errors_check: CheckBox
 var _velocities: Array[Vector2] = []
 var _logic: TrailLogic
 var _board: Control
@@ -27,28 +35,69 @@ func _default_trials() -> int:
 
 
 func _build_extras(parent: VBoxContainer) -> void:
-	_part_b_check = CheckBox.new()
-	_part_b_check.text = tr("TRAIL_OPT_PART_B")
-	parent.add_child(_part_b_check)
-	_moving_check = CheckBox.new()
-	_moving_check.text = tr("TRAIL_OPT_MOVING")
-	parent.add_child(_moving_check)
+	_order_option = _add_labelled_option(parent, "TRAIL_ORDER", ORDER_KEYS)
+	var speed_keys: Array[String] = ["TRAIL_SPEED_STILL", "TRAIL_SPEED_SLOW", "TRAIL_SPEED_FAST"]
+	_speed_option = _add_labelled_option(parent, "TRAIL_SPEED", speed_keys)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 24)
+	parent.add_child(grid)
+	_show_next_check = CheckBox.new()
+	_show_next_check.text = tr("SCHULTE_OPT_SHOW_NEXT")
+	_show_next_check.button_pressed = _show_next
+	grid.add_child(_show_next_check)
+	_show_timer_check = CheckBox.new()
+	_show_timer_check.text = tr("SCHULTE_OPT_SHOW_TIMER")
+	grid.add_child(_show_timer_check)
+	_show_errors_check = CheckBox.new()
+	_show_errors_check.text = tr("TRAIL_OPT_SHOW_ERRORS")
+	_show_errors_check.button_pressed = _show_errors
+	grid.add_child(_show_errors_check)
+
+
+## A labelled OptionButton whose items are translated keys with ids 0..n-1.
+func _add_labelled_option(parent: VBoxContainer, label_key: String, item_keys: Array[String]) -> OptionButton:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = tr(label_key)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+	var option := OptionButton.new()
+	for i in item_keys.size():
+		option.add_item(tr(item_keys[i]), i)
+	row.add_child(option)
+	return option
 
 
 func _apply_extra_config(config: Dictionary) -> void:
-	_part_b = config.get("part_b", false)
-	_part_b_check.button_pressed = _part_b
-	_moving = config.get("moving", false)
-	_moving_check.button_pressed = _moving
+	var order_value: int = config.get("order", TrailLogic.Order.NUMBERS_ASC)
+	if config.get("part_b", false) and not config.has("order"):
+		order_value = TrailLogic.Order.NUMBERS_ASC_LETTERS_DESC
+	_order = clampi(order_value, 0, ORDER_KEYS.size() - 1) as TrailLogic.Order
+	var speed: int = config.get("speed", 1 if config.get("moving", false) else 0)
+	_speed = clampi(speed, 0, DRIFT_SPEEDS.size() - 1)
+	_show_next = config.get("show_next", true)
+	_show_timer = config.get("show_timer", false)
+	_show_errors = config.get("show_errors", true)
+	_order_option.select(_order_option.get_item_index(_order))
+	_speed_option.select(_speed_option.get_item_index(_speed))
+	_show_next_check.button_pressed = _show_next
+	_show_timer_check.button_pressed = _show_timer
+	_show_errors_check.button_pressed = _show_errors
 
 
 func _collect_extra_config() -> Dictionary:
-	return {"part_b": _part_b, "moving": _moving}
+	return {"order": _order, "speed": _speed, "show_next": _show_next, "show_timer": _show_timer, "show_errors": _show_errors}
 
 
 func _on_start_pressed() -> void:
-	_part_b = _part_b_check.button_pressed
-	_moving = _moving_check.button_pressed
+	_order = _order_option.get_selected_id() as TrailLogic.Order
+	_speed = _speed_option.get_selected_id()
+	_show_next = _show_next_check.button_pressed
+	_show_timer = _show_timer_check.button_pressed
+	_show_errors = _show_errors_check.button_pressed
 	super()
 
 
@@ -65,7 +114,7 @@ func _build_play_area(parent: Control) -> void:
 
 
 func _run_trials() -> void:
-	_logic = TrailLogic.new(trials, _part_b, _rng)
+	_logic = TrailLogic.new(trials, _order, _rng)
 	for node in _nodes:
 		node.queue_free()
 	_nodes.clear()
@@ -80,14 +129,31 @@ func _run_trials() -> void:
 	_velocities.clear()
 	for i in _logic.count:
 		var angle := _rng.randf_range(0.0, TAU)
-		_velocities.append(Vector2(cos(angle), sin(angle)) * DRIFT_SPEED)
+		_velocities.append(Vector2(cos(angle), sin(angle)) * DRIFT_SPEEDS[_speed])
 	_layout_nodes()
-	_set_progress_text(_logic.labels[0])
 	_started_at_ms = Time.get_ticks_msec()
+	_update_status()
+
+
+## Top-bar text: the symbol being searched for, the error count and the timer, as configured.
+func _update_status() -> void:
+	var parts: PackedStringArray = PackedStringArray()
+	if _show_next and not _logic.finished:
+		parts.append(tr("SCHULTE_NEXT_TARGET_TEXT") % _logic.labels[_logic.next_index])
+	if _show_errors:
+		parts.append(tr("SCHULTE_ERROR_COUNT") % _logic.error_count)
+	if _show_timer:
+		var elapsed := _logic.total_time_ms() if _logic.finished else Time.get_ticks_msec() - _started_at_ms
+		parts.append(Format.seconds_short(elapsed))
+	_set_progress_text("   ".join(parts))
 
 
 func _process(delta: float) -> void:
-	if not _running or not _moving or _logic == null or _logic.finished:
+	if not _running or _logic == null or _logic.finished:
+		return
+	if _show_timer:
+		_update_status()
+	if _speed == 0:
 		return
 	for i in _logic.positions.size():
 		var p := _logic.positions[i] + _velocities[i] * delta
@@ -139,12 +205,12 @@ func _on_node_pressed(index: int) -> void:
 	if correct:
 		_set_pad_color(_nodes[index], get_theme_color("lit", "Board"))
 		_update_lines()
+		_update_status()
 		if _logic.finished:
 			_complete(_logic.build_result(definition.id, get_config()))
-		else:
-			_set_progress_text(_logic.labels[_logic.next_index])
 	else:
 		_flash_pad(_nodes[index], get_theme_color("wrong", "Pad"), 0.4)
+		_update_status()
 
 
 func _set_pad_color(pad: Button, color: Color) -> StyleBoxFlat:

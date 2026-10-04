@@ -8,6 +8,7 @@ const FLASH_HOLD_SECONDS := 0.12
 const FLASH_FADE_SECONDS := 0.45
 const COUNTER_PULSE_SECONDS := 0.5
 const FLASH_STATES: Array[StringName] = [&"normal", &"hover", &"pressed"]
+const RED_FONT_STATES: Array[StringName] = [&"font_color", &"font_hover_color", &"font_pressed_color", &"font_hover_pressed_color", &"font_focus_color"]
 const COUNTDOWN_FROM := 3
 const DIM_FOUND_ALPHA := 0.3
 
@@ -222,10 +223,12 @@ func _refresh_cells() -> void:
 	for index in _cells.size():
 		var cell := _cells[index]
 		cell.text = _logic.label_for(index)
-		if _logic.is_red(index):
-			cell.add_theme_color_override("font_color", get_theme_color("red", "SchulteCell"))
-		else:
-			cell.remove_theme_color_override("font_color")
+		# Every drawn state needs the override, or hovering a red cell turns it white.
+		for state in RED_FONT_STATES:
+			if _logic.is_red(index):
+				cell.add_theme_color_override(state, get_theme_color("red", "SchulteCell"))
+			else:
+				cell.remove_theme_color_override(state)
 		cell.modulate.a = DIM_FOUND_ALPHA if _config.dim_found and _logic.is_found(index) else 1.0
 
 

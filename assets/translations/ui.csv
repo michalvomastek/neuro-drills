@@ -87,7 +87,7 @@ RESULT_SPAN,Rozsah (span),Span
 RESULT_ROUNDS,Správná kola,Correct rounds
 RESULT_SEQUENCE_LENGTH,Nejdelší sekvence,Longest sequence
 TRAIL_TITLE,Trail Making,Trail Making
-TRAIL_DESCRIPTION,"Spoj kolečka co nejrychleji v pořadí 1-2-3… V části B střídavě číslo a písmeno: 1-A-2-B…","Connect the circles as fast as you can in order 1-2-3… In part B alternate numbers and letters: 1-A-2-B…"
+TRAIL_DESCRIPTION,"Spoj kolečka co nejrychleji v zadaném pořadí: jen čísla, nebo střídavě číslo a písmeno, vzestupně i sestupně. Kolečka se mohou i pohybovat.","Connect the circles as fast as you can in the chosen order: numbers only, or numbers and letters alternating, ascending or descending. The circles can also move."
 TRAIL_OPT_PART_B,Část B (čísla a písmena střídavě),Part B (numbers and letters alternating)
 TRAIL_PART_A,Část A,Part A
 TRAIL_PART_B,Část B,Part B
@@ -289,3 +289,23 @@ READING_Q_LETTERS,Kolikrát se objevilo písmeno %s?,How many times did the lett
 READING_Q_REDS,Kolik bylo červených koleček?,How many red discs were there?
 READING_LETTERS,Cílová písmena (tvůj odhad / skutečnost),Target letters (your count / actual)
 READING_REDS,Červená kolečka (tvůj odhad / skutečnost),Red discs (your count / actual)
+TRAIL_ORDER,Pořadí,Order
+TRAIL_ORDER_NUM_ASC,Čísla vzestupně (1-2-3),Numbers ascending (1-2-3)
+TRAIL_ORDER_NUM_DESC,Čísla sestupně (3-2-1),Numbers descending (3-2-1)
+TRAIL_ORDER_NUM_ASC_LET_DESC,Čísla vzestupně + písmena sestupně (1-C-2-B-3-A),Numbers ascending + letters descending (1-C-2-B-3-A)
+TRAIL_ORDER_NUM_DESC_LET_ASC,Čísla sestupně + písmena vzestupně (3-A-2-B-1-C),Numbers descending + letters ascending (3-A-2-B-1-C)
+TRAIL_SPEED,Pohyb koleček,Circle movement
+TRAIL_SPEED_STILL,Stojí,Still
+TRAIL_SPEED_SLOW,Pomalý,Slow
+TRAIL_SPEED_FAST,Rychlý,Fast
+TRAIL_OPT_SHOW_ERRORS,Zobrazovat počet chyb,Show error count
+CATEGORY_ATTENTION_SHORT,Pozornost,Attention
+CATEGORY_REACTION_SHORT,Reakce,Reaction
+CATEGORY_EXECUTIVE_SHORT,Exekutiva,Executive
+CATEGORY_MEMORY_SHORT,Paměť,Memory
+CATEGORY_VISION_SHORT,Zrak,Vision
+CATEGORY_TIMING_SHORT,Časování,Timing
+CATEGORY_MOTOR_SHORT,Koordinace,Coordination
+CATEGORY_3D_SHORT,3D,3D
+CATEGORY_DUAL_SHORT,Dvojité úlohy,Dual tasks
+CATEGORY_OTHER_SHORT,Ostatní,Other

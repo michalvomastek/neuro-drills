@@ -8,13 +8,17 @@ func _rng(seed_value: int) -> RandomNumberGenerator:
 
 
 func test_trail_labels_and_order() -> void:
-	var a := TrailLogic.new(10, false, _rng(1))
+	var a := TrailLogic.new(10, TrailLogic.Order.NUMBERS_ASC, _rng(1))
 	assert_eq(a.labels, ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] as Array[String])
+	assert_eq(TrailLogic.build_labels(5, TrailLogic.Order.NUMBERS_DESC), ["5", "4", "3", "2", "1"] as Array[String])
+	assert_eq(TrailLogic.build_labels(6, TrailLogic.Order.NUMBERS_ASC_LETTERS_DESC), ["1", "C", "2", "B", "3", "A"] as Array[String])
+	assert_eq(TrailLogic.build_labels(7, TrailLogic.Order.NUMBERS_DESC_LETTERS_ASC), ["4", "A", "3", "B", "2", "C", "1"] as Array[String])
 	assert_eq(a.positions.size(), 10)
 	for p in a.positions:
 		assert_true(p.x >= 0.0 and p.x <= 1.0 and p.y >= 0.0 and p.y <= 1.0)
-	var b := TrailLogic.new(8, true, _rng(1))
-	assert_eq(b.labels, ["1", "A", "2", "B", "3", "C", "4", "D"] as Array[String])
+	var b := TrailLogic.new(8, TrailLogic.Order.NUMBERS_DESC_LETTERS_ASC, _rng(1))
+	assert_eq(b.labels, ["4", "A", "3", "B", "2", "C", "1", "D"] as Array[String])
+	assert_true(b.part_b)
 	assert_false(b.register_click(1, 100))
 	assert_eq(b.error_count, 1)
 	for i in 8:

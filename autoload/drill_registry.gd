@@ -7,6 +7,9 @@ const CATEGORY_ORDER: Array[String] = [
 	"CATEGORY_VISION", "CATEGORY_TIMING", "CATEGORY_MOTOR", "CATEGORY_3D", "CATEGORY_DUAL", "CATEGORY_OTHER",
 ]
 
+## Tab the menu showed last; kept so returning from a drill lands on the same category.
+var last_menu_tab: int = 0
+
 var _definitions: Array[DrillDefinition] = []
 
 
