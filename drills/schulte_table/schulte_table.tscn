@@ -1,0 +1,163 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://drills/schulte_table/schulte_table.gd" id="1_schulte"]
+[ext_resource type="Script" path="res://drills/schulte_table/fixation_dot.gd" id="2_dot"]
+
+[node name="SchulteTable" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_schulte")
+
+[node name="SetupPanel" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="SetupPanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="SetupPanel/Panel"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "SCHULTE_TITLE"
+
+[node name="InstructionLabel" type="Label" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+text = "SCHULTE_DESCRIPTION"
+autowrap_mode = 3
+
+[node name="GridSizeRow" type="HBoxContainer" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="GridSizeLabel" type="Label" parent="SetupPanel/Panel/VBox/GridSizeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SCHULTE_GRID_SIZE"
+
+[node name="GridSizeOption" type="OptionButton" parent="SetupPanel/Panel/VBox/GridSizeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CountdownCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_COUNTDOWN"
+
+[node name="FixationCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_FIXATION"
+
+[node name="ShowNextCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_SHOW_NEXT"
+
+[node name="DimFoundCheck" type="CheckBox" parent="SetupPanel/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SCHULTE_OPT_DIM_FOUND"
+
+[node name="Buttons" type="HBoxContainer" parent="SetupPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SetupBackButton" type="Button" parent="SetupPanel/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "COMMON_BACK"
+
+[node name="Spacer" type="Control" parent="SetupPanel/Panel/VBox/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StartButton" type="Button" parent="SetupPanel/Panel/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "SCHULTE_START"
+
+[node name="PlayPanel" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="PlayPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="PlayPanel/VBox"]
+layout_mode = 2
+
+[node name="PlayBackButton" type="Button" parent="PlayPanel/VBox/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "COMMON_BACK"
+
+[node name="Spacer" type="Control" parent="PlayPanel/VBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NextTargetLabel" type="Label" parent="PlayPanel/VBox/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "SCHULTE_NEXT_TARGET"
+
+[node name="Board" type="AspectRatioContainer" parent="PlayPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Grid" type="GridContainer" parent="PlayPanel/VBox/Board"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 5
+
+[node name="FixationDot" type="Control" parent="PlayPanel/VBox/Board"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("2_dot")
+
+[node name="CountdownPanel" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CountdownLabel" type="Label" parent="CountdownPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 140
+text = "3"

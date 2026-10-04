@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  godot:
+    name: Import, check, test, screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/neuro-drills/godot
+          key: godot-4.7-stable-linux-x86_64
+
+      - name: Godot version
+        run: tools/godot.sh version
+
+      - name: Import project
+        run: tools/godot.sh import
+
+      - name: Check scripts
+        run: tools/godot.sh check
+
+      - name: Run tests
+        run: tools/godot.sh test
+
+      - name: Install Xvfb and Mesa
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends xvfb libgl1-mesa-dri
+
+      - name: Render screenshots
+        run: |
+          mkdir -p screenshots
+          tools/godot.sh screenshot ui/app/app.tscn screenshots/main_menu.png
+          tools/godot.sh screenshot drills/schulte_table/schulte_table.tscn screenshots/schulte_setup.png
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots

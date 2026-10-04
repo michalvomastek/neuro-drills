@@ -1,0 +1,54 @@
+# Neuro drills – notes for Claude
+
+Godot 4.7 project: a collection of short cognitive-training mini games ("drills").
+Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it first and keep it current.
+
+## Working with the maintainer
+
+- The maintainer writes in Czech. Reply in Czech. Code, identifiers, comments, commit messages and this file are in English.
+- UI strings: Czech and English, keys in `assets/translations/ui.csv`, Czech is the default locale. Every user-facing text goes through a key (scene `text` properties auto-translate; code uses `tr()`).
+- Work on the assigned `claude/*` branch. Do not open pull requests unless asked.
+- Commit messages carry no attribution trailers: no `Co-Authored-By`, no `Claude-Session` lines (maintainer's request, 2026-10-03).
+- Headless Godot cannot judge UX. Render changed scenes with `tools/godot.sh screenshot` and look at the PNG before claiming a UI change works; the maintainer does the final check in the editor.
+
+## Engine and environments
+
+- Godot 4.7-stable (`4.7.stable.official`), GDScript only, renderer GL Compatibility (web and mobile friendly). Do not change the renderer, `config/features` or the warning levels in `project.godot` without asking.
+- Maintainer's machine (Windows): this repository, the Godot editor and a clone of godot-docs are sibling folders under `C:\Agile Fitness Coach App\`: `..\godot\` holds the editor binary, `..\godot-docs\` the manual sources.
+- Cloud sessions: no Godot binary, no display, and godotengine.org / docs.godotengine.org are blocked, while GitHub release downloads work. `tools/godot.sh` downloads 4.7-stable into `~/.cache/neuro-drills/` on first use. Xvfb and Mesa (llvmpipe) are available, so software rendering works.
+
+## tools/godot.sh
+
+| command | what it does |
+|---|---|
+| `version` | resolve the binary (`$GODOT_BIN`, then `../godot/`, then cached download) and print the version |
+| `import` | headless import; catches broken scenes and resources |
+| `check [files]` | import, then load every `.gd` file (or the given ones) inside a running project via `tools/check_scripts.gd`; parse, analyzer and compile errors fail it, including warnings configured as errors and unknown autoload names (`--check-only` cannot see autoloads, so it is not used) |
+| `test` | run `tests/run_tests.gd` headless: every `tests/test_*.gd` extending `TestCase`, methods prefixed `test_` |
+| `docs` | dump the engine class reference XML to `~/.cache/neuro-drills/apidocs/`; grep it instead of guessing an API |
+| `screenshot <scene> <out.png> [WxH] [frames]` | render a scene with software OpenGL (Xvfb when there is no display) and save a PNG; `SCREENSHOT_LOCALE=cs` picks the language |
+| `exec [args]` | pass arbitrary arguments to the binary |
+
+Run `import`, `check` and `test` before every commit. `check` is also the fastest way to find out whether an API or a member exists in 4.7.
+
+## Architecture in one paragraph
+
+`ui/app/app.tscn` is the main scene; it attaches itself to the `SceneRouter` autoload, which swaps one screen at a time (menu, drill, results). `DrillRegistry` (autoload) lists `DrillDefinition`s. A drill scene extends `Drill` (`core/drill.gd`), receives `setup(definition, config, autostart)` after entering the tree and reports through `finished(result)` / `aborted`. `DrillResult` carries time, errors, config and `summary_rows` for the shared `ResultsScreen`. Schulte: `schulte_logic.gd` (rules, testable), `schulte_config.gd` (settings <-> Dictionary), `schulte_table.gd` (scene). Theme: `ui/theme/dark_theme.tres` with type variations `PrimaryButton`, `DimLabel`, `SchulteCell`.
+
+## Code conventions (GDScript)
+
+- Static typing everywhere: variables, parameters, return types, typed arrays. `project.godot` turns untyped declarations, unsafe method/property access, unsafe call arguments and unused variables into errors, so `check` enforces this. Use `:=` for inference and `as` for downcasts. Dictionary values are `Variant`: assign them to a typed variable first (`var n: int = dict["n"]`), do not pass them straight into `int()`/`bool()` or typed parameters.
+- A script started with `-s` (test runner, tools) is compiled before autoloads exist, so it must reach them through `root.get_node("SceneRouter")` and `call()`; ordinary scene scripts use the autoload names directly.
+- The test runner cannot detect runtime errors inside a test (GDScript has no exceptions); read the `SCRIPT ERROR` lines in the test output, and keep `check` green first.
+- Naming: files and folders `snake_case`; classes `PascalCase`, with `class_name` only for shared types; constants `UPPER_SNAKE_CASE`; private members prefixed with `_`; signals in past tense (`drill_finished`).
+- One folder per drill under `drills/<drill_id>/`: scene, scene script, a pure-logic class (RefCounted, no Node access, takes a `RandomNumberGenerator` or a seed) and its tests. Scene code only translates input into logic calls and renders state.
+- UI: Control nodes and containers only; no hard-coded pixel positions or sizes; shared theme; mouse and touch both work.
+- Timing: `Time.get_ticks_msec()` / `Time.get_ticks_usec()` for measurements, never accumulated `delta`.
+- Autoloads only for app-wide state (see PLAN.md); anything a scene can own, it owns.
+- `.tscn` and `.tres` files are text: keep diffs minimal, never reformat, let the editor own UIDs. `.godot/` stays untracked.
+- Commit messages: `type(scope): summary`, e.g. `feat(schulte): add grid generation`; types feat, fix, refactor, test, docs, chore.
+
+## Decision log
+
+- 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
+- 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.

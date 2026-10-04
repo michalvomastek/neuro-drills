@@ -13,11 +13,36 @@ config_version=5
 config/name="Neuro drills"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+run/main_scene="res://ui/app/app.tscn"
+
+[autoload]
+
+DrillRegistry="*res://autoload/drill_registry.gd"
+SceneRouter="*res://autoload/scene_router.gd"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_method_access=2
+gdscript/warnings/unsafe_property_access=2
+gdscript/warnings/unsafe_call_argument=2
+gdscript/warnings/unused_variable=2
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom="res://ui/theme/dark_theme.tres"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://assets/translations/ui.cs.translation", "res://assets/translations/ui.en.translation")
+locale/fallback="cs"
 
 [physics]
 
@@ -25,6 +50,7 @@ window/stretch/aspect="expand"
 
 [rendering]
 
+environment/defaults/default_clear_color=Color(0.086, 0.094, 0.114, 1)
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

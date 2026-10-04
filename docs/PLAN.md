@@ -1,0 +1,161 @@
+# Neuro drills – plán projektu
+
+Stav: **fáze 1 hotová** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6).
+
+## 1. Vize
+
+Aplikace se sbírkou krátkých kognitivních tréninkových her („drillů“): pozornost, periferní vidění, pracovní paměť, rychlost reakce, inhibice. Každý drill
+
+- trvá 1–5 minut a dá se hrát opakovaně,
+- má jasně měřitelný výstup (čas, chyby, skóre),
+- ukládá historii výsledků, aby šel sledovat pokrok,
+- je samostatný modul, který se do aplikace jen zaregistruje.
+
+Technologie: Godot 4.7 (GDScript se statickým typováním), renderer GL Compatibility (běží i ve webovém exportu a na slabším hardwaru).
+
+## 2. Architektura
+
+### Struktura složek (návrh)
+
+```
+res://
+├── project.godot
+├── CLAUDE.md                 # konvence pro práci Claude v repozitáři
+├── docs/PLAN.md              # tento dokument
+├── tools/
+│   ├── godot.sh              # headless Godot: import, kontrola skriptů, testy, screenshoty, API dokumentace
+│   └── screenshot.gd         # renderer scény do PNG (pro kontrolu UI bez displeje)
+├── autoload/                 # singletony: SceneRouter, Settings, StatsStore, DrillRegistry
+├── core/                     # sdílené typy: Drill (základ), DrillResult, DrillDefinition
+├── drills/
+│   └── schulte_table/
+│       ├── schulte_table.tscn      # scéna (UI)
+│       ├── schulte_table.gd        # řídicí skript scény
+│       ├── schulte_logic.gd        # čistá logika bez uzlů: generování, vyhodnocení tahu, měření
+│       └── schulte_config.gd       # Resource s nastavením varianty
+├── ui/                       # hlavní menu, výsledky, nastavení, theme
+├── assets/                   # fonty, zvuky, ikony
+└── tests/                    # headless testy logiky
+```
+
+### Principy
+
+1. **Logika oddělená od scény.** Generování mřížky, vyhodnocení kliku a měření času žijí v třídách bez Node (`RefCounted`). Scéna je jen tenká vrstva, která překládá vstup na volání logiky a vykresluje stav. Logika se testuje headless bez UI.
+2. **Drill je plug-in.** Každý drill popisuje `DrillDefinition` (id, název, popis, kategorie, cesta ke scéně, výchozí konfigurace). `DrillRegistry` z definic staví menu. Přidání hry = nová složka + jedna registrace.
+3. **Společný životní cyklus.** Základní třída `Drill` dává signály `started` a `finished(result)` a metody `configure(config)`, `start()`, `abort()`. Všechny drilly produkují `DrillResult` (id drillu, použitá konfigurace, čas, chyby, skóre, časové razítko, detailní data). Zpracovává ho společná obrazovka výsledků a `StatsStore`.
+4. **Data lokálně.** Historie výsledků a nastavení v `user://` (JSON). Žádný server, žádné účty. Export do CSV jako volitelná funkce později.
+5. **Responzivní UI.** Pouze Control uzly a kontejnery, žádné pevné pixelové pozice. Stretch mode `canvas_items` + `expand` už je v projektu nastaven. Myš i dotyk.
+6. **Lokalizace od začátku.** Texty přes `tr()` a překladové CSV, i když bude zprvu jen jeden jazyk. Dodatečné zavádění je dražší.
+7. **Reprodukovatelná náhoda.** Logika dostává generátor náhodných čísel nebo seed, aby šly testy psát deterministicky a aby šla případně nabídnout „tabulka dne“.
+
+## 3. Roadmapa
+
+| Fáze | Obsah | Výstup |
+|---|---|---|
+| 0 | Plán, konvence, nástroje pro headless Godot, rozhodnutí z otázek | hotovo |
+| 1 | Jádro (`Drill`, `DrillResult`, `DrillRegistry`, router) + minimální shell (menu, hra, výsledek) + **Schulte table v1** + lokalizace CZ/EN + testy logiky + CI | hotovo |
+| 2 | Shell aplikace: hlavní menu, nastavení, ukládání historie, přehled pokroku (graf) | použitelná aplikace |
+| 3 | Varianty Schulte: velikost 3×3 až 8×8, přesouvání čísel po kliknutí, skrývání nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy | plná Schulte sada |
+| 4 | Další drilly, vždy po jednom: Stroop, reakční čas, N-back, Go/No-Go, Trail Making, Corsi / Memory matrix, Simon, Flanker, vizuální hledání | rostoucí knihovna |
+| 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
+
+Fáze 1 a 2 lze podle odpovědi na otázku 3 částečně prohodit.
+
+## 4. Schulte table – koncept
+
+Klasická Schulteho tabulka je mřížka 5×5 s náhodně rozmístěnými čísly 1–25. Úkol: najít čísla postupně od 1 do 25 co nejrychleji, přičemž pohled zůstává fixovaný na středu tabulky a čísla se hledají periferním viděním, tedy bez čtení řádek po řádku a bez těkání očima. Trénuje se:
+
+- šíře zorného pole a periferní vnímání (základ rychločtení),
+- rychlost vizuálního hledání,
+- koncentrace a odolnost proti rozptýlení.
+
+Jako **Schulteho test** (psychodiagnostika pozornosti) se řeší pět tabulek za sebou a z časů T1–T5 se počítá:
+
+- efektivita práce ER = (T1 + T2 + T3 + T4 + T5) / 5,
+- stupeň zapracování WU = T1 / ER (pod 1,0 znamená dobrý rozjezd),
+- psychická stabilita PS = T4 / ER (do 1,0 znamená dobrou výdrž).
+
+Známé varianty:
+
+- **velikost mřížky** od 3×3 (děti, začátek) po 8×8 i 10×10 (pokročilí), případně obdélníková,
+- **písmena** místo čísel (abeceda), nebo smíšené,
+- **Gorbov–Schulte červeno-černá**: 25 černých čísel (1–25) a 24 červených (1–24); hledá se střídavě černé vzestupně a červené sestupně (1 černá, 24 červená, 2 černá, 23 červená …), trénink přepínání pozornosti,
+- **dynamická**: po každém správném kliku se čísla znovu zamíchají,
+- **skrývání nebo ztlumení nalezených** čísel (ulehčuje) proti tabulce beze změny (klasika, těžší),
+- **obrácené pořadí** (od nejvyššího čísla),
+- barevné pozadí buněk nebo různé fonty jako vizuální šum.
+
+## 5. Schulte table – návrh první verze
+
+**Průběh**
+
+1. Obrazovka před startem: zvolená velikost (výchozí 5×5), krátká instrukce („Dívej se do středu a hledej čísla od 1 periferním viděním“), tlačítko Start (funguje i mezerník a Enter).
+2. Volitelný odpočet 3-2-1, poté se objeví mřížka a začne běžet čas.
+3. Hráč kliká nebo ťuká na čísla v pořadí. Správný klik: žádná nebo velmi nenápadná reakce (nastavitelné). Špatný klik: krátký záblesk okraje buňky, započítá se chyba, čas běží dál.
+4. Po posledním čísle se měření zastaví a zobrazí se výsledek.
+
+**Mřížka**
+
+- `GridContainer` N×N, čtvercové buňky stejné velikosti, celá mřížka čtvercová a vystředěná, přizpůsobí se velikosti okna.
+- Čísla velkým fontem s tabulkovými číslicemi, vysoký kontrast (klasicky černá na bílé). Žádné hover efekty, prozrazovaly by polohu kurzoru vůči buňkám.
+- Volitelný fixační bod uprostřed mřížky.
+- Časomíra během hry skrytá (rozptyluje), lze zapnout.
+
+**Měření (v milisekundách)**
+
+- celkový čas od zobrazení mřížky po poslední správný klik,
+- čas k jednotlivým číslům (split times), z toho nejpomalejší číslo a průměr na číslo,
+- počet chybných kliků a u kterých čísel k nim došlo,
+- čas do prvního správného kliku.
+
+**Výsledek**: čas, chyby, průměr na číslo, nejpomalejší číslo; později porovnání s osobním rekordem a graf. Tlačítka: Znovu (stejná konfigurace), Nastavení, Menu.
+
+**Nastavení v1**: velikost mřížky (3–7), odpočet (zapnuto/vypnuto), fixační bod (zapnuto/vypnuto), zobrazovat další hledané číslo (pomoc pro začátečníky). Ostatní varianty ve fázi 3.
+
+**Logika (testovatelná headless)**
+
+- `SchulteLogic.new(config, rng)` vygeneruje permutaci 1..N²; se seedem je reprodukovatelná.
+- `register_click(cell_index, time_ms)` vrátí výsledek tahu (správně / chyba / dokončeno) a ukládá split times a chyby.
+- `get_result()` vrátí `DrillResult`.
+
+## 6. Nástroje, testování, kvalita
+
+Co už je připravené v této větvi:
+
+- `CLAUDE.md`: konvence pro práci v repozitáři (jazyk, styl kódu, postup před commitem).
+- `tools/godot.sh`: headless Godot bez instalace. Příkazy `version`, `import`, `check`, `test`, `docs`, `screenshot`, `exec`. Kontrola `check` načítá skripty uvnitř běžícího projektu (`tools/check_scripts.gd`), takže zná i autoloady. Binárku hledá v proměnné `GODOT_BIN`, pak v `../godot/` (tvoje rozložení na Windows), jinak si stáhne Godot 4.7-stable pro Linux (cloud).
+- `tools/screenshot.gd`: vyrenderuje scénu softwarovým OpenGL (Mesa llvmpipe pod Xvfb) a uloží PNG. Ověřeno v cloudu: 1280×720 za zhruba 2 s. Díky tomu můžu UI vidět i tam, kde není displej.
+- `project.godot`: vybraná GDScript varování povýšena na chyby (netypované deklarace, nebezpečný přístup k metodám a vlastnostem, nebezpečné argumenty volání, nepoužité proměnné). `tools/godot.sh check` tak odhalí překlepy a typové chyby bez spuštění hry. Ověřeno: volání neexistující metody na typované proměnné kontrola bez tohoto nastavení nechytí, s ním ano.
+- Offline reference API: `tools/godot.sh docs` vygeneruje XML dokumentaci všech tříd přímo z binárky (v cloudu je docs.godotengine.org blokovaná).
+
+Hotovo ve fázi 1:
+
+- **Jednotkové testy logiky** v `tests/` (`tools/godot.sh test`): vlastní runner `tests/run_tests.gd`, základ `TestCase`, testy `test_schulte_logic.gd` (permutace, reprodukovatelnost seedu, průběh kliků, chyby, časy, výsledek, konfigurace).
+- **CI (GitHub Actions)** `.github/workflows/ci.yml`: při každém pushi stáhne Godot 4.7 (s cache), spustí `import`, `check`, `test` a nahraje screenshoty menu a nastavení Schulte jako artefakt.
+
+Další: export web buildu na GitHub Pages (fáze 5).
+- **Postup před každým commitem**: `import`, `check`, `test`, screenshot změněných scén.
+
+## 7. Otázky k rozhodnutí (rozhodnuto 3. 10. 2026)
+
+Všechny předpoklady níže platí, s jedinou změnou: u otázky 6 je téma **tmavé**.
+
+1. **Cílové platformy a orientace.** Jen Windows desktop, nebo i web v prohlížeči a mobil (Android/iOS)? Na šířku, na výšku, nebo obojí?
+   Předpoklad: Windows + web, UI na šířku s responzivním layoutem, aby šel mobil přidat později. Výchozí rozlišení 1280×720.
+2. **Jazyk UI.** Čeština, angličtina, nebo obojí přes lokalizaci od začátku?
+   Předpoklad: obojí, primárně čeština, texty přes překladové CSV.
+3. **Rozsah první verze.** Jít rovnou do Schulte table (aplikace se spustí přímo do hry) a shell dodělat potom, nebo nejdřív minimální menu → hra → výsledek?
+   Předpoklad: minimální shell hned, protože je levný a vynutí správnou strukturu; historie a nastavení až ve fázi 2.
+4. **Schulte v1 detaily.** (a) Start časomíry tlačítkem Start s odpočtem, nebo při prvním kliku? (b) Chybný klik jen započítat a jemně zablikat, nebo i časová penalizace či zvuk? (c) Nalezená čísla nechat beze změny (klasika), nebo jemně ztlumit? (d) Fixační bod ve středu?
+   Předpoklad: Start s volitelným odpočtem; chyby jen počítat a zablikat; nalezená čísla beze změny s volbou ztlumení; fixační bod volitelný, výchozí vypnutý.
+5. **Komu je to určeno a data.** Pro tebe osobně, nebo i pro klienty (název složky „Agile Fitness Coach App“ naznačuje koučink)? Potřebuješ více profilů uživatelů a export výsledků (CSV)?
+   Předpoklad: jeden uživatel, lokální historie v `user://`, export CSV později.
+6. **Vizuální styl a zvuk.** Světlé (klasická černá čísla na bílé) nebo tmavé téma? Preference fontu a barev? Zvuky (klik, chyba, konec)?
+   Předpoklad: minimalismus, Schulte světlá s vysokým kontrastem, přepínač tématu později; výchozí font Godotu; bez zvuků v první verzi.
+7. **Testy a CI.** Chceš GitHub Actions (headless kontrola a testy při každém pushi; u privátního repozitáře čerpá bezplatné minuty)? Testovací framework: vlastní minimální runner, GUT, nebo gdUnit4?
+   Předpoklad: CI ano, vlastní minimální runner.
+8. **Verze Godotu.** Máš přesně 4.7-stable (Nápověda → O aplikaci)? V cloudu používám `4.7.stable.official.5b4e0cb0f`. Zůstáváme u GDScriptu, ne C#?
+   Předpoklad: 4.7-stable, GDScript.
+9. **Pracovní postup.** Mám pro každou funkci otevírat pull request k review, nebo pushovat do své větve a ty si ji mergeuješ sám? Kód a commity anglicky, komunikace česky?
+   Předpoklad: větev `claude/…`, pull request jen na vyžádání; kód a commity anglicky, komunikace česky.
+

@@ -1,0 +1,25 @@
+keys,cs,en
+APP_TITLE,Neuro drills,Neuro drills
+APP_SUBTITLE,Krátká cvičení pro pozornost a vnímání,Short drills for attention and perception
+MENU_CHOOSE_DRILL,Vyber cvičení,Choose a drill
+MENU_LANGUAGE,English,Čeština
+MENU_QUIT,Konec,Quit
+COMMON_BACK,Zpět,Back
+COMMON_MENU,Menu,Menu
+SCHULTE_TITLE,Schulteho tabulka,Schulte table
+SCHULTE_DESCRIPTION,"Najdi čísla popořadě co nejrychleji. Dívej se do středu a hledej periferním viděním.","Find the numbers in order as fast as you can. Keep your eyes on the centre and use peripheral vision."
+SCHULTE_GRID_SIZE,Velikost mřížky,Grid size
+SCHULTE_OPT_COUNTDOWN,Odpočet před startem,Countdown before start
+SCHULTE_OPT_FIXATION,Fixační bod uprostřed,Fixation dot in the centre
+SCHULTE_OPT_SHOW_NEXT,Zobrazovat hledané číslo,Show the number to find
+SCHULTE_OPT_DIM_FOUND,Ztlumit nalezená čísla,Dim found numbers
+SCHULTE_START,Start,Start
+SCHULTE_NEXT_TARGET,Hledej: %d,Find: %d
+RESULT_TITLE,Výsledek,Result
+RESULT_TIME,Celkový čas,Total time
+RESULT_ERRORS,Chybné kliky,Wrong clicks
+RESULT_AVERAGE_PER_NUMBER,Průměr na číslo,Average per number
+RESULT_SLOWEST_NUMBER,Nejpomalejší číslo,Slowest number
+RESULT_FIRST_CLICK,Čas do prvního čísla,Time to first number
+RESULT_AGAIN,Znovu,Again
+RESULT_SETTINGS,Nastavení,Settings
