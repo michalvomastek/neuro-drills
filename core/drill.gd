@@ -24,3 +24,20 @@ func setup(p_definition: DrillDefinition, config: Dictionary, autostart: bool) -
 ## Override in the drill scene. Called after the node is ready.
 func _on_setup(_config: Dictionary, _autostart: bool) -> void:
 	pass
+
+
+## Makes [param button] fire once per touch tap while reacting on press.
+## Godot hands a button both the touch event and the mouse event emulated
+## from it; in ACTION_MODE_BUTTON_PRESS BaseButton acts on each, so one tap
+## counted as two presses (seen on mobile: a correct Schulte cell also logged
+## an error). Swallowing the touch leaves the emulated mouse event, which
+## behaves exactly like a mouse click. Without mouse emulation the touch is
+## the only event and is left alone.
+static func make_press_button(button: BaseButton) -> void:
+	button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	var emulated: bool = ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch", true)
+	if not emulated:
+		return
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventScreenTouch or event is InputEventScreenDrag:
+			button.accept_event())

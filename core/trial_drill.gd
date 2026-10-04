@@ -356,7 +356,7 @@ func _make_pad(text: String = "", font_size: int = 48) -> Button:
 	pad.text = text
 	pad.theme_type_variation = &"Pad"
 	pad.focus_mode = Control.FOCUS_NONE
-	pad.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	Drill.make_press_button(pad)
 	pad.add_theme_font_size_override("font_size", font_size)
 	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pad.size_flags_vertical = Control.SIZE_EXPAND_FILL

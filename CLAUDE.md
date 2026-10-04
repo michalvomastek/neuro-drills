@@ -41,6 +41,7 @@ Run `import`, `check`, `test` and `smoke` before every commit. `check` is also t
 ## Code conventions (GDScript)
 
 - Static typing everywhere: variables, parameters, return types, typed arrays. `project.godot` turns untyped declarations, unsafe method/property access, unsafe call arguments and unused variables into errors, so `check` enforces this. Use `:=` for inference and `as` for downcasts. Dictionary values are `Variant`: assign them to a typed variable first (`var n: int = dict["n"]`), do not pass them straight into `int()`/`bool()` or typed parameters.
+- A button in `ACTION_MODE_BUTTON_PRESS` receives both the touch event and the mouse event emulated from it and fires `pressed` twice per tap (release mode dedupes). Create press-triggered buttons with `Drill.make_press_button()`, which swallows the touch events; never set the action mode directly.
 - Mouse motion events do not reliably reach `_unhandled_input` under Controls; read the pointer per frame instead (`get_local_mouse_position()`), parking it with `Input.warp_mouse()` when relative movement is needed (compensatory tracking).
 - A script started with `-s` (test runner, tools) is compiled before autoloads exist, so it must reach them through `root.get_node("SceneRouter")` and `call()`; ordinary scene scripts use the autoload names directly.
 - A logic method that advances state must do so even on a wrong answer; a test looping `while not is_done()` hangs forever otherwise (seen once when a dependency failed to load). Run tests with a timeout when in doubt.

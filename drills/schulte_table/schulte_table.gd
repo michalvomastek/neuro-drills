@@ -210,7 +210,7 @@ func _build_grid() -> void:
 		cell.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		cell.focus_mode = Control.FOCUS_NONE
 		# Fire on press, not on release: faster and feels more direct.
-		cell.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+		Drill.make_press_button(cell)
 		cell.pressed.connect(_on_cell_pressed.bind(index))
 		_grid.add_child(cell)
 		_cells.append(cell)
