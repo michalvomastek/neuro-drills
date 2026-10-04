@@ -27,6 +27,7 @@ var _extras_box: VBoxContainer
 var _start_button: Button
 var _play_panel: MarginContainer
 var _setup_vbox: VBoxContainer
+var _setup_scroll: ScrollContainer
 var _play_area: Control
 var _progress_label: Label
 var _countdown_panel: CenterContainer
@@ -118,7 +119,7 @@ func get_config() -> Dictionary:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		if _setup_panel.visible:
+		if _setup_scroll.visible:
 			aborted.emit()
 		else:
 			_show_setup()
@@ -132,7 +133,7 @@ func _show_setup() -> void:
 	_run_token += 1
 	_running = false
 	_reset_play_state()
-	_setup_panel.visible = true
+	_setup_scroll.visible = true
 	_play_panel.visible = false
 	_countdown_panel.visible = false
 	_start_button.grab_focus()
@@ -148,7 +149,7 @@ func _begin_run() -> void:
 	_run_token += 1
 	_running = false
 	_reset_play_state()
-	_setup_panel.visible = false
+	_setup_scroll.visible = false
 	_play_panel.visible = false
 	if countdown:
 		_countdown_panel.visible = true
@@ -264,9 +265,18 @@ func _relayout_setup() -> void:
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
+	# A scroll container around the centred panel: on a short phone viewport
+	# (browser bars take a third of the height) the setup scrolls instead of
+	# being cut off.
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll)
 	_setup_panel = CenterContainer.new()
-	_setup_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(_setup_panel)
+	_setup_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_setup_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_setup_panel)
+	_setup_scroll = scroll
 	var panel := PanelContainer.new()
 	_setup_panel.add_child(panel)
 	var vbox := VBoxContainer.new()

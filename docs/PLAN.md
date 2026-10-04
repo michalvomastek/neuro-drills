@@ -152,7 +152,7 @@ Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index úna
 
 ## 5g. Rozložení pro telefon (hotovo)
 
-`core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav. CI vykresluje menu i v rozměru 412×915.
+`core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav. Výsledky a panely nastavení jsou v posuvném kontejneru, protože prohlížeč s lištami ukáže na iPhonu jen asi 430×660 CSS px. Webový export má zapnutou virtuální klávesnici (bez ní se na telefonu u textového pole neobjeví). CI vykresluje menu i v rozměru 412×915.
 
 ## 5f. Zpětná vazba v aplikaci (hotovo)
 

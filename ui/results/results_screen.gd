@@ -32,6 +32,8 @@ func _ready() -> void:
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 520.0), 0)
+	_vbox.add_theme_constant_override("separation", 10 if narrow else 16)
+	_rows.add_theme_constant_override("v_separation", 4 if narrow else 8)
 	_rpe_box.vertical = narrow
 	_rpe_buttons.columns = 5 if narrow else 10
 	_rows.add_theme_constant_override("h_separation", 12 if narrow else 32)
@@ -140,7 +142,7 @@ func _add_row(label_key: String, value: String) -> void:
 ## Opens a small dialog for a feedback note; the result and the environment
 ## are attached automatically so the note explains itself later.
 func _on_note_pressed() -> void:
-	var dialog := NoteDialog.new()
+	var dialog := NoteDialog.new(get_viewport_rect().size)
 	add_child(dialog)
 	dialog.open(_result_context())
 	dialog.saved.connect(func() -> void: _note_button.text = tr("RESULT_NOTE_SAVED"))
