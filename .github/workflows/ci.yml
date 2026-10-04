@@ -40,6 +40,7 @@ jobs:
           mkdir -p screenshots
           tools/godot.sh screenshot ui/app/app.tscn screenshots/main_menu.png
           tools/godot.sh screenshot drills/schulte_table/schulte_table.tscn screenshots/schulte_setup.png
+          tools/godot.sh screenshot ui/app/app.tscn screenshots/main_menu_portrait.png 412x915
 
       - uses: actions/upload-artifact@v4
         with:

@@ -150,6 +150,10 @@ Historie a pokrok:
 
 Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index únavy u her, které neukládají časy pokusů (N-back, MOT).
 
+## 5g. Rozložení pro telefon (hotovo)
+
+`core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav. CI vykresluje menu i v rozměru 412×915.
+
 ## 5f. Zpětná vazba v aplikaci (hotovo)
 
 Tlačítko „Poznámka“ na výsledkové obrazovce otevře dialog; k textu se automaticky přiloží hra, varianta, řádky výsledku, úroveň, konfigurace, platforma, rozlišení, jazyk a dostupnost dotyku. Obrazovka „Zpětná vazba“ (z menu) umožňuje psát obecné poznámky, číst a mazat uložené a jedním tlačítkem je zkopírovat do schránky nebo stáhnout jako text (`user://neuro-drills-feedback.txt`, na webu stažení). Poznámky zůstávají v zařízení (`user://feedback.jsonl`). „Poslat na GitHub“ (v dialogu i u každé uložené poznámky) otevře předvyplněný formulář nového issue v repozitáři se štítkem `feedback`; po potvrzení v prohlížeči je poznámka centrálně v Issues, odkud ji Claude čte. V aplikaci není žádný token ani server; na zařízení je potřeba přihlášení na GitHub.

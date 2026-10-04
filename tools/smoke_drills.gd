@@ -11,6 +11,7 @@ var _failures: PackedStringArray = PackedStringArray()
 
 
 func _initialize() -> void:
+	Layout.apply_scale(root)
 	_host = Control.new()
 	_host.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(_host)

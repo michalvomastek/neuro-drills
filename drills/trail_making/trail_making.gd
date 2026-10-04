@@ -11,6 +11,7 @@ var _order_option: OptionButton
 ## Kinetic variant: 0 = still, 1 = slow drift, 2 = fast drift; nodes bounce off the edges.
 var _speed: int = 0
 var _speed_option: OptionButton
+var _option_grid: GridContainer
 var _show_next: bool = true
 var _show_next_check: CheckBox
 var _show_timer: bool = false
@@ -42,6 +43,8 @@ func _build_extras(parent: VBoxContainer) -> void:
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 24)
 	parent.add_child(grid)
+	_option_grid = grid
+	_relayout_setup()
 	_show_next_check = CheckBox.new()
 	_show_next_check.text = tr("SCHULTE_OPT_SHOW_NEXT")
 	_show_next_check.button_pressed = _show_next
@@ -56,6 +59,12 @@ func _build_extras(parent: VBoxContainer) -> void:
 
 
 ## A labelled OptionButton whose items are translated keys with ids 0..n-1.
+func _relayout_setup() -> void:
+	super()
+	if _option_grid != null:
+		_option_grid.columns = 1 if Layout.is_narrow(self) else 2
+
+
 func _add_labelled_option(parent: VBoxContainer, label_key: String, item_keys: Array[String]) -> OptionButton:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
@@ -67,6 +76,11 @@ func _add_labelled_option(parent: VBoxContainer, label_key: String, item_keys: A
 	var option := OptionButton.new()
 	for i in item_keys.size():
 		option.add_item(tr(item_keys[i]), i)
+	# Long item names must not widen the panel past a phone screen.
+	option.clip_text = true
+	option.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	option.size_flags_stretch_ratio = 2.0
 	row.add_child(option)
 	return option
 

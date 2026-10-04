@@ -11,6 +11,7 @@ extends Control
 @onready var _export_button: Button = %ExportButton
 @onready var _status_label: Label = %StatusLabel
 @onready var _back_button: Button = %BackButton
+@onready var _margin: MarginContainer = %Margin
 
 
 func _ready() -> void:
@@ -19,6 +20,7 @@ func _ready() -> void:
 	_copy_button.pressed.connect(_on_copy_pressed)
 	_export_button.pressed.connect(_on_export_pressed)
 	_edit.placeholder_text = tr("FEEDBACK_PLACEHOLDER")
+	Layout.watch(self, _relayout)
 	_rebuild()
 	_edit.grab_focus()
 
@@ -27,6 +29,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		SceneRouter.show_menu()
 		get_viewport().set_input_as_handled()
+
+
+func _relayout() -> void:
+	Layout.set_margins(_margin, Layout.side_margin(self), 12 if Layout.is_narrow(self) else 32)
 
 
 func _rebuild() -> void:

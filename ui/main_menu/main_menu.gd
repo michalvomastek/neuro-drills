@@ -1,6 +1,7 @@
 ## Lists the registered drills in one tab per category and offers a language toggle.
 extends Control
 
+@onready var _margin: MarginContainer = %Center
 @onready var _tabs: TabContainer = %Tabs
 @onready var _language_button: Button = %LanguageButton
 @onready var _progress_button: Button = %ProgressButton
@@ -8,6 +9,7 @@ extends Control
 @onready var _quit_button: Button = %QuitButton
 
 var _first_buttons: Array[Button] = []
+var _grids: Array[GridContainer] = []
 
 
 func _ready() -> void:
@@ -23,7 +25,17 @@ func _ready() -> void:
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
+	Layout.watch(self, _relayout)
 	_focus_current_tab()
+
+
+## One column and slim margins on a phone, two columns and wide margins otherwise.
+func _relayout() -> void:
+	var narrow := Layout.is_narrow(self)
+	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
+	for grid in _grids:
+		grid.columns = 1 if narrow else 2
+	_tabs.clip_tabs = narrow
 
 
 ## One tab per category: a scrollable two-column grid with a short tab title
@@ -48,6 +60,7 @@ func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]
 	grid.add_theme_constant_override("h_separation", 16)
 	grid.add_theme_constant_override("v_separation", 16)
 	column.add_child(grid)
+	_grids.append(grid)
 	var first: Button = null
 	for definition in definitions:
 		var button := _add_drill_entry(grid, definition)

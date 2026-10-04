@@ -13,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_progress")
 
 [node name="Margin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,12 +68,14 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Body" type="HBoxContainer" parent="Margin/Panel/VBox"]
+[node name="Body" type="BoxContainer" parent="Margin/Panel/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 24
 
 [node name="ListScroll" type="ScrollContainer" parent="Margin/Panel/VBox/Body"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -116,6 +119,7 @@ columns = 2
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "PROGRESS_CHART"
+autowrap_mode = 3
 
 [node name="Sparkline" type="Control" parent="Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
@@ -124,7 +128,8 @@ layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("2_sparkline")
 
-[node name="Footer" type="HBoxContainer" parent="Margin/Panel/VBox"]
+[node name="Footer" type="BoxContainer" parent="Margin/Panel/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="RpeCheck" type="CheckBox" parent="Margin/Panel/VBox/Footer"]

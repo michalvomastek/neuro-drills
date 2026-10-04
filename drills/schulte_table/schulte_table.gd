@@ -13,6 +13,8 @@ const COUNTDOWN_FROM := 3
 const DIM_FOUND_ALPHA := 0.3
 
 @onready var _setup_panel: Control = %SetupPanel
+@onready var _setup_vbox: VBoxContainer = %SetupVBox
+@onready var _options_grid: GridContainer = %Options
 @onready var _grid_size_option: OptionButton = %GridSizeOption
 @onready var _symbols_option: OptionButton = %SymbolsOption
 @onready var _reverse_check: CheckBox = %ReverseCheck
@@ -59,6 +61,7 @@ func _ready() -> void:
 	_symbols_option.add_item(tr("SCHULTE_SYMBOLS_LETTERS"), 1)
 	_red_black_check.toggled.connect(_on_red_black_toggled)
 	_start_button.pressed.connect(_on_start_pressed)
+	Layout.watch(self, _relayout_setup)
 	_setup_back_button.pressed.connect(_on_setup_back_pressed)
 	_play_back_button.pressed.connect(_on_play_back_pressed)
 	_grid.resized.connect(_update_cell_font_size)
@@ -138,6 +141,12 @@ func _show_setup() -> void:
 	_play_panel.visible = false
 	_countdown_panel.visible = false
 	_start_button.grab_focus()
+
+
+## Full width and one column of options on a phone.
+func _relayout_setup() -> void:
+	_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0), 0)
+	_options_grid.columns = 1 if Layout.is_narrow(self) else 2
 
 
 func _on_start_pressed() -> void:

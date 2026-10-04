@@ -16,6 +16,10 @@ extends Control
 @onready var _export_button: Button = %ExportButton
 @onready var _clear_button: Button = %ClearButton
 @onready var _clear_dialog: ConfirmationDialog = %ClearDialog
+@onready var _margin: MarginContainer = %Margin
+@onready var _body: BoxContainer = %Body
+@onready var _list_scroll: ScrollContainer = %ListScroll
+@onready var _footer: BoxContainer = %Footer
 
 var _buttons: Array[Button] = []
 
@@ -29,6 +33,7 @@ func _ready() -> void:
 	_clear_dialog.confirmed.connect(_on_clear_confirmed)
 	_clear_dialog.ok_button_text = tr("PROGRESS_CLEAR")
 	_clear_dialog.cancel_button_text = tr("COMMON_BACK")
+	Layout.watch(self, _relayout)
 	var variants := StatsStore.history.variants()
 	_empty_label.visible = variants.is_empty()
 	_detail.visible = not variants.is_empty()
@@ -47,6 +52,17 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		SceneRouter.show_menu()
 		get_viewport().set_input_as_handled()
+
+
+## On a phone the variant list sits above the detail instead of beside it.
+func _relayout() -> void:
+	var narrow := Layout.is_narrow(self)
+	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
+	_body.vertical = narrow
+	_list_scroll.custom_minimum_size = Vector2(0, 150) if narrow else Vector2(320, 0)
+	_list_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
+	_detail.custom_minimum_size = Vector2(0, 0) if narrow else Vector2(320, 0)
+	_footer.vertical = narrow
 
 
 func _on_export_pressed() -> void:

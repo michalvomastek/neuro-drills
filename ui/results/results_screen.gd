@@ -7,9 +7,12 @@ extends Control
 @onready var _again_button: Button = %AgainButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _menu_button: Button = %MenuButton
-@onready var _rpe_box: HBoxContainer = %RpeBox
-@onready var _rpe_buttons: HBoxContainer = %RpeButtons
+@onready var _rpe_box: BoxContainer = %RpeBox
+@onready var _rpe_buttons: GridContainer = %RpeButtons
 @onready var _note_button: Button = %NoteButton
+@onready var _vbox: VBoxContainer = %VBox
+@onready var _buttons: GridContainer = %Buttons
+@onready var _buttons_spacer: Control = %Spacer
 
 var _result: DrillResult
 var _record: Dictionary = {}
@@ -21,6 +24,23 @@ func _ready() -> void:
 	_settings_button.pressed.connect(_on_settings_pressed)
 	_menu_button.pressed.connect(SceneRouter.show_menu)
 	_note_button.pressed.connect(_on_note_pressed)
+	Layout.watch(self, _relayout)
+
+
+## On a phone the panel takes the whole width, the RPE buttons drop under
+## their label and the four buttons form two rows.
+func _relayout() -> void:
+	var narrow := Layout.is_narrow(self)
+	_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 520.0), 0)
+	_rpe_box.vertical = narrow
+	_rpe_buttons.columns = 5 if narrow else 10
+	_rows.add_theme_constant_override("h_separation", 12 if narrow else 32)
+	_buttons_spacer.visible = not narrow
+	_buttons.columns = 2 if narrow else 5
+	for child in _buttons.get_children():
+		var button := child as Button
+		if button != null:
+			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_FILL
 
 
 func setup(result: DrillResult) -> void:
@@ -90,6 +110,7 @@ func _build_rpe_row() -> void:
 		var button := Button.new()
 		button.text = str(i)
 		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.button_group = _rpe_group
 		button.pressed.connect(_on_rpe_pressed.bind(i))
 		_rpe_buttons.add_child(button)
@@ -108,6 +129,7 @@ func _add_row(label_key: String, value: String) -> void:
 	label.text = tr(label_key)
 	label.theme_type_variation = &"DimLabel"
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_rows.add_child(label)
 	var value_label := Label.new()
 	value_label.text = tr(value)

@@ -26,6 +26,7 @@ var _countdown_check: CheckBox
 var _extras_box: VBoxContainer
 var _start_button: Button
 var _play_panel: MarginContainer
+var _setup_vbox: VBoxContainer
 var _play_area: Control
 var _progress_label: Label
 var _countdown_panel: CenterContainer
@@ -254,6 +255,12 @@ func _complete(result: DrillResult) -> void:
 
 # --- UI construction ---------------------------------------------------------
 
+## The setup panel is 560 units wide on a wide screen and fills a phone.
+func _relayout_setup() -> void:
+	if _setup_vbox != null:
+		_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 560.0), 0)
+
+
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
@@ -263,9 +270,10 @@ func _build_ui() -> void:
 	var panel := PanelContainer.new()
 	_setup_panel.add_child(panel)
 	var vbox := VBoxContainer.new()
-	vbox.custom_minimum_size = Vector2(560, 0)
 	vbox.add_theme_constant_override("separation", 12)
 	panel.add_child(vbox)
+	_setup_vbox = vbox
+	Layout.watch(self, _relayout_setup)
 
 	_title_label = Label.new()
 	_title_label.add_theme_font_size_override("font_size", 32)

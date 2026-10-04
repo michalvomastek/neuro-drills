@@ -14,6 +14,7 @@ var _failed: bool = false
 
 
 func _initialize() -> void:
+	Layout.apply_scale(root)
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	if args.size() < 2:
 		push_error("usage: -s res://tools/screenshot.gd -- <scene.tscn> <out.png> [frames]")
