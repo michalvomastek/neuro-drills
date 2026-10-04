@@ -4,7 +4,6 @@ extends TrialDrill
 const SHOW_SECONDS := 0.9
 const GAP_SECONDS := 0.25
 const FEEDBACK_SECONDS := 1.0
-const KEYPAD: Array[String] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "OK"]
 
 var _backward: bool = false
 var _backward_check: CheckBox
@@ -50,36 +49,15 @@ func _build_play_area(parent: Control) -> void:
 	_display = _make_stimulus_label(display_area, 120)
 	var center := CenterContainer.new()
 	vbox.add_child(center)
-	_keypad = GridContainer.new()
-	_keypad.columns = 3
-	_keypad.add_theme_constant_override("h_separation", 10)
-	_keypad.add_theme_constant_override("v_separation", 10)
-	center.add_child(_keypad)
-	for key in KEYPAD:
-		var button := _make_pad(key, 32)
-		button.custom_minimum_size = Vector2(110, 64)
-		button.size_flags_horizontal = Control.SIZE_FILL
-		button.size_flags_vertical = Control.SIZE_FILL
-		button.pressed.connect(_on_key.bind(key))
-		_keypad.add_child(button)
+	_keypad = _make_keypad(center, _on_key)
 	_keypad.visible = false
 
 
 func _handle_response(event: InputEvent) -> void:
-	var key := event as InputEventKey
-	if key == null or not key.pressed or key.echo:
+	var label := _keypad_label_from_event(event)
+	if label.is_empty():
 		return
-	var code := key.keycode
-	if code >= KEY_0 and code <= KEY_9:
-		_on_key(str(code - KEY_0))
-	elif code >= KEY_KP_0 and code <= KEY_KP_9:
-		_on_key(str(code - KEY_KP_0))
-	elif code == KEY_BACKSPACE:
-		_on_key("⌫")
-	elif code == KEY_ENTER or code == KEY_KP_ENTER:
-		_on_key("OK")
-	else:
-		return
+	_on_key(label)
 	get_viewport().set_input_as_handled()
 
 
@@ -115,10 +93,10 @@ func _play_round() -> void:
 func _on_key(key: String) -> void:
 	if not _running or not _accepting:
 		return
-	if key == "⌫":
+	if key == KEY_BACKSPACE_LABEL:
 		if not _answer.is_empty():
 			_answer.pop_back()
-	elif key == "OK":
+	elif key == KEY_OK_LABEL:
 		if not _answer.is_empty():
 			_submit()
 		return

@@ -186,6 +186,45 @@ func _add_option_row(parent: VBoxContainer, label_key: String, values: Array[int
 	return option
 
 
+const KEYPAD_KEYS: Array[String] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "OK"]
+const KEY_BACKSPACE_LABEL := "⌫"
+const KEY_OK_LABEL := "OK"
+
+
+## A 3x4 numeric keypad; [param on_key] receives the key label ("0".."9", "⌫", "OK").
+func _make_keypad(parent: Control, on_key: Callable) -> GridContainer:
+	var keypad := GridContainer.new()
+	keypad.columns = 3
+	keypad.add_theme_constant_override("h_separation", 10)
+	keypad.add_theme_constant_override("v_separation", 10)
+	parent.add_child(keypad)
+	for key in KEYPAD_KEYS:
+		var button := _make_pad(key, 32)
+		button.custom_minimum_size = Vector2(110, 64)
+		button.size_flags_horizontal = Control.SIZE_FILL
+		button.size_flags_vertical = Control.SIZE_FILL
+		button.pressed.connect(on_key.bind(key))
+		keypad.add_child(button)
+	return keypad
+
+
+## Maps a keyboard event to a keypad label, or "" when it is not a keypad key.
+func _keypad_label_from_event(event: InputEvent) -> String:
+	var key := event as InputEventKey
+	if key == null or not key.pressed or key.echo:
+		return ""
+	var code := key.keycode
+	if code >= KEY_0 and code <= KEY_9:
+		return str(code - KEY_0)
+	if code >= KEY_KP_0 and code <= KEY_KP_9:
+		return str(code - KEY_KP_0)
+	if code == KEY_BACKSPACE:
+		return KEY_BACKSPACE_LABEL
+	if code == KEY_ENTER or code == KEY_KP_ENTER:
+		return KEY_OK_LABEL
+	return ""
+
+
 ## A square board centred in [param parent]; children laid out by the caller.
 func _make_square_board(parent: Control) -> Control:
 	var aspect := AspectRatioContainer.new()

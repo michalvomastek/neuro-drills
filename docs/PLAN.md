@@ -58,7 +58,7 @@ res://
 | 3 | Varianty Schulte: velikost 3×3 až 8×8, přesouvání čísel po kliknutí, skrývání nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy | plná Schulte sada |
 | 4a | Reakční rodina na společném základu `TrialDrill`: reakční čas, výběrová reakce, Go/No-Go, Stroop, Flanker | hotovo |
 | 4b | Paměťová rodina: N-back, Corsi bloky, rozsah číslic, paměťová matice, Simon (sdílený `SpanTracker` pro adaptivní délku) | hotovo |
-| 4c | Pozornost a čtení: Trail Making, vizuální hledání, SART, přepínání úloh, RSVP čtení, číselná pyramida, blikající číslo, počítání | poté |
+| 4c | Pozornost a čtení: Trail Making, vizuální hledání, SART, přepínání úloh, RSVP čtení, číselná pyramida, blikající číslo, počítání | hotovo |
 | 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
 
 Fáze 1 a 2 lze podle odpovědi na otázku 3 částečně prohodit.
@@ -122,7 +122,7 @@ Známé varianty:
 
 ## 5b. Drilly z pokusů (`TrialDrill`)
 
-Reakční čas, výběrová reakce, Go/No-Go, Stroop a Flanker stojí na společné třídě `core/trial_drill.gd`: panel nastavení (počet pokusů, odpočet, případné další volby), herní rám s tlačítkem Zpět a průběhem „3 / 20“, odpočet, zrušitelné čekání `_wait()` a pomocné plochy (`_make_pad`, `_make_side_pads`, `_make_stimulus_label`). Každý drill má logiku v samostatné třídě (`*_logic.gd`, testovaná headless) a jen tenký skript scény. Reakční časy shrnuje `ReactionStats` (průměr, medián, nejlepší, směrodatná odchylka). Výsledková obrazovka zobrazuje jen řádky, které drill sám dodá v `summary_rows`.
+Všechny drilly kromě Schulte stojí na společné třídě `core/trial_drill.gd`: panel nastavení (počet pokusů, odpočet, případné další volby), herní rám s tlačítkem Zpět a průběhem „3 / 20“, odpočet, zrušitelné čekání `_wait()` a pomocné plochy (`_make_pad`, `_make_side_pads`, `_make_stimulus_label`). Každý drill má logiku v samostatné třídě (`*_logic.gd`, testovaná headless) a jen tenký skript scény. Reakční časy shrnuje `ReactionStats` (průměr, medián, nejlepší, směrodatná odchylka). Výsledková obrazovka zobrazuje jen řádky, které drill sám dodá v `summary_rows`. Drilly s adaptivní délkou (Corsi, rozsah číslic, Simon, blikající číslo) sdílejí `SpanTracker`; drilly s číselným vstupem sdílejí klávesnici `_make_keypad()` a mapování kláves `_keypad_label_from_event()`.
 
 ## 6. Nástroje, testování, kvalita
 

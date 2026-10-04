@@ -86,3 +86,67 @@ SPAN_LENGTH,Délka: %d,Length: %d
 RESULT_SPAN,Rozsah (span),Span
 RESULT_ROUNDS,Správná kola,Correct rounds
 RESULT_SEQUENCE_LENGTH,Nejdelší sekvence,Longest sequence
+TRAIL_TITLE,Trail Making,Trail Making
+TRAIL_DESCRIPTION,"Spoj kolečka co nejrychleji v pořadí 1-2-3… V části B střídavě číslo a písmeno: 1-A-2-B…","Connect the circles as fast as you can in order 1-2-3… In part B alternate numbers and letters: 1-A-2-B…"
+TRAIL_OPT_PART_B,Část B (čísla a písmena střídavě),Part B (numbers and letters alternating)
+TRAIL_PART_A,Část A,Part A
+TRAIL_PART_B,Část B,Part B
+RESULT_PART,Varianta,Variant
+SEARCH_TITLE,Vizuální hledání,Visual search
+SEARCH_DESCRIPTION,"V mřížce písmen je jedno jiné než ostatní. Najdi ho a klikni na něj co nejrychleji.","One letter in the grid differs from the rest. Find it and click it as fast as you can."
+SEARCH_SET_SIZE,Počet písmen,Number of letters
+SART_TITLE,SART,SART
+SART_DESCRIPTION,"Číslice 1 až 9 se rychle střídají. Klikni nebo stiskni mezerník na každou, kromě trojky. Měří udržení pozornosti.","Digits 1 to 9 flash in a row. Click or press space on every digit except 3. Measures sustained attention."
+SART_COMMISSIONS,Reakce na trojku,Responses to 3
+SART_OMISSIONS,Vynechané číslice,Missed digits
+RESULT_RT_SD,Kolísání reakce (SD),Reaction variability (SD)
+SWITCH_TITLE,Přepínání úloh,Task switching
+SWITCH_DESCRIPTION,"Modrý rámeček: lichá vlevo, sudá vpravo. Oranžový rámeček: menší než 5 vlevo, větší vpravo. Úloha se nečekaně mění.","Blue frame: odd left, even right. Orange frame: less than 5 left, more right. The task changes without warning."
+SWITCH_RULE_PARITY,Lichá / sudá,Odd / even
+SWITCH_RULE_MAGNITUDE,Menší / větší než 5,Less / more than 5
+SWITCH_ODD,lichá,odd
+SWITCH_EVEN,sudá,even
+SWITCH_LESS,menší než 5,less than 5
+SWITCH_MORE,větší než 5,more than 5
+SWITCH_RT_REPEAT,Reakce bez přepnutí,Reaction without switch
+SWITCH_RT_SWITCH,Reakce po přepnutí,Reaction after switch
+SWITCH_COST,Cena přepnutí,Switch cost
+RSVP_TITLE,RSVP čtení,RSVP reading
+RSVP_DESCRIPTION,"Slova krátkého textu se promítají jedno po druhém zvolenou rychlostí. Na konci odpovíš na otázku k textu.","Words of a short text are shown one at a time at the chosen speed. At the end you answer a question about it."
+RSVP_SPEED,Rychlost (slov za minutu),Speed (words per minute)
+RSVP_WPM,Slov za minutu,Words per minute
+RSVP_WPM_UNIT,slov/min,wpm
+RSVP_WORDS,Počet slov,Words
+RSVP_COMPREHENSION,Porozumění,Comprehension
+RSVP_CORRECT,správně,correct
+RSVP_WRONG,špatně,wrong
+RSVP_TEXT_1,"Včelí roj opustil úl brzy ráno a usadil se na větvi staré hrušně na okraji zahrady. Včelař si všiml hustého chomáče až kolem poledne. Přinesl žebřík, prázdný úl a kouřák. Opatrně setřásl roj do bedny a počkal, až se k matce přidají i poslední včely. Večer už nový úl stál vedle ostatních.","The swarm left the hive early in the morning and settled on a branch of the old pear tree at the edge of the garden. The beekeeper noticed the dense cluster only around noon. He brought a ladder, an empty hive and a smoker. He carefully shook the swarm into the box and waited until the last bees joined the queen. By evening the new hive stood next to the others."
+RSVP_Q_1,Kde se roj usadil?,Where did the swarm settle?
+RSVP_A_1_1,Na střeše úlu,On the roof of the hive
+RSVP_A_1_2,Na větvi staré hrušně,On a branch of the old pear tree
+RSVP_A_1_3,Na plotě zahrady,On the garden fence
+RSVP_TEXT_2,"Městská knihovna otevřela novou čítárnu v bývalé čekárně nádraží. Dlouhé dřevěné lavice zůstaly na místě, jen k nim přibyly lampy a police s časopisy. Návštěvníci si mohou půjčit noviny ze čtyř zemí. Nejvíc prý chodí ráno před odjezdem vlaků, kdy je v sále nejvíc světla.","The city library opened a new reading room in the former station waiting hall. The long wooden benches stayed in place; only lamps and magazine shelves were added. Visitors can borrow newspapers from four countries. Most come in the morning before the trains leave, when the hall gets the most light."
+RSVP_Q_2,Kde vznikla nová čítárna?,Where was the new reading room opened?
+RSVP_A_2_1,V bývalé čekárně nádraží,In the former station waiting hall
+RSVP_A_2_2,V budově radnice,In the town hall
+RSVP_A_2_3,Ve staré škole,In an old school
+RSVP_TEXT_3,"Horská chata na hřebeni přešla v zimě na vlastní zdroj energie. Větrná turbína pokrývá většinu spotřeby, zbytek doplňují solární panely na jižní stěně. Hospodář uvedl, že největší úspora přišla nečekaně z nové kuchyně, kde se vaří na menším sporáku. Diesel se dnes používá jen jako záloha při vichřici.","The mountain hut on the ridge switched to its own power source in winter. A wind turbine covers most of the consumption; solar panels on the south wall add the rest. The keeper said the biggest saving came unexpectedly from the new kitchen, where cooking is done on a smaller stove. Diesel is now used only as a backup during storms."
+RSVP_Q_3,Odkud přišla největší úspora energie?,Where did the biggest energy saving come from?
+RSVP_A_3_1,Z větrné turbíny,From the wind turbine
+RSVP_A_3_2,Ze solárních panelů,From the solar panels
+RSVP_A_3_3,Z nové kuchyně,From the new kitchen
+PYRAMID_TITLE,Číselná pyramida,Number pyramid
+PYRAMID_DESCRIPTION,"Dívej se na tečku uprostřed. Po stranách krátce bliknou dvě číslice, napiš je zleva doprava. Po správné odpovědi se vzdálí od středu.","Look at the dot in the centre. Two digits flash briefly on the sides; type them left to right. After a correct answer they move further from the centre."
+PYRAMID_SPAN,Šíře,Width
+PYRAMID_MAX_SPAN,Největší šíře (ze šířky obrazovky),Largest width (of screen width)
+PYRAMID_PROMPT,Napiš obě číslice,Type both digits
+FLASH_TITLE,Blikající číslo,Flashing number
+FLASH_DESCRIPTION,"Dívej se na tečku uprostřed. Někde kolem na okamžik blikne číslo, napiš ho. Po správné odpovědi přibude číslice.","Look at the dot in the centre. A number flashes briefly somewhere around it; type it. A correct answer adds a digit."
+FLASH_LENGTH,Číslic: %d,Digits: %d
+FLASH_PROMPT,Napiš číslo,Type the number
+FLASH_DIGITS,Zvládnuté číslice,Digits mastered
+ARITH_TITLE,Počítání,Arithmetic sprint
+ARITH_DESCRIPTION,"Sčítání, odčítání a násobení proti času. Napiš výsledek a potvrď Enterem nebo OK.","Addition, subtraction and multiplication against the clock. Type the result and confirm with Enter or OK."
+ARITH_DURATION,Délka (sekundy),Duration (seconds)
+ARITH_CORRECT,Správné odpovědi,Correct answers
+ARITH_PER_ANSWER,Čas na odpověď,Time per answer

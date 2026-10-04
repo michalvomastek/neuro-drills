@@ -31,6 +31,22 @@ func _init() -> void:
 		"res://drills/memory_matrix/memory_matrix.tscn"))
 	register(DrillDefinition.new(&"simon", "SIMON_TITLE", "SIMON_DESCRIPTION",
 		"res://drills/simon/simon.tscn"))
+	register(DrillDefinition.new(&"trail_making", "TRAIL_TITLE", "TRAIL_DESCRIPTION",
+		"res://drills/trail_making/trail_making.tscn"))
+	register(DrillDefinition.new(&"visual_search", "SEARCH_TITLE", "SEARCH_DESCRIPTION",
+		"res://drills/visual_search/visual_search.tscn"))
+	register(DrillDefinition.new(&"sart", "SART_TITLE", "SART_DESCRIPTION",
+		"res://drills/sart/sart.tscn"))
+	register(DrillDefinition.new(&"task_switching", "SWITCH_TITLE", "SWITCH_DESCRIPTION",
+		"res://drills/task_switching/task_switching.tscn"))
+	register(DrillDefinition.new(&"rsvp_reading", "RSVP_TITLE", "RSVP_DESCRIPTION",
+		"res://drills/rsvp_reading/rsvp_reading.tscn"))
+	register(DrillDefinition.new(&"number_pyramid", "PYRAMID_TITLE", "PYRAMID_DESCRIPTION",
+		"res://drills/number_pyramid/number_pyramid.tscn"))
+	register(DrillDefinition.new(&"flash_number", "FLASH_TITLE", "FLASH_DESCRIPTION",
+		"res://drills/flash_number/flash_number.tscn"))
+	register(DrillDefinition.new(&"arithmetic", "ARITH_TITLE", "ARITH_DESCRIPTION",
+		"res://drills/arithmetic/arithmetic.tscn"))
 
 
 func register(definition: DrillDefinition) -> void:
