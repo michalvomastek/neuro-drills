@@ -152,7 +152,7 @@ Otevřené nápady: „nejlepší 3 z posledních 5 dní“ u prahů, index úna
 
 ## 5g. Rozložení pro telefon (hotovo)
 
-`core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav. Výsledky a panely nastavení jsou v posuvném kontejneru, protože prohlížeč s lištami ukáže na iPhonu jen asi 430×660 CSS px. Webový export má zapnutou virtuální klávesnici (bez ní se na telefonu u textového pole neobjeví). CI vykresluje menu i v rozměru 412×915.
+`core/layout.gd`: okno se škáluje tak, aby kratší strana měla 720 jednotek na šířku a 480 jednotek na výšku (telefon 412×915 CSS px tak dostane plochu 480×1066 jednotek, písmo zůstane čitelné). Obrazovky pod 700 jednotek šířky přepnou na úzkou variantu: menu v jednom sloupci se záložkami s posuvem, výsledky přes celou šířku s RPE ve dvou řadách a tlačítky 2×2, Pokrok se seznamem nad detailem, panely nastavení her na celou šířku, volby Schulte a Trail Making v jednom sloupci. Hry samotné používají kontejnery a čtvercové desky, takže na výšku fungují bez úprav; audit všech 43 her v 430×660 (nástroj v historii chatu, kontaktní archy) odhalil jen přetékající podněty Stroopu a Flankeru, které si teď zmenšují písmo podle šířky (`TrialDrill._fit_stimulus_label`). 3D scény drží v portrétu zorné pole přes šířku (`Scene3D`). Ztráta fokusu okna během kola (hovor, přepnutí záložky) vrací do nastavení; na webu je při běžícím kole aktivní dotaz prohlížeče před zavřením stránky (`Drill.set_leave_guard`); optický tok si na iOS vyžádá povolení pohybových senzorů (`Drill.request_motion_permission`). Výsledky a panely nastavení jsou v posuvném kontejneru, protože prohlížeč s lištami ukáže na iPhonu jen asi 430×660 CSS px. Webový export má zapnutou virtuální klávesnici (bez ní se na telefonu u textového pole neobjeví). CI vykresluje menu i v rozměru 412×915.
 
 ## 5f. Zpětná vazba v aplikaci (hotovo)
 
@@ -214,11 +214,11 @@ Všechny předpoklady níže platí, s jedinou změnou: u otázky 6 je téma **t
 Pracnost: M = do hodiny, S = půl dne, L = den a víc. Pořadí v rámci oblasti je návrh.
 
 ### A. Mobil a web (priorita 1)
-- [ ] A1 (S) Projít všech 43 her na výšku v rozměru Safari 430×660 a opravit, co přetéká.
-- [ ] A2 (S) Dotyk a senzory u her čtoucích polohu ukazatele: plynulé a kompenzační sledování, Brockův provázek, optický tok s nakláněním. Ověřit na telefonu.
-- [ ] A3 (M) Posuvný kontejner u nastavení her s mnoha volbami ověřit (Trail Making, RSVP, 3D hry).
-- [ ] A4 (M) Pauza časovače při přepnutí aplikace do pozadí; varování při zavření záložky uprostřed kola.
-- [ ] A5 (M) Ikona pro Windows exe (rcedit v CI).
+- [x] A1 (S) Projít všech 43 her na výšku v rozměru Safari 430×660 a opravit, co přetéká.
+- [x] A2 (S) Dotyk a senzory u her čtoucích polohu ukazatele: plynulé a kompenzační sledování, Brockův provázek, optický tok s nakláněním. Ověřit na telefonu.
+- [x] A3 (M) Posuvný kontejner u nastavení her s mnoha volbami ověřit (Trail Making, RSVP, 3D hry).
+- [x] A4 (M) Pauza časovače při přepnutí aplikace do pozadí; varování při zavření záložky uprostřed kola.
+- [ ] A5 (M) Ikona pro Windows exe. Odloženo: rcedit je windows binárka, na linuxovém runneru by potřebovala wine; řešení je export Windows na windows runneru nebo bez ikony.
 
 ### B. Tréninkový režim (priorita 2)
 Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu navrhne aplikace podle kategorií a slabších pásem, maintainer ji může upravit a uložit jako vlastní pojmenovanou sestavu (může jich být víc).

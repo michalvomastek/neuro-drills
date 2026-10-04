@@ -40,6 +40,15 @@ func _init(parent: Control) -> void:
 	camera.fov = 60.0
 	camera.current = true
 	world.add_child(camera)
+	container.resized.connect(_update_keep_aspect)
+	_update_keep_aspect()
+
+
+## In portrait the field of view is kept across the width, so everything laid
+## out for a landscape frame stays visible.
+func _update_keep_aspect() -> void:
+	var size := container.size
+	camera.keep_aspect = Camera3D.KEEP_WIDTH if size.y > size.x else Camera3D.KEEP_HEIGHT
 
 
 static func make_sphere(radius: float, color: Color) -> MeshInstance3D:

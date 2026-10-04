@@ -41,3 +41,23 @@ static func make_press_button(button: BaseButton) -> void:
 	button.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventScreenTouch or event is InputEventScreenDrag:
 			button.accept_event())
+
+
+## On the web, asks the browser to confirm before the page is closed or
+## reloaded while a run is in progress (a tap on the wrong browser control
+## otherwise throws the run away). No-op elsewhere.
+static func set_leave_guard(active: bool) -> void:
+	if not OS.has_feature("web"):
+		return
+	if active:
+		JavaScriptBridge.eval("window.onbeforeunload = function (e) { e.preventDefault(); e.returnValue = ''; return ''; };")
+	else:
+		JavaScriptBridge.eval("window.onbeforeunload = null;")
+
+
+## iOS Safari only delivers device motion after the page asked for it inside a
+## user gesture; call this from the Start button of a drill that uses tilt.
+static func request_motion_permission() -> void:
+	if not OS.has_feature("web"):
+		return
+	JavaScriptBridge.eval("if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') { DeviceMotionEvent.requestPermission().catch(function () {}); }")

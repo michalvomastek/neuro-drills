@@ -117,6 +117,14 @@ func get_config() -> Dictionary:
 	return config
 
 
+## A run interrupted by a phone call, a tab switch or a minimised window has
+## no valid timing; go back to the setup panel instead of recording it.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		if is_node_ready() and _setup_scroll != null and not _setup_scroll.visible:
+			_show_setup()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _setup_scroll.visible:
@@ -132,6 +140,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _show_setup() -> void:
 	_run_token += 1
 	_running = false
+	Drill.set_leave_guard(false)
 	_reset_play_state()
 	_setup_scroll.visible = true
 	_play_panel.visible = false
@@ -151,6 +160,7 @@ func _begin_run() -> void:
 	_reset_play_state()
 	_setup_scroll.visible = false
 	_play_panel.visible = false
+	Drill.set_leave_guard(true)
 	if countdown:
 		_countdown_panel.visible = true
 		for i in range(COUNTDOWN_FROM, 0, -1):
@@ -250,6 +260,7 @@ func _make_square_board(parent: Control) -> Control:
 func _complete(result: DrillResult) -> void:
 	_run_token += 1
 	_running = false
+	Drill.set_leave_guard(false)
 	_reset_play_state()
 	finished.emit(result)
 
@@ -422,8 +433,26 @@ func _make_stimulus_label(parent: Control, font_size: int) -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", font_size)
+	label.set_meta(&"design_font_size", font_size)
+	# A word like "ČERVENÁ" at 110 px or five spaced arrows at 120 px are wider
+	# than a phone; shrink the font to the label's width whenever either changes.
+	label.resized.connect(_fit_stimulus_label.bind(label))
+	label.minimum_size_changed.connect(_fit_stimulus_label.bind(label))
 	parent.add_child(label)
 	return label
+
+
+## Sets the largest font size up to the design size at which the text fits.
+func _fit_stimulus_label(label: Label) -> void:
+	if label.text.is_empty() or label.size.x <= 0.0:
+		return
+	var design: int = label.get_meta(&"design_font_size")
+	var font := label.get_theme_font("font")
+	var available := label.size.x - 32.0
+	var width := font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_CENTER, -1, design).x
+	var fitted := design if width <= available else maxi(16, int(design * available / width))
+	if label.get_theme_font_size("font_size") != fitted:
+		label.add_theme_font_size_override("font_size", fitted)
 
 
 ## Recolours a pad until _clear_pad_flash() is called.

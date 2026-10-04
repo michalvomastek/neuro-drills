@@ -83,6 +83,12 @@ func _process(_delta: float) -> void:
 		_timer_label.text = Format.seconds_short(Time.get_ticks_msec() - _started_at_ms)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		if is_node_ready() and _play_panel != null and _play_panel.visible:
+			_on_play_back_pressed()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _play_panel.visible or _countdown_panel.visible:
@@ -159,10 +165,12 @@ func _on_setup_back_pressed() -> void:
 
 
 func _on_play_back_pressed() -> void:
+	Drill.set_leave_guard(false)
 	_show_setup()
 
 
 func _begin_run() -> void:
+	Drill.set_leave_guard(true)
 	_table_times_ms.clear()
 	_test_errors = 0
 	_table_index = 0
@@ -330,6 +338,7 @@ func _update_next_target() -> void:
 
 
 func _finish() -> void:
+	Drill.set_leave_guard(false)
 	_run_token += 1
 	_running = false
 	if _config.show_timer:

@@ -62,6 +62,7 @@ Run `import`, `check`, `test` and `smoke` before every commit. `check` is also t
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.
+- 2026-10-04: portrait audit of all drills; stimulus labels fit their width, 3D cameras keep width in portrait, focus loss cancels a run, web leave guard and iOS motion permission helpers on `Drill`.
 - 2026-10-04: PWA (manifest, service worker, offline page, standalone display) in the Web preset, own icon (`icon.svg`, PNGs via `godot.sh icons`), dark boot splash; `build/.gdignore` keeps exported files out of the importer.
 - 2026-10-04: phone layout: `Layout` scaling (480 design units across in portrait), narrow variants of menu, results, progress, feedback, TrialDrill and Schulte setup panels; CI renders the menu at 412x915 too.
 - 2026-10-04: in-app feedback notes with automatic context (drill, variant, result rows, platform, screen, locale, touch), copy-to-clipboard and text download; no backend, the maintainer pastes the text into the chat.

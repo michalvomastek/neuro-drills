@@ -98,6 +98,7 @@ func _process(delta: float) -> void:
 
 func _run_trials() -> void:
 	_logic = LoomingLogic.new(trials, _rng)
+	Drill.request_motion_permission()
 	_tilt_rest = Input.get_gravity()
 	_shift = Vector2.ZERO
 	_last_pointer = get_local_mouse_position()
