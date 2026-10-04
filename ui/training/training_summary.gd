@@ -33,6 +33,14 @@ func setup(session: TrainingSession) -> void:
 	_session = session
 	_add_row(_rows, "TRAINING_SUMMARY_TIME", Format.minutes_seconds(session.elapsed_seconds()))
 	_add_row(_rows, "TRAINING_SUMMARY_STEPS", "%d / %d" % [session.finished_count(), session.step_count()])
+	var xp := 0
+	for record in session.records:
+		xp += Gamification.xp_for_record(record)
+	_add_row(_rows, "TRAINING_SUMMARY_XP", tr("RESULT_XP_VALUE") % xp)
+	var minutes := StatsStore.minutes_today()
+	var goal := StatsStore.training_minutes
+	var goal_text := tr("TRAINING_SUMMARY_GOAL_DONE") % minutes if minutes >= goal else tr("TRAINING_SUMMARY_GOAL_LEFT") % (goal - minutes)
+	_add_row(_rows, "TRAINING_SUMMARY_GOAL", goal_text)
 	for record in session.records:
 		var drill_id: String = record["drill_id"]
 		var definition := DrillRegistry.find(StringName(drill_id))

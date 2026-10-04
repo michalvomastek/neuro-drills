@@ -3,7 +3,18 @@ class_name LandoltRing
 extends Control
 
 var gap: int = 0
-var color := Color(0.93, 0.93, 0.95)
+var color := Color(0.93, 0.93, 0.95):
+	set(value):
+		color = value
+		_color_set = true
+		queue_redraw()
+var _color_set := false
+
+
+## Draws with the theme ink unless a colour was assigned.
+func _ready() -> void:
+	if not _color_set:
+		color = get_theme_color("ink", "Board")
 
 
 func _draw() -> void:

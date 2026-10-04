@@ -16,6 +16,7 @@
 #                           render a scene with software OpenGL (Xvfb when there is no display)
 #                           and save the main viewport as PNG
 #   icons                   render icon.svg into assets/icon/icon_{144,180,512}.png for the web manifest
+#   theme                   build ui/theme/{dark,light}_theme.tres from the palettes in tools/make_theme.gd
 #   templates               install the export templates of $GODOT_VERSION (GitHub download)
 #   export <preset> [out]   release export with a preset from export_presets.cfg ("Web",
 #                           "Windows Desktop"); installs the templates first; out defaults
@@ -174,6 +175,12 @@ cmd_icons() {
   return "${PIPESTATUS[0]}"
 }
 
+cmd_theme() {
+  cmd_import >/dev/null || return 1
+  "$GODOT" --headless --path "$REPO_ROOT" -s res://tools/make_theme.gd 2>&1 | grep -vE '^Godot Engine v|^$'
+  return "${PIPESTATUS[0]}"
+}
+
 cmd_templates() {
   local dir
   dir="$(templates_dir)"
@@ -253,6 +260,7 @@ main() {
     screenshot) cmd_screenshot "$@" ;;
     smoke) cmd_smoke "$@" ;;
     icons) cmd_icons "$@" ;;
+    theme) cmd_theme "$@" ;;
     templates) cmd_templates "$@" ;;
     export) cmd_export "$@" ;;
     exec) cmd_exec "$@" ;;

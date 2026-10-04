@@ -3,12 +3,23 @@ class_name PolyominoView
 extends Control
 
 var cells: Array[Vector2i] = []
-var color := Color(0.93, 0.93, 0.95)
+var color := Color(0.93, 0.93, 0.95):
+	set(value):
+		color = value
+		_color_set = true
+		queue_redraw()
+var _color_set := false
 
 
 func set_cells(new_cells: Array[Vector2i]) -> void:
 	cells = new_cells
 	queue_redraw()
+
+
+## Draws with the theme ink unless a colour was assigned.
+func _ready() -> void:
+	if not _color_set:
+		color = get_theme_color("ink", "Board")
 
 
 func _draw() -> void:

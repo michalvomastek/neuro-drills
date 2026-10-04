@@ -38,6 +38,7 @@ theme_override_constants/separation = 12
 
 [node name="TitleLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox"]
 layout_mode = 2
+theme_type_variation = &"HeadingLabel"
 theme_override_font_sizes/font_size = 32
 text = "SCHULTE_TITLE"
 

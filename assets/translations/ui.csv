@@ -404,3 +404,44 @@ TRAINING_STEP_TIME,%d s,%d s
 MENU_TRAINING_MINUTES,Trénink · %d min,Training · %d min
 TRAINING_HARDER,↑ těžší,↑ harder
 PROGRESS_WEEK,Posledních 7 dní: %d kol · %d min · %d her · %d zlepšení,Last 7 days: %d runs · %d min · %d drills · %d improved
+MENU_THEME_LIGHT,Světlý motiv,Light theme
+MENU_THEME_DARK,Tmavý motiv,Dark theme
+GAMI_STREAK,Série: %d dní,Streak: %d days
+GAMI_STREAK_ONE,Série: 1 den,Streak: 1 day
+GAMI_STREAK_NONE,Začni sérii dnes,Start a streak today
+GAMI_LEVEL,Úroveň %d,Level %d
+GAMI_XP,%d / %d XP,%d / %d XP
+GAMI_TODAY,Dnes %d / %d min,Today %d / %d min
+GAMI_TODAY_DONE,Dnes %d / %d min ✓,Today %d / %d min ✓
+GAMI_BADGES,Odznaky %d / %d,Badges %d / %d
+RESULT_XP,Body,Points
+RESULT_XP_VALUE,+%d XP,+%d XP
+RESULT_NEW_BADGE,Nový odznak,New badge
+TRAINING_SUMMARY_XP,Body za trénink,Points for the training
+TRAINING_SUMMARY_GOAL,Denní cíl,Daily goal
+TRAINING_SUMMARY_GOAL_DONE,splněn (%d min),reached (%d min)
+TRAINING_SUMMARY_GOAL_LEFT,ještě %d min,%d min to go
+BADGE_FIRST_RUN,První kolo,First run
+BADGE_FIRST_RUN_DESC,Dohraj první hru.,Finish your first drill.
+BADGE_RUNS_10,10 kol,10 runs
+BADGE_RUNS_10_DESC,Dohraj deset kol.,Finish ten runs.
+BADGE_RUNS_100,100 kol,100 runs
+BADGE_RUNS_100_DESC,Dohraj sto kol.,Finish a hundred runs.
+BADGE_RUNS_500,500 kol,500 runs
+BADGE_RUNS_500_DESC,Dohraj pět set kol.,Finish five hundred runs.
+BADGE_FIRST_ADVANCED,Pokročilý,Advanced
+BADGE_FIRST_ADVANCED_DESC,Poprvé dosáhni pásma pokročilý.,Reach the advanced band for the first time.
+BADGE_FIRST_ELITE,Zkušený,Elite
+BADGE_FIRST_ELITE_DESC,Poprvé dosáhni pásma zkušený.,Reach the elite band for the first time.
+BADGE_STREAK_3,3 dny v řadě,3 days in a row
+BADGE_STREAK_3_DESC,Trénuj tři dny po sobě.,Train three days running.
+BADGE_STREAK_7,Týden v řadě,A week in a row
+BADGE_STREAK_7_DESC,Trénuj sedm dní po sobě.,Train seven days running.
+BADGE_STREAK_30,Měsíc v řadě,A month in a row
+BADGE_STREAK_30_DESC,Trénuj třicet dní po sobě.,Train thirty days running.
+BADGE_WEEK_FULL,Celý týden,Full week
+BADGE_WEEK_FULL_DESC,Zahraj si každý z posledních sedmi dní.,Play on each of the last seven days.
+BADGE_ALL_CATEGORIES,Všestrannost,All-rounder
+BADGE_ALL_CATEGORIES_DESC,Vyzkoušej hru z každé kategorie.,Try a drill from every category.
+BADGE_GOAL_7,Cíl celý týden,Goal all week
+BADGE_GOAL_7_DESC,Splň denní cíl sedm dní po sobě.,Reach the daily goal seven days running.

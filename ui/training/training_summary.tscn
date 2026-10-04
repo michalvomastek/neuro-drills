@@ -38,6 +38,7 @@ text = "TRAINING_TITLE"
 
 [node name="TitleLabel" type="Label" parent="Margin/Panel/VBox"]
 layout_mode = 2
+theme_type_variation = &"HeadingLabel"
 theme_override_font_sizes/font_size = 32
 text = "TRAINING_SUMMARY_TITLE"
 

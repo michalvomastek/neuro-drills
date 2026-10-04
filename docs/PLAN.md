@@ -254,8 +254,8 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 
 ### G. Gamifikace a hravější grafika (na vedlejší větvi)
 Zadání od maintainera: hry jsou monotónní a jednotvárné; chce hravější, roztomilé provedení (dětský styl, karikatura, kreslení rukou) a lepší gamifikaci. Vznikne na větvi bokem, aby šlo styl zahodit, kdyby se nelíbil.
-- [ ] G23 (S) Návrh stylu: paleta, tvary, písmo, ilustrační jazyk; ukázka na menu, Schulte a jedné reakční hře jako obrázky ke schválení před plošnou implementací.
-- [ ] G24 (L) Druhý motiv (`ui/theme/playful_theme.tres`) s přepínačem v nastavení, aby šel tmavý minimalistický a hravý styl střídat.
+- [x] G23 (S) Návrh stylu: paleta, tvary, písmo, ilustrační jazyk; ukázka na menu, Schulte a jedné reakční hře jako obrázky ke schválení před plošnou implementací.
+- [x] G24 (L) Druhý motiv s přepínačem: maintainer vybral styl 3 („měkké oblouky“, Baloo 2 + Nunito, zaoblené karty, 3D tlačítka) v tmavé variantě jako výchozí a světlou jako přepínatelnou. Oba motivy generuje `tools/make_theme.gd` (`godot.sh theme`) z palet do `ui/theme/{dark,light}_theme.tres`; přepínač zatím v patičce menu (přesune se do Nastavení, E17).
 - [ ] G25 (L) Vizuální prvky her: ručně kreslené buňky a terče, animace správně/špatně, maskot nebo postavička na výsledcích a v tréninku.
-- [ ] G26 (S) Gamifikace: denní série, body za kolo, odznaky za pásma a milníky, denní cíl; ukládané ve `StatsStore`, zobrazené v menu a v souhrnu tréninku.
+- [x] G26 (S) Gamifikace: denní série, body za kolo, odznaky za pásma a milníky, denní cíl; `core/gamification.gd` vše odvozuje ze záznamů (nic navíc se neukládá, jen už ukázané odznaky v `settings.cfg`); menu ukazuje sérii, úroveň s XP lištou, dnešní minuty proti délce tréninku a odznaky, výsledky řádek „Body“ a nový odznak, souhrn tréninku body a denní cíl.
 - [ ] G27 (M) Zvukové efekty ladící se stylem (navazuje na D15).

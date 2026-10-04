@@ -55,6 +55,7 @@ func setup(result: DrillResult) -> void:
 	_add_benchmark_rows(result)
 	_record = StatsStore.record(result)
 	_add_history_rows(_record)
+	_add_reward_rows(_record)
 	_build_rpe_row()
 	_apply_training_mode()
 	_again_button.grab_focus()
@@ -72,6 +73,13 @@ func _apply_training_mode() -> void:
 	_heading_label.text = tr("TRAINING_STEP_HEADING") % [done, total]
 	_settings_button.visible = false
 	_again_button.text = tr("TRAINING_NEXT") % [done + 1, total] if training.has_next() else tr("TRAINING_FINISH")
+
+
+## Points for this run and any badge earned by it.
+func _add_reward_rows(record: Dictionary) -> void:
+	_add_row("RESULT_XP", tr("RESULT_XP_VALUE") % Gamification.xp_for_record(record))
+	for id in StatsStore.take_new_badges():
+		_add_row("RESULT_NEW_BADGE", tr("BADGE_%s" % id.to_upper()))
 
 
 ## Orientational level from the benchmark table, plus the bound of the next band.

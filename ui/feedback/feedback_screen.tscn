@@ -40,6 +40,7 @@ size_flags_horizontal = 3
 
 [node name="TitleLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
 layout_mode = 2
+theme_type_variation = &"HeadingLabel"
 theme_override_font_sizes/font_size = 32
 text = "FEEDBACK_TITLE"
 

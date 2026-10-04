@@ -297,6 +297,7 @@ func _build_ui() -> void:
 	Layout.watch(self, _relayout_setup)
 
 	_title_label = Label.new()
+	_title_label.theme_type_variation = &"HeadingLabel"
 	_title_label.add_theme_font_size_override("font_size", 32)
 	vbox.add_child(_title_label)
 	_description_label = Label.new()
