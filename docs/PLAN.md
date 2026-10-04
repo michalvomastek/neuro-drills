@@ -1,6 +1,6 @@
 # Neuro drills – plán projektu
 
-Stav: **fáze 1 hotová** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6).
+Stav: **fáze 1, 3 a 4 hotové** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6). Aplikace má 35 drillů v sedmi kategoriích; další je fáze 2 (historie výsledků a přehled pokroku) a fáze 5 (export).
 
 ## 1. Vize
 
@@ -55,10 +55,13 @@ res://
 | 0 | Plán, konvence, nástroje pro headless Godot, rozhodnutí z otázek | hotovo |
 | 1 | Jádro (`Drill`, `DrillResult`, `DrillRegistry`, router) + minimální shell (menu, hra, výsledek) + **Schulte table v1** + lokalizace CZ/EN + testy logiky + CI | hotovo |
 | 2 | Shell aplikace: hlavní menu, nastavení, ukládání historie, přehled pokroku (graf) | použitelná aplikace |
-| 3 | Varianty Schulte: velikost 3×3 až 8×8, přesouvání čísel po kliknutí, skrývání nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy | plná Schulte sada |
+| 3 | Varianty Schulte: velikost 3×3 až 7×7, přemíchání po kliknutí, ztlumení nalezených, obrácené pořadí, písmena, červeno-černá Gorbov–Schulte, pětitabulkový Schulteho test s indexy ER/WU/PS | hotovo |
 | 4a | Reakční rodina na společném základu `TrialDrill`: reakční čas, výběrová reakce, Go/No-Go, Stroop, Flanker | hotovo |
 | 4b | Paměťová rodina: N-back, Corsi bloky, rozsah číslic, paměťová matice, Simon (sdílený `SpanTracker` pro adaptivní délku) | hotovo |
 | 4c | Pozornost a čtení: Trail Making, vizuální hledání, SART, přepínání úloh, RSVP čtení, číselná pyramida, blikající číslo, počítání | hotovo |
+| 4d | Z dokumentu „Neuro training drills“: anti-sakáda, Simonův efekt, Posnerova nápověda, periferní záblesky, vizuální maskování, časové pořadí, adaptivní Go/No-Go | hotovo |
+| 4e | Pohybové: sledování více objektů, odhad průsečíku, kompenzační sledování, plynulé sledování, dynamická ostrost, rytmické ťukání, pohyblivý Trail Making | hotovo |
+| 4f | Mentální rotace, hledání reflektorem (shader mlhy), kontrastní citlivost (Gaborův shader), optokinetické pruhy (shader) | hotovo |
 | 5 | Export: Windows/Linux/macOS, web (GitHub Pages), Android; CI s automatickým buildem | distribuce |
 
 Fáze 1 a 2 lze podle odpovědi na otázku 3 částečně prohodit.
@@ -123,6 +126,14 @@ Známé varianty:
 ## 5b. Drilly z pokusů (`TrialDrill`)
 
 Všechny drilly kromě Schulte stojí na společné třídě `core/trial_drill.gd`: panel nastavení (počet pokusů, odpočet, případné další volby), herní rám s tlačítkem Zpět a průběhem „3 / 20“, odpočet, zrušitelné čekání `_wait()` a pomocné plochy (`_make_pad`, `_make_side_pads`, `_make_stimulus_label`). Každý drill má logiku v samostatné třídě (`*_logic.gd`, testovaná headless) a jen tenký skript scény. Reakční časy shrnuje `ReactionStats` (průměr, medián, nejlepší, směrodatná odchylka). Výsledková obrazovka zobrazuje jen řádky, které drill sám dodá v `summary_rows`. Drilly s adaptivní délkou (Corsi, rozsah číslic, Simon, blikající číslo) sdílejí `SpanTracker`; drilly s číselným vstupem sdílejí klávesnici `_make_keypad()` a mapování kláves `_keypad_label_from_event()`.
+
+## 5c. Co z dokumentu „Neuro training drills“ není implementováno a proč
+
+- **3D drilly** (Brock string, Time to Contact ve 3D, konvergence/divergence): vyžadují 3D scénu, kameru s hloubkou ostrosti a jinou architekturu; mentální rotace je udělaná ve 2D s pentominy.
+- **Senzorové drilly** (Optic flow / Looming s gyroskopem): potřebují mobilní export a senzory.
+- **Zvukové varianty** (dual N-back se zvukem, zvukový metronom): v projektu zatím nejsou zvuky (rozhodnutí z otázky 6); rytmické ťukání používá vizuální metronom.
+- **Expanding Optical Tunnel, Peripheral Reading, Peripheral „Where's Waldo“, ADAT, Dual-Task interference**: subjektivní nebo velmi složité na vyhodnocení; kandidáti na další fázi, až bude jasné, jak je měřit.
+- **Flash Memory / Grid Pattern Shift** je totéž co paměťová matice; **Visual Search / Cancellation** pokrývá vizuální hledání a hledání reflektorem.
 
 ## 6. Nástroje, testování, kvalita
 

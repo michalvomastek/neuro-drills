@@ -3,6 +3,8 @@ extends TrialDrill
 
 const DISC_SIZE := 220.0
 
+var _adaptive: bool = false
+var _adaptive_check: CheckBox
 var _logic: GoNoGoLogic
 var _pad: Button
 var _disc: Panel
@@ -18,6 +20,26 @@ func _trial_options() -> Array[int]:
 
 func _default_trials() -> int:
 	return 30
+
+
+func _build_extras(parent: VBoxContainer) -> void:
+	_adaptive_check = CheckBox.new()
+	_adaptive_check.text = tr("GONOGO_OPT_ADAPTIVE")
+	parent.add_child(_adaptive_check)
+
+
+func _apply_extra_config(config: Dictionary) -> void:
+	_adaptive = config.get("adaptive", false)
+	_adaptive_check.button_pressed = _adaptive
+
+
+func _collect_extra_config() -> Dictionary:
+	return {"adaptive": _adaptive}
+
+
+func _on_start_pressed() -> void:
+	_adaptive = _adaptive_check.button_pressed
+	super()
 
 
 func _build_play_area(parent: Control) -> void:
@@ -45,8 +67,14 @@ func _handle_response(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _reset_play_state() -> void:
+	_stimulus_active = false
+	if _disc != null:
+		_disc.visible = false
+
+
 func _run_trials() -> void:
-	_logic = GoNoGoLogic.new(trials, _rng)
+	_logic = GoNoGoLogic.new(trials, _rng, _adaptive)
 	_next_trial()
 
 
@@ -61,7 +89,7 @@ func _next_trial() -> void:
 	_disc.visible = true
 	_stimulus_active = true
 	_stimulus_ms = Time.get_ticks_msec()
-	if not await _wait(GoNoGoLogic.STIMULUS_MS / 1000.0):
+	if not await _wait(_logic.stimulus_ms() / 1000.0):
 		return
 	if stimulus != _stimulus_id or not _stimulus_active:
 		return
@@ -82,7 +110,10 @@ func _on_response() -> void:
 
 func _advance() -> void:
 	_disc.visible = false
-	_set_progress(_logic.current)
+	if _adaptive:
+		_set_progress_text("%d ms   %d / %d" % [roundi(_logic.stimulus_ms()), _logic.current, trials])
+	else:
+		_set_progress(_logic.current)
 	if _logic.is_done():
 		_complete(_logic.build_result(definition.id, get_config()))
 	else:

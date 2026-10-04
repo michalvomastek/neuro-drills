@@ -36,6 +36,12 @@ func _layout_blocks() -> void:
 		_blocks[i].size = Vector2.ONE * CorsiLogic.BLOCK_SIZE * side
 
 
+func _reset_play_state() -> void:
+	_accepting = false
+	for block in _blocks:
+		_clear_pad_flash(block)
+
+
 func _run_trials() -> void:
 	_logic = CorsiLogic.new(_rng)
 	_play_round()

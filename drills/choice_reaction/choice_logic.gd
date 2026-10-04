@@ -1,4 +1,5 @@
-## Two-choice reaction: a side is cued, the matching side must be pressed.
+## Two-choice reaction: a side is cued and the matching side must be pressed,
+## or the opposite one when [member mirrored] is set (anti-saccade).
 class_name ChoiceLogic
 extends RefCounted
 
@@ -6,6 +7,7 @@ const MIN_DELAY_MS := 800
 const MAX_DELAY_MS := 1800
 
 var trials: int
+var mirrored: bool
 ## Cued side per trial: 0 = left, 1 = right.
 var sides: Array[int] = []
 var current: int = 0
@@ -14,8 +16,9 @@ var wrong_count: int = 0
 var _rng: RandomNumberGenerator
 
 
-func _init(p_trials: int, rng: RandomNumberGenerator) -> void:
+func _init(p_trials: int, rng: RandomNumberGenerator, p_mirrored: bool = false) -> void:
 	trials = p_trials
+	mirrored = p_mirrored
 	_rng = rng
 	for i in trials:
 		sides.append(_rng.randi_range(0, 1))
@@ -29,9 +32,14 @@ func current_side() -> int:
 	return sides[current]
 
 
+## The side that has to be pressed for the current trial.
+func correct_side() -> int:
+	return 1 - sides[current] if mirrored else sides[current]
+
+
 ## Records the answer for the current trial and advances; returns whether it was correct.
 func record_response(side: int, rt_ms: int) -> bool:
-	var correct := side == sides[current]
+	var correct := side == correct_side()
 	if correct:
 		stats.add(rt_ms)
 	else:

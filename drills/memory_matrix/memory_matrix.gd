@@ -64,6 +64,10 @@ func _build_grid() -> void:
 		_cells.append(cell)
 
 
+func _reset_play_state() -> void:
+	_accepting = false
+
+
 func _run_trials() -> void:
 	_logic = MatrixLogic.new(_size, trials, _rng)
 	_build_grid()

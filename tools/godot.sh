@@ -10,6 +10,8 @@
 #                           configured as errors in project.godot
 #   test [args...]          run tests/run_tests.gd headless
 #   docs                    dump the engine class reference (XML) for offline API lookup
+#   smoke                   start every registered drill with the countdown on and verify it
+#                           runs (software rendering under Xvfb when there is no display)
 #   screenshot <scene> <out.png> [WxH] [frames]
 #                           render a scene with software OpenGL (Xvfb when there is no display)
 #                           and save the main viewport as PNG
@@ -140,6 +142,17 @@ cmd_screenshot() {
   fi
 }
 
+cmd_smoke() {
+  local -a cmd=("$GODOT" --path "$REPO_ROOT" --rendering-driver opengl3 --audio-driver Dummy
+    --resolution 1280x720 -s res://tools/smoke_drills.gd)
+  if [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]] && command -v xvfb-run >/dev/null 2>&1; then
+    LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "${cmd[@]}" 2>&1 | grep -vE '^Godot Engine v|^$|vsync|gl_manager'
+  else
+    "${cmd[@]}" 2>&1 | grep -vE '^Godot Engine v|^$'
+  fi
+  return "${PIPESTATUS[0]}"
+}
+
 cmd_exec() {
   "$GODOT" "$@"
 }
@@ -160,6 +173,7 @@ main() {
     test) cmd_test "$@" ;;
     docs) cmd_docs "$@" ;;
     screenshot) cmd_screenshot "$@" ;;
+    smoke) cmd_smoke "$@" ;;
     exec) cmd_exec "$@" ;;
     *) die "unknown command: $command" ;;
   esac

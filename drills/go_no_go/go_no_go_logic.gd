@@ -4,10 +4,16 @@ extends RefCounted
 
 const GO_RATIO := 0.75
 const STIMULUS_MS := 900
+const ADAPTIVE_MIN_MS := 150.0
+const ADAPTIVE_STEP_DOWN_MS := 15.0
+const ADAPTIVE_STEP_UP_MS := 30.0
 const MIN_GAP_MS := 600
 const MAX_GAP_MS := 1400
 
 var trials: int
+## When set, the stimulus duration shortens after each correct trial and grows after an error.
+var adaptive: bool
+var staircase := Staircase.new(STIMULUS_MS, ADAPTIVE_MIN_MS, STIMULUS_MS * 2.0, ADAPTIVE_STEP_DOWN_MS, ADAPTIVE_STEP_UP_MS)
 ## True where the trial is a go trial.
 var is_go: Array[bool] = []
 var current: int = 0
@@ -18,8 +24,9 @@ var correct_rejections: int = 0
 var _rng: RandomNumberGenerator
 
 
-func _init(p_trials: int, rng: RandomNumberGenerator) -> void:
+func _init(p_trials: int, rng: RandomNumberGenerator, p_adaptive: bool = false) -> void:
 	trials = p_trials
+	adaptive = p_adaptive
 	_rng = rng
 	var go_count := maxi(1, roundi(trials * GO_RATIO))
 	for i in trials:
@@ -40,6 +47,11 @@ func current_is_go() -> bool:
 	return is_go[current]
 
 
+## How long the current stimulus stays on screen.
+func stimulus_ms() -> float:
+	return staircase.value if adaptive else float(STIMULUS_MS)
+
+
 ## A response during the current stimulus. Returns true when it was correct (a hit).
 func record_response(rt_ms: int) -> bool:
 	var correct := is_go[current]
@@ -47,6 +59,7 @@ func record_response(rt_ms: int) -> bool:
 		hit_stats.add(rt_ms)
 	else:
 		false_alarms += 1
+	staircase.record(correct)
 	current += 1
 	return correct
 
@@ -58,6 +71,7 @@ func record_no_response() -> bool:
 		correct_rejections += 1
 	else:
 		misses += 1
+	staircase.record(correct)
 	current += 1
 	return correct
 
@@ -83,6 +97,8 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_FALSE_ALARMS", str(false_alarms)]),
 		PackedStringArray(["RESULT_MISSES", str(misses)]),
 	]
+	if adaptive:
+		result.summary_rows.append(PackedStringArray(["GONOGO_THRESHOLD", Format.millis(staircase.best) if staircase.has_threshold() else "–"]))
 	result.details = {
 		"hit_times_ms": hit_stats.times_ms.duplicate(),
 		"misses": misses,

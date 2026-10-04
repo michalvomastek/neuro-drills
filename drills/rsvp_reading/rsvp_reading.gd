@@ -64,6 +64,8 @@ func _run_trials() -> void:
 	var text_key: String = RsvpLogic.PASSAGES[passage_index]["text"]
 	_logic = RsvpLogic.new(_wpm, passage_index, tr(text_key))
 	_question_box.visible = false
+	for button in _answer_buttons:
+		button.remove_theme_color_override("font_color")
 	_set_progress_text("%d %s" % [_wpm, tr("RSVP_WPM_UNIT")])
 	_word.text = "•"
 	if not await _wait(1.0):

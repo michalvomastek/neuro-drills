@@ -8,15 +8,30 @@ extends Control
 
 func _ready() -> void:
 	var first_button: Button = null
-	for definition in DrillRegistry.get_all():
-		var button := _add_drill_entry(definition)
-		if first_button == null:
-			first_button = button
+	for category in DrillRegistry.CATEGORY_ORDER:
+		var definitions := DrillRegistry.get_by_category(category)
+		if definitions.is_empty():
+			continue
+		_add_category_header(category)
+		for definition in definitions:
+			var button := _add_drill_entry(definition)
+			if first_button == null:
+				first_button = button
 	_language_button.pressed.connect(_on_language_pressed)
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
 	if first_button != null:
 		first_button.grab_focus()
+
+
+## A header row spanning both grid columns.
+func _add_category_header(category_key: String) -> void:
+	var header := Label.new()
+	header.text = tr(category_key)
+	header.theme_type_variation = &"DimLabel"
+	header.add_theme_font_size_override("font_size", 22)
+	_drill_list.add_child(header)
+	_drill_list.add_child(Control.new())
 
 
 func _add_drill_entry(definition: DrillDefinition) -> Button:

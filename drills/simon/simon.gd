@@ -44,6 +44,12 @@ func _light(index: int) -> void:
 	_set_pad_color(_pads[index], PAD_COLORS[index].lightened(0.15))
 
 
+func _reset_play_state() -> void:
+	_accepting = false
+	for i in _pads.size():
+		_dim(i)
+
+
 func _run_trials() -> void:
 	_logic = SimonLogic.new(_rng)
 	_play_round()

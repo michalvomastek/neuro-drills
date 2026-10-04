@@ -79,6 +79,13 @@ func _on_start_pressed() -> void:
 	super()
 
 
+func _reset_play_state() -> void:
+	_window_open = false
+	_current = -1
+	for cell in _cells:
+		cell.add_theme_stylebox_override("panel", _cell_style)
+
+
 func _run_trials() -> void:
 	_logic = NBackLogic.new(_level, trials, _rng)
 	_set_progress_text("%d-back   0 / %d" % [_level, trials])

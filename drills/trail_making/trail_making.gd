@@ -2,9 +2,14 @@
 extends TrialDrill
 
 const NODE_SIZE := 0.1
+const DRIFT_SPEED := 0.06
 
 var _part_b: bool = false
 var _part_b_check: CheckBox
+## Kinetic variant: nodes drift slowly and bounce off the board edges.
+var _moving: bool = false
+var _moving_check: CheckBox
+var _velocities: Array[Vector2] = []
 var _logic: TrailLogic
 var _board: Control
 var _lines: TrailLines
@@ -25,19 +30,25 @@ func _build_extras(parent: VBoxContainer) -> void:
 	_part_b_check = CheckBox.new()
 	_part_b_check.text = tr("TRAIL_OPT_PART_B")
 	parent.add_child(_part_b_check)
+	_moving_check = CheckBox.new()
+	_moving_check.text = tr("TRAIL_OPT_MOVING")
+	parent.add_child(_moving_check)
 
 
 func _apply_extra_config(config: Dictionary) -> void:
 	_part_b = config.get("part_b", false)
 	_part_b_check.button_pressed = _part_b
+	_moving = config.get("moving", false)
+	_moving_check.button_pressed = _moving
 
 
 func _collect_extra_config() -> Dictionary:
-	return {"part_b": _part_b}
+	return {"part_b": _part_b, "moving": _moving}
 
 
 func _on_start_pressed() -> void:
 	_part_b = _part_b_check.button_pressed
+	_moving = _moving_check.button_pressed
 	super()
 
 
@@ -66,9 +77,39 @@ func _run_trials() -> void:
 		node.pressed.connect(_on_node_pressed.bind(i))
 		_board.add_child(node)
 		_nodes.append(node)
+	_velocities.clear()
+	for i in _logic.count:
+		var angle := _rng.randf_range(0.0, TAU)
+		_velocities.append(Vector2(cos(angle), sin(angle)) * DRIFT_SPEED)
 	_layout_nodes()
-	_set_progress_text(tr("SCHULTE_NEXT_TARGET") % 1 if not _part_b else "1")
+	_set_progress_text(_logic.labels[0])
 	_started_at_ms = Time.get_ticks_msec()
+
+
+func _process(delta: float) -> void:
+	if not _running or not _moving or _logic == null or _logic.finished:
+		return
+	for i in _logic.positions.size():
+		var p := _logic.positions[i] + _velocities[i] * delta
+		if p.x < TrailLogic.MARGIN or p.x > 1.0 - TrailLogic.MARGIN:
+			_velocities[i].x = -_velocities[i].x
+		if p.y < TrailLogic.MARGIN or p.y > 1.0 - TrailLogic.MARGIN:
+			_velocities[i].y = -_velocities[i].y
+		_logic.positions[i] = p.clamp(Vector2.ONE * TrailLogic.MARGIN, Vector2.ONE * (1.0 - TrailLogic.MARGIN))
+	# Keep nodes from overlapping: push close pairs apart and exchange their headings.
+	for i in _logic.positions.size():
+		for j in range(i + 1, _logic.positions.size()):
+			var between := _logic.positions[j] - _logic.positions[i]
+			var distance := between.length()
+			if distance < NODE_SIZE * 1.1 and distance > 0.0:
+				var normal := between / distance
+				var push := (NODE_SIZE * 1.1 - distance) * 0.5
+				_logic.positions[i] -= normal * push
+				_logic.positions[j] += normal * push
+				var swap := _velocities[i]
+				_velocities[i] = _velocities[j]
+				_velocities[j] = swap
+	_layout_nodes()
 
 
 func _layout_nodes() -> void:

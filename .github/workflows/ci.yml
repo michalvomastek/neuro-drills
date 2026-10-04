@@ -32,6 +32,9 @@ jobs:
       - name: Install Xvfb and Mesa
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends xvfb libgl1-mesa-dri
 
+      - name: Smoke-start every drill
+        run: tools/godot.sh smoke
+
       - name: Render screenshots
         run: |
           mkdir -p screenshots

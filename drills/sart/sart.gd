@@ -30,6 +30,12 @@ func _handle_response(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _reset_play_state() -> void:
+	_window_open = false
+	if _digit != null:
+		_digit.text = ""
+
+
 func _run_trials() -> void:
 	_logic = SartLogic.new(trials, _rng)
 	if not await _wait(1.0):

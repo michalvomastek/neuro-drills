@@ -72,6 +72,7 @@ func _play_round() -> void:
 	_answer.clear()
 	_display.text = ""
 	_display.remove_theme_color_override("font_color")
+	_display.add_theme_font_size_override("font_size", 120)
 	_set_progress_text(tr("SPAN_LENGTH") % _logic.tracker.length)
 	var sequence := _logic.new_sequence()
 	if not await _wait(0.8):

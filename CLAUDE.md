@@ -26,10 +26,11 @@ Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it f
 | `check [files]` | import, then load every `.gd` file (or the given ones) inside a running project via `tools/check_scripts.gd`; parse, analyzer and compile errors fail it, including warnings configured as errors and unknown autoload names (`--check-only` cannot see autoloads, so it is not used) |
 | `test` | run `tests/run_tests.gd` headless: every `tests/test_*.gd` extending `TestCase`, methods prefixed `test_` |
 | `docs` | dump the engine class reference XML to `~/.cache/neuro-drills/apidocs/`; grep it instead of guessing an API |
+| `smoke` | start every registered drill with the countdown on under Xvfb and verify it is running (`tools/smoke_drills.gd`); catches start-up regressions the logic tests cannot |
 | `screenshot <scene> <out.png> [WxH] [frames]` | render a scene with software OpenGL (Xvfb when there is no display) and save a PNG; `SCREENSHOT_LOCALE=cs` picks the language |
 | `exec [args]` | pass arbitrary arguments to the binary |
 
-Run `import`, `check` and `test` before every commit. `check` is also the fastest way to find out whether an API or a member exists in 4.7.
+Run `import`, `check`, `test` and `smoke` before every commit. `check` is also the fastest way to find out whether an API or a member exists in 4.7.
 
 ## Architecture in one paragraph
 
@@ -38,8 +39,10 @@ Run `import`, `check` and `test` before every commit. `check` is also the fastes
 ## Code conventions (GDScript)
 
 - Static typing everywhere: variables, parameters, return types, typed arrays. `project.godot` turns untyped declarations, unsafe method/property access, unsafe call arguments and unused variables into errors, so `check` enforces this. Use `:=` for inference and `as` for downcasts. Dictionary values are `Variant`: assign them to a typed variable first (`var n: int = dict["n"]`), do not pass them straight into `int()`/`bool()` or typed parameters.
+- Mouse motion events do not reliably reach `_unhandled_input` under Controls; read the pointer per frame instead (`get_local_mouse_position()`), parking it with `Input.warp_mouse()` when relative movement is needed (compensatory tracking).
 - A script started with `-s` (test runner, tools) is compiled before autoloads exist, so it must reach them through `root.get_node("SceneRouter")` and `call()`; ordinary scene scripts use the autoload names directly.
 - A logic method that advances state must do so even on a wrong answer; a test looping `while not is_done()` hangs forever otherwise (seen once when a dependency failed to load). Run tests with a timeout when in doubt.
+- Every drill that extends `TrialDrill` must clear its own flags, timers and highlights in `_reset_play_state()`; it runs on Back, on Start, on completion and once from `_ready()` before `_on_setup()`, so it must only touch nodes built in `_build_play_area()` or null-check them. `_wait()` only checks the run token, never `_running` (the countdown waits before `_running` is set).
 - The test runner cannot detect runtime errors inside a test (GDScript has no exceptions); read the `SCRIPT ERROR` lines in the test output, and keep `check` green first.
 - Naming: files and folders `snake_case`; classes `PascalCase`, with `class_name` only for shared types; constants `UPPER_SNAKE_CASE`; private members prefixed with `_`; signals in past tense (`drill_finished`).
 - One folder per drill under `drills/<drill_id>/`: scene, scene script, a pure-logic class (RefCounted, no Node access, takes a `RandomNumberGenerator` or a seed) and its tests. Scene code only translates input into logic calls and renders state.
@@ -54,5 +57,6 @@ Run `import`, `check` and `test` before every commit. `check` is also the fastes
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.
+- 2026-10-03: Schulte variants (letters, reverse, reshuffle, red-black, five-table test) and batches 4d-4f from the maintainer's neurotraining document delivered: 35 drills in 7 categories (`DrillDefinition.category_key`, menu headers). Shared: `Staircase`, `TrackingStats`, side labels, keypad. Shaders (`.gdshader`) for fog, Gabor patch and stripes. 3D, sensor and audio drills deliberately skipped (PLAN.md 5c).
 - 2026-10-03: batch 3 (Trail Making, visual search, SART, task switching, RSVP reading, number pyramid, flashing number, arithmetic sprint) delivered. Keypad and key mapping live in TrialDrill; RSVP passages are translation keys listed in `RsvpLogic.PASSAGES`. 19 drills in total.
 - 2026-10-03: batch 2 (memory family: N-back, Corsi, digit span, memory matrix, Simon) delivered. Span drills hide the trial-count row via `_uses_trial_count()` and share `SpanTracker`. Theme type `Board` holds cell/lit/selected colours.

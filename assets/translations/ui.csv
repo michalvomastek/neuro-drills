@@ -169,3 +169,87 @@ SCHULTE_TEST_T5,Tabulka 5,Table 5
 SCHULTE_TEST_ER,Efektivita práce (ER),Work efficiency (ER)
 SCHULTE_TEST_WU,Zapracování (WU = T1/ER),Warm-up (WU = T1/ER)
 SCHULTE_TEST_PS,Psychická stabilita (PS = T4/ER),Psychic stability (PS = T4/ER)
+GONOGO_OPT_ADAPTIVE,Adaptivní délka podnětu (hledání prahu),Adaptive stimulus duration (threshold search)
+GONOGO_THRESHOLD,Nejkratší zvládnutý podnět,Shortest stimulus mastered
+ANTI_TITLE,Anti-sakáda,Anti-saccade
+ANTI_DESCRIPTION,"Dívej se na kříž. Na jedné straně blikne kolečko, ty stiskni opačnou stranu. Trénuje potlačení reflexu.","Look at the cross. A disc flashes on one side; press the opposite side. Trains suppressing the reflex."
+SIMONEFFECT_TITLE,Simonův efekt,Simon effect
+SIMONEFFECT_DESCRIPTION,"Vlevo nebo vpravo se objeví šipka. Reaguj podle toho, kam ukazuje, ne kde je. Šipky na klávesnici nebo klik.","An arrow appears on the left or right. Respond to where it points, not where it is. Arrow keys or click."
+SIMON_EFFECT,Simonův efekt (rozdíl),Simon effect (difference)
+POSNER_TITLE,Posnerova nápověda,Posner cueing
+POSNER_DESCRIPTION,"Dívej se na kříž. Šipka uprostřed napoví stranu, pak se na jedné straně objeví kolečko. Stiskni jeho stranu co nejrychleji. Nápověda někdy lže.","Look at the cross. A central arrow hints a side, then a disc appears on one side. Press its side as fast as you can. The hint sometimes lies."
+POSNER_RT_VALID,Reakce po správné nápovědě,Reaction after a valid cue
+POSNER_RT_INVALID,Reakce po klamné nápovědě,Reaction after an invalid cue
+POSNER_EFFECT,Cena přesunu pozornosti,Cost of shifting attention
+PERIPHERAL_TITLE,Periferní záblesky,Peripheral bursts
+PERIPHERAL_DESCRIPTION,"Dívej se jen na číslici uprostřed. Kolem ní blikají kolečka, na každé klikni nebo stiskni mezerník. Na konci napiš, kolikrát se číslice uprostřed změnila.","Keep your eyes on the centre digit. Discs flash around it; click or press space on each one. At the end, type how many times the centre digit changed."
+PERIPHERAL_DETECTED,Zachycené záblesky,Flashes detected
+PERIPHERAL_CENTRE,Změny uprostřed (tvůj odhad / skutečnost),Centre changes (your count / actual)
+PERIPHERAL_QUESTION,Kolikrát se změnila číslice uprostřed?,How many times did the centre digit change?
+MASKING_TITLE,Vizuální maskování,Visual masking
+MASKING_DESCRIPTION,"Písmeno blikne jen na okamžik a hned ho překryje šum. Vyber, které jsi viděl. Po správné odpovědi se čas zkrátí.","A letter flashes for an instant and noise covers it. Pick the one you saw. A correct answer shortens the exposure."
+MASKING_THRESHOLD,Nejkratší rozpoznaná expozice,Shortest recognised exposure
+STAIRCASE_FINAL,Hodnota na konci,Final value
+TOJ_TITLE,Časové pořadí,Temporal order
+TOJ_DESCRIPTION,"Dvě kolečka se rozsvítí téměř současně. Stiskni stranu, která se rozsvítila první. Rozdíl se zmenšuje po správné odpovědi. Přesnost omezuje obnovovací frekvence monitoru.","Two discs light up almost together. Press the side that lit up first. The gap shrinks after a correct answer. Monitor refresh rate limits the precision."
+TOJ_THRESHOLD,Nejmenší rozlišený rozdíl,Smallest gap resolved
+TRAIL_OPT_MOVING,Pohyblivé uzly (kinetická verze),Moving nodes (kinetic version)
+MOT_TITLE,Sledování více objektů,Multiple object tracking
+MOT_DESCRIPTION,"Tři z deseti koleček se na chvíli zvýrazní. Pak se všechna rozhýbou. Sleduj ta tři a po zastavení na ně klikni.","Three of ten discs are highlighted briefly. Then everything moves. Keep track of the three and click them when the motion stops."
+MOT_TRACKED,Správně určená kolečka,Discs identified
+ANTICIPATION_TITLE,Odhad průsečíku,Coincidence anticipation
+ANTICIPATION_DESCRIPTION,"Kolečko letí ke svislé čáře a v polovině zmizí za stěnou. Stiskni mezerník nebo klikni přesně ve chvíli, kdy by protnulo čáru.","A disc moves towards the line and vanishes behind a wall halfway. Press space or click exactly when it would cross the line."
+ANTICIPATION_MEAN_ERROR,Průměrná odchylka,Mean error
+ANTICIPATION_BIAS,Systematická chyba,Bias
+ANTICIPATION_BEST,Nejlepší pokus,Best attempt
+ANTICIPATION_EARLY,příliš brzy,too early
+ANTICIPATION_LATE,příliš pozdě,too late
+COMPENSATORY_TITLE,Kompenzační sledování,Compensatory tracking
+COMPENSATORY_DESCRIPTION,"Modrá tečka neustále ujíždí od kříže. Pohybem myši nebo šipkami ji drž co nejblíž středu.","The blue dot keeps drifting away from the cross. Keep it as close to the centre as you can with the mouse or the arrow keys."
+TRACKING_DURATION,Délka (sekundy),Duration (seconds)
+TRACKING_MEAN_DISTANCE,Průměrná vzdálenost od středu,Mean distance from centre
+TRACKING_RMS,Efektivní odchylka (RMS),RMS deviation
+TRACKING_MAX,Největší odchylka,Largest deviation
+PURSUIT_TITLE,Plynulé sledování,Smooth pursuit
+PURSUIT_DESCRIPTION,"Kolečko plynule krouží po obrazovce. Drž na něm kurzor myši po celou dobu.","The disc glides around the screen. Keep the mouse pointer on it the whole time."
+PURSUIT_SPEED,Rychlost,Speed
+PURSUIT_MEAN_DISTANCE,Průměrná vzdálenost (v průměrech terče),Mean distance (in target diameters)
+PURSUIT_ON_TARGET,Čas na terči,Time on target
+ACUITY_TITLE,Dynamická ostrost,Dynamic visual acuity
+ACUITY_DESCRIPTION,"Přes obrazovku přeletí kroužek s mezerou. Po přeletu urči, kam mezera mířila: šipky nebo tlačítka. Po správné odpovědi zrychlí.","A ring with a gap flies across the screen. Afterwards say where the gap pointed: arrow keys or buttons. It speeds up after a correct answer."
+ACUITY_BEST_SPEED,Nejvyšší zvládnutá rychlost (šířek za s),Fastest speed mastered (widths per s)
+RHYTHM_TITLE,Rytmické ťukání,Rhythmic tapping
+RHYTHM_DESCRIPTION,"Ťukej mezerníkem nebo klikej přesně s pulzujícím kolečkem. Po osmi úderech pulzování přestane a ty pokračuješ ve stejném tempu zpaměti.","Tap space or click exactly with the pulsing disc. After eight beats the pulsing stops and you keep the same tempo from memory."
+RHYTHM_TEMPO,Tempo (BPM),Tempo (BPM)
+RHYTHM_TAP_ALONG,Ťukej do rytmu,Tap along
+RHYTHM_CONTINUE,Pokračuj bez nápovědy,Keep going without the cue
+RHYTHM_TARGET,Cílový interval,Target interval
+RHYTHM_MEAN,Tvůj průměrný interval,Your mean interval
+RHYTHM_DRIFT,Drift tempa,Tempo drift
+RHYTHM_JITTER,Kolísání (SD),Jitter (SD)
+ROTATION_TITLE,Mentální rotace,Mental rotation
+ROTATION_DESCRIPTION,"Vlevo je tvar, vpravo stejný tvar otočený, nebo jeho zrcadlový obraz. Rozhodni: stejný (šipka vlevo) nebo zrcadlový (šipka vpravo).","The shape on the left and, on the right, the same shape rotated or its mirror image. Decide: same (left arrow) or mirrored (right arrow)."
+ROTATION_SAME,Stejný (otočený),Same (rotated)
+ROTATION_MIRROR,Zrcadlový,Mirrored
+SPOTLIGHT_TITLE,Hledání reflektorem,Spotlight search
+SPOTLIGHT_DESCRIPTION,"Mezi písmeny L je pět písmen T, ale vidíš jen kruh kolem kurzoru. Prohledej plochu myší a na každé T klikni.","Five Ts hide among Ls, but you only see a circle around the pointer. Scan the board with the mouse and click every T."
+SPOTLIGHT_RADIUS,Velikost reflektoru (%),Spotlight size (%)
+SPOTLIGHT_PER_TARGET,Čas na jeden cíl,Time per target
+CONTRAST_TITLE,Kontrastní citlivost,Contrast sensitivity
+CONTRAST_DESCRIPTION,"Na šedé ploše se na chvíli objeví jemné pruhy. Urči jejich směr tlačítky nebo klávesami 1 až 4. Po správné odpovědi kontrast klesne.","Faint stripes appear briefly on grey. Pick their direction with the buttons or keys 1 to 4. Contrast drops after a correct answer."
+CONTRAST_LABEL,Kontrast,Contrast
+CONTRAST_THRESHOLD,Nejnižší rozpoznaný kontrast,Lowest contrast recognised
+CONTRAST_SENSITIVITY,Citlivost (1 / práh),Sensitivity (1 / threshold)
+OKN_TITLE,Optokinetické pruhy,Optokinetic stripes
+OKN_DESCRIPTION,"Pozadí se plynule posouvá. Drž pohled na číslici uprostřed a klikni nebo stiskni mezerník pokaždé, když se změní.","The background keeps scrolling. Keep your eyes on the centre digit and click or press space every time it changes."
+OKN_SPEED,Rychlost pruhů,Stripe speed
+OKN_DETECTED,Zachycené změny,Changes detected
+OKN_FALSE_ALARMS,Reakce bez změny,Responses without a change
+CATEGORY_ATTENTION,Pozornost a vyhledávání,Attention and search
+CATEGORY_REACTION,Reakční čas,Reaction time
+CATEGORY_EXECUTIVE,Exekutivní funkce a inhibice,Executive function and inhibition
+CATEGORY_MEMORY,Pracovní paměť,Working memory
+CATEGORY_VISION,Zrak a periferní vidění,Vision and peripheral sight
+CATEGORY_TIMING,Časování a anticipace,Timing and anticipation
+CATEGORY_MOTOR,Oko-ruka koordinace,Hand-eye coordination
+CATEGORY_OTHER,Ostatní,Other

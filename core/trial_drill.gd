@@ -79,6 +79,12 @@ func _run_trials() -> void:
 	pass
 
 
+## Called whenever a run stops or is about to start (Back, finish, Start):
+## clear timers, flags and leftover highlights here.
+func _reset_play_state() -> void:
+	pass
+
+
 ## Keyboard or other input while running; mouse input usually arrives through buttons.
 func _handle_response(_event: InputEvent) -> void:
 	pass
@@ -124,6 +130,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _show_setup() -> void:
 	_run_token += 1
 	_running = false
+	_reset_play_state()
 	_setup_panel.visible = true
 	_play_panel.visible = false
 	_countdown_panel.visible = false
@@ -139,6 +146,7 @@ func _on_start_pressed() -> void:
 func _begin_run() -> void:
 	_run_token += 1
 	_running = false
+	_reset_play_state()
 	_setup_panel.visible = false
 	_play_panel.visible = false
 	if countdown:
@@ -154,11 +162,13 @@ func _begin_run() -> void:
 	_run_trials()
 
 
-## Waits and tells whether the run is still the same one afterwards.
+## Waits and tells whether the run is still the same one afterwards. The token
+## changes on Back, Start and completion; the countdown waits before _running
+## is set, so this must not depend on _running.
 func _wait(seconds: float) -> bool:
 	var token := _run_token
 	await get_tree().create_timer(seconds).timeout
-	return token == _run_token and is_inside_tree() and _running
+	return token == _run_token and is_inside_tree()
 
 
 func _set_progress(done: int) -> void:
@@ -238,6 +248,7 @@ func _make_square_board(parent: Control) -> Control:
 func _complete(result: DrillResult) -> void:
 	_run_token += 1
 	_running = false
+	_reset_play_state()
 	finished.emit(result)
 
 
@@ -362,6 +373,27 @@ func _make_side_pads(parent: Control) -> Array[Button]:
 	for pad in pads:
 		box.add_child(pad)
 	return pads
+
+
+## Two labels centred in the left and right halves of [param parent], mouse-transparent.
+func _make_side_labels(parent: Control, font_size: int) -> Array[Label]:
+	var box := HBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_theme_constant_override("separation", 12)
+	parent.add_child(box)
+	var labels: Array[Label] = []
+	for i in 2:
+		var label := Label.new()
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", font_size)
+		box.add_child(label)
+		labels.append(label)
+	return labels
 
 
 ## A big centred label laid over the play area that ignores the mouse.
