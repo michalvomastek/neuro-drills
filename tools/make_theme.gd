@@ -383,9 +383,15 @@ func _build(p: Dictionary) -> Theme:
 	var panel := _shadowed(_box(_c(p, "panel"), PANEL_RADIUS, Vector4(32, 28, 32, 28)), _c(p, "shadow"), 16, Vector2(0, 8))
 	t.set_stylebox("panel", "Panel", panel)
 	t.set_stylebox("panel", "PanelContainer", panel)
-	# The one panel of a top-level screen; the app shell flattens it on a phone.
+	# The one panel of a top-level screen: no card, the content sits on the
+	# background between the app bars (maintainer's choice, 2026-10-05).
 	t.set_type_variation("Screen", "PanelContainer")
-	t.set_stylebox("panel", "Screen", panel)
+	var screen := StyleBoxEmpty.new()
+	screen.content_margin_left = 4
+	screen.content_margin_right = 4
+	screen.content_margin_top = 4
+	screen.content_margin_bottom = 4
+	t.set_stylebox("panel", "Screen", screen)
 	t.set_type_variation("Card", "PanelContainer")
 	t.set_stylebox("panel", "Card", _box(_c(p, "card"), CARD_RADIUS, Vector4(18, 14, 18, 14)))
 	t.set_type_variation("Sunken", "PanelContainer")
