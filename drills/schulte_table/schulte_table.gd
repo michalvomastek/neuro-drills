@@ -40,6 +40,7 @@ const DIM_FOUND_ALPHA := 0.3
 @onready var _fixation_dot: Control = %FixationDot
 @onready var _countdown_panel: Control = %CountdownPanel
 @onready var _countdown_label: Label = %CountdownLabel
+@onready var _countdown_instruction: Label = %CountdownInstruction
 
 var _config := SchulteConfig.new()
 var _logic: SchulteLogic
@@ -208,6 +209,7 @@ func _begin_table() -> void:
 	if _config.countdown:
 		# Only the countdown is on screen; the play panel (with its Back button) follows it.
 		_countdown_panel.visible = true
+		_countdown_instruction.text = tr(definition.description_key) if _table_index == 0 else ""
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
 		for i in range(COUNTDOWN_FROM, 0, -1):
 			_countdown_label.text = tr("COUNTDOWN_IN") % i
@@ -221,8 +223,6 @@ func _begin_table() -> void:
 			return
 		_countdown_panel.visible = false
 	_play_panel.visible = true
-	if _table_index == 0:
-		Drill.show_hint(self, tr(definition.description_key))
 	_grid.visible = true
 	_fixation_dot.visible = _config.fixation_dot
 	_started_at_ms = Time.get_ticks_msec()

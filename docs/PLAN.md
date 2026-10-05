@@ -253,7 +253,7 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 - [x] F25 Dotykové ovládání tréninku: kroky se přesouvají tažením za úchyt (na telefonu bez šipek), ovládací prvky jsou viditelná tlačítka.
 - [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
-- [x] F30 Karta s instrukcí hry nad herní plochou tři sekundy po odpočtu (`Drill.show_hint`), aby rychlý start i krok tréninku byly stejně srozumitelné jako panel nastavení.
+- [x] F30 Instrukce hry se čte během odpočtu (pod „Start za 3“), aby rychlý start i krok tréninku byly stejně srozumitelné jako panel nastavení a nic nepřekrývalo podněty.
 - [x] F31 Bezpečné okraje iPhonu (výřez, domovský indikátor): hlavička webu vystavuje `env(safe-area-inset-*)`, `Layout.safe_insets` je převede na jednotky a kořen aplikace se o ně odsadí.
 - [x] F32 Výsledky: hlavní řádky a sekce „Více“ (další úroveň, kolísání, únava, nejlepší 3 z 5), aby se výsledek na telefonu vešel bez posouvání.
 - [x] F28 Odpočet se pletl s podněty (SART: „3“ z odpočtu vs. zakázaná trojka): odpočet říká „Start za 3“ v barvě akcentu s názvem hry nad ním, končí zeleným „Teď!“ a půlsekundovou prázdnou pauzou před prvním podnětem; totéž v Schulteho tabulce.

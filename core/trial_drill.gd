@@ -39,6 +39,7 @@ var _countdown_panel: CenterContainer
 var _countdown_label: Label
 var _countdown_hint: Label
 var _countdown_box: VBoxContainer
+var _countdown_instruction: Label
 
 
 func _ready() -> void:
@@ -191,6 +192,7 @@ func _begin_run() -> void:
 		# A fixed width keeps the hint from rewrapping when the count turns into the short "Go!".
 		_countdown_box.custom_minimum_size = Vector2(Layout.panel_width(self, 480.0), 0)
 		_countdown_hint.text = tr("COUNTDOWN_READY") % tr(definition.title_key)
+		_countdown_instruction.text = tr(definition.description_key)
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
 		for i in range(COUNTDOWN_FROM, 0, -1):
 			_countdown_label.text = tr("COUNTDOWN_IN") % i
@@ -204,7 +206,6 @@ func _begin_run() -> void:
 		if not await _wait(COUNTDOWN_GAP_SECONDS):
 			return
 	_play_panel.visible = true
-	Drill.show_hint(self, tr(definition.description_key))
 	_running = true
 	_set_progress(0)
 	_run_trials()
@@ -442,6 +443,14 @@ func _build_ui() -> void:
 	_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_countdown_label.add_theme_font_size_override("font_size", 72)
 	_countdown_box.add_child(_countdown_label)
+	# The instruction reads during the count, so a quick start or a training
+	# step is as clear as the setup panel without covering any stimulus.
+	_countdown_instruction = Label.new()
+	_countdown_instruction.theme_type_variation = &"DimLabel"
+	_countdown_instruction.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_countdown_instruction.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_countdown_instruction.add_theme_font_size_override("font_size", 18)
+	_countdown_box.add_child(_countdown_instruction)
 
 
 ## A large flat button that fires on press, used as a response pad or stimulus surface.
