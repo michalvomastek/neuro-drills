@@ -28,6 +28,17 @@ func _ready() -> void:
 	Layout.watch(self, _relayout)
 
 
+## The label column gets three fifths of a phone's width so most labels fit
+## on one line; a wide panel lets the value column take its natural width.
+func _size_row(label: Label, value_label: Label) -> void:
+	var narrow := Layout.is_narrow(self)
+	label.size_flags_stretch_ratio = 3.0
+	value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_END
+	value_label.size_flags_stretch_ratio = 2.0
+	# Wrapping needs a width to wrap to; a shrinking column would wrap per letter.
+	value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if narrow else TextServer.AUTOWRAP_OFF
+
+
 ## On a phone the panel takes the whole width, the RPE buttons drop under
 ## their label and the four buttons form two rows.
 func _relayout() -> void:
@@ -38,6 +49,8 @@ func _relayout() -> void:
 	_rpe_box.vertical = narrow
 	_rpe_buttons.columns = 5 if narrow else 10
 	_rows.add_theme_constant_override("h_separation", 12 if narrow else 32)
+	for i in range(0, _rows.get_child_count() - 1, 2):
+		_size_row(_rows.get_child(i) as Label, _rows.get_child(i + 1) as Label)
 	_buttons_spacer.visible = not narrow
 	_buttons.columns = 2 if narrow else 5
 	for child in _buttons.get_children():
@@ -175,6 +188,7 @@ func _add_row(label_key: String, value: String) -> void:
 	value_label.text = tr(value)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_rows.add_child(value_label)
+	_size_row(label, value_label)
 
 
 ## Opens a small dialog for a feedback note; the result and the environment

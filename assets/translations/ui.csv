@@ -309,19 +309,19 @@ CATEGORY_MOTOR_SHORT,Koordinace,Coordination
 CATEGORY_3D_SHORT,3D,3D
 CATEGORY_DUAL_SHORT,Dvojité úlohy,Dual tasks
 CATEGORY_OTHER_SHORT,Ostatní,Other
-RESULT_LEVEL,Úroveň (orientačně),Level (indicative)
+RESULT_LEVEL,Úroveň,Level
 RESULT_NEXT_LEVEL,Další úroveň od,Next level from
 LEVEL_BEGINNER,Začátečník,Beginner
 LEVEL_ADVANCED,Pokročilý,Advanced
 LEVEL_ELITE,Zkušený,Elite
 RESULT_FIRST_RUN,první kolo,first run
-RESULT_TREND,Oproti průměru posledních kol,Versus recent average
+RESULT_TREND,Trend,Trend
 RESULT_BEST,Osobní rekord,Personal best
 RESULT_NEW_BEST,Nový rekord!,New record!
 RESULT_BETTER,lepší,better
 RESULT_WORSE,horší,worse
-RESULT_VARIABILITY,Kolísání reakcí (SD),Reaction variability (SD)
-RESULT_FATIGUE,Index únavy (konec / začátek),Fatigue index (end / start)
+RESULT_VARIABILITY,Kolísání (SD),Variability (SD)
+RESULT_FATIGUE,Index únavy,Fatigue index
 RESULT_RPE,Namáhavost (1–10),Exertion (1–10)
 MENU_PROGRESS,Pokrok,Progress
 PROGRESS_TITLE,Pokrok,Progress

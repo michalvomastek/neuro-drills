@@ -48,3 +48,17 @@ func test_format_bound() -> void:
 	assert_eq(Benchmarks.format_bound(20000.0, "s"), Format.seconds(20000))
 	assert_eq(Benchmarks.format_bound(0.94, "%"), "94 %")
 	assert_eq(Benchmarks.format_bound(8.0, ""), "8")
+
+
+func test_config_match_across_types() -> void:
+	var r := DrillResult.new()
+	r.drill_id = &"schulte_table"
+	r.config = {"grid": 5, "symbols": "numbers"}
+	r.metrics = {"total_ms": 15000.0}
+	assert_true(Benchmarks.evaluate(r).is_empty(), "a config without grid_size matches no entry and must not raise")
+	r.config = {"grid_size": 5.0, "symbols": "numbers"}
+	assert_eq(Benchmarks.evaluate(r).get("level"), Benchmarks.Level.ELITE, "a float from JSON matches the int requirement; missing flags count as off")
+	r.config = {"grid_size": 5, "symbols": "numbers", "red_black": true}
+	var verdict := Benchmarks.evaluate(r)
+	assert_eq(verdict.get("metric"), "total_ms")
+	assert_true(verdict.has("level"))

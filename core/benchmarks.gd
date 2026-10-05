@@ -77,13 +77,30 @@ static func entry_for(result: DrillResult) -> Dictionary:
 		var requirements: Dictionary = entry.get("config", {})
 		var matches := true
 		for key: String in requirements:
-			# A flag that was added later is missing from old records; missing means off.
-			if result.config.get(key, false) != requirements[key]:
+			if not _matches(result.config.get(key), requirements[key]):
 				matches = false
 				break
 		if matches:
 			return entry
 	return {}
+
+
+## Compares a config value with a requirement across the types a config can
+## hold: a missing flag counts as off, numbers compare as floats (JSON gives
+## ints back as floats), and mixed types never match (GDScript raises on
+## bool != int).
+static func _matches(actual: Variant, required: Variant) -> bool:
+	if actual == null:
+		return required is bool and not required
+	if required is bool:
+		return actual is bool and actual == required
+	if required is int or required is float:
+		if actual is int or actual is float:
+			var a: float = actual
+			var r: float = required
+			return is_equal_approx(a, r)
+		return false
+	return actual is String and str(actual) == str(required)
 
 
 ## Band bounds for a drill and config whose benchmark metric is [param metric]:
