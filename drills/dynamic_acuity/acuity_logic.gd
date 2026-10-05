@@ -5,11 +5,13 @@ extends RefCounted
 
 enum Gap { UP, RIGHT, DOWN, LEFT }
 
-const START_SPEED := 0.6
+## Speeds in stage widths per second. The ceiling sits above the elite
+## band (3.2) and the step lets 13 straight correct answers reach it.
+const START_SPEED := 0.8
 const MIN_SPEED := 0.3
-const MAX_SPEED := 3.0
-const STEP_UP := 0.15
-const STEP_DOWN := 0.3
+const MAX_SPEED := 4.0
+const STEP_UP := 0.2
+const STEP_DOWN := 0.4
 
 var trials: int
 ## Speed in stage widths per second, driven by a staircase that goes "harder" on correct.

@@ -38,7 +38,7 @@ Pravidla:
 | RSVP čtení | slov/min | 450 | 800 | obě otázky správně (obě úrovně) |
 | Číselná pyramida | největší šíře | 55 % | 85 % | – |
 | Vizuální maskování | nejkratší expozice | 85 ms | 20 ms | – |
-| Dynamická ostrost | nejvyšší rychlost | 1,6 | 3,2 | – |
+| Dynamická ostrost | nejvyšší rychlost (šířky plochy/s; strop 4,0) | 1,6 | 3,2 | – |
 | Kontrastní citlivost | nejnižší kontrast | 15 % | 2 % | – |
 | Periferní záblesky | zachyceno | 80 % | 95 % | odhad středu přesný / chyba > 3 |
 | Periferní vzor | správné sektory | 80 % | 95 % | odhad středu přesný / chyba > 3 |
