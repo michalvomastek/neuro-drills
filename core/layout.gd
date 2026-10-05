@@ -35,6 +35,10 @@ static func apply_scale(window: Window) -> void:
 ## iPhone notch and home indicator in a web app on the home screen). The web
 ## head include exposes them through window.neuroSafeArea; elsewhere zero.
 static func safe_insets(window: Window) -> Vector2:
+	# NEURO_SAFE_INSETS="top,bottom" (design units) fakes them for headless renders.
+	var forced := OS.get_environment("NEURO_SAFE_INSETS").split(",")
+	if forced.size() == 2:
+		return Vector2(maxf(0.0, float(forced[0])), maxf(0.0, float(forced[1])))
 	if not OS.has_feature("web"):
 		return Vector2.ZERO
 	var raw: Variant = JavaScriptBridge.eval("(function(){try{var a=window.neuroSafeArea?window.neuroSafeArea():null;if(!a){return '0,0';}var d=window.devicePixelRatio||1;return (a.top*d)+','+(a.bottom*d);}catch(e){return '0,0';}})()", true)

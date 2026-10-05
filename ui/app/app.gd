@@ -37,6 +37,8 @@ const TITLES: Dictionary = {
 
 var _screen: StringName = &""
 var _tabs: Dictionary = {}
+## Top and bottom safe-area insets of the device in design units.
+var _insets: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -101,7 +103,9 @@ func _on_screen_changed(screen: StringName) -> void:
 	_top_bar.visible = chrome
 	_bottom_bar.visible = chrome
 	if not chrome:
+		_apply_insets()
 		return
+	_apply_insets()
 	var title_key: String = TITLES[screen]
 	_title_label.text = title_key
 	_back_button.visible = not _tabs.has(screen)
@@ -126,9 +130,8 @@ const NAV_MAX_WIDTH := 640.0
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
-	var insets := Layout.safe_insets(get_tree().root)
-	offset_top = insets.x
-	offset_bottom = -insets.y
+	_insets = Layout.safe_insets(get_tree().root)
+	_apply_insets()
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
@@ -137,6 +140,26 @@ func _apply_scale() -> void:
 	_title_label.add_theme_font_size_override("font_size", 20 if Layout.is_narrow(self) else 24)
 	if _top_bar.visible:
 		_refresh_stats()
+
+
+## With the bars shown they reach the edges of the screen and grow their
+## own padding by the notch and the home indicator, as native tab bars do;
+## a screen without bars is inset as a whole instead.
+func _apply_insets() -> void:
+	var chrome := _top_bar.visible
+	offset_top = 0.0 if chrome else _insets.x
+	offset_bottom = 0.0 if chrome else -_insets.y
+	_pad_bar(_top_bar, &"TopBar", SIDE_TOP, _insets.x)
+	_pad_bar(_bottom_bar, &"BottomBar", SIDE_BOTTOM, _insets.y)
+
+
+func _pad_bar(bar: PanelContainer, variation: StringName, side: Side, extra: float) -> void:
+	bar.remove_theme_stylebox_override("panel")
+	if extra <= 0.0:
+		return
+	var style := get_theme_stylebox("panel", variation).duplicate() as StyleBox
+	style.set_content_margin(side, style.get_content_margin(side) + extra)
+	bar.add_theme_stylebox_override("panel", style)
 
 
 static func _icon(name: String) -> Texture2D:
@@ -152,6 +175,7 @@ func _on_node_added(node: Node) -> void:
 
 func _on_theme_changed(name: String) -> void:
 	apply_theme(self, name)
+	_apply_insets()
 
 
 ## Loads ui/theme/<name>_theme.tres onto [param host] (every screen inherits it)
