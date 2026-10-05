@@ -97,7 +97,9 @@ func _build_tab_strip() -> void:
 		button.text = _tabs.get_tab_title(i)
 		button.toggle_mode = true
 		button.focus_mode = Control.FOCUS_NONE
-		button.pressed.connect(func() -> void: _tabs.current_tab = i)
+		button.pressed.connect(func() -> void:
+			_tabs.current_tab = i
+			_update_tab_strip())
 		_tab_buttons.add_child(button)
 		_strip_buttons.append(button)
 	_update_tab_strip()

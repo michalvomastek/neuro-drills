@@ -65,11 +65,12 @@ func _on_next_pressed() -> void:
 		_finish(true)
 
 
-## Marks the introduction as seen; [param start_training] opens a short first training.
+## Marks the introduction as seen; [param start_training] opens a short first
+## training without touching the saved training length (the introduction can
+## be reopened from the settings).
 func _finish(start_training: bool) -> void:
 	StatsStore.set_onboarding_done(true)
 	if start_training:
-		StatsStore.set_training_minutes(FIRST_TRAINING_MINUTES)
 		SceneRouter.start_suggested_training(FIRST_TRAINING_MINUTES)
 	else:
 		SceneRouter.show_menu()
