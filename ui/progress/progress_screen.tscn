@@ -12,59 +12,65 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_progress")
 
-[node name="Margin" type="MarginContainer" parent="."]
-unique_name_in_owner = true
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="Margin" type="MarginContainer" parent="Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/margin_left = 80
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 80
 theme_override_constants/margin_bottom = 32
 
-[node name="Panel" type="PanelContainer" parent="Margin"]
+[node name="Panel" type="PanelContainer" parent="Scroll/Margin"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Margin/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Scroll/Margin/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Header" type="HBoxContainer" parent="Margin/Panel/VBox"]
+[node name="Header" type="HBoxContainer" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
 
-[node name="Titles" type="VBoxContainer" parent="Margin/Panel/VBox/Header"]
+[node name="Titles" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitleLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
+[node name="TitleLabel" type="Label" parent="Scroll/Margin/Panel/VBox/Header/Titles"]
 layout_mode = 2
 theme_type_variation = &"HeadingLabel"
 theme_override_font_sizes/font_size = 32
 text = "PROGRESS_TITLE"
 
-[node name="SubtitleLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
+[node name="SubtitleLabel" type="Label" parent="Scroll/Margin/Panel/VBox/Header/Titles"]
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "PROGRESS_SUBTITLE"
 
-[node name="WeekLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
+[node name="WeekLabel" type="Label" parent="Scroll/Margin/Panel/VBox/Header/Titles"]
 unique_name_in_owner = true
 layout_mode = 2
 autowrap_mode = 3
 
-[node name="BackButton" type="Button" parent="Margin/Panel/VBox/Header"]
+[node name="BackButton" type="Button" parent="Scroll/Margin/Panel/VBox/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 text = "COMMON_BACK"
 
-[node name="Separator" type="HSeparator" parent="Margin/Panel/VBox"]
+[node name="Separator" type="HSeparator" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
 
-[node name="EmptyLabel" type="Label" parent="Margin/Panel/VBox"]
+[node name="EmptyLabel" type="Label" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -74,13 +80,20 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Body" type="BoxContainer" parent="Margin/Panel/VBox"]
+[node name="Body" type="BoxContainer" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 24
 
-[node name="ListScroll" type="ScrollContainer" parent="Margin/Panel/VBox/Body"]
+[node name="VariantOption" type="OptionButton" parent="Scroll/Margin/Panel/VBox/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="ListScroll" type="ScrollContainer" parent="Scroll/Margin/Panel/VBox/Body"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
@@ -88,13 +101,13 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.9
 horizontal_scroll_mode = 0
 
-[node name="VariantList" type="VBoxContainer" parent="Margin/Panel/VBox/Body/ListScroll"]
+[node name="VariantList" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox/Body/ListScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="Detail" type="VBoxContainer" parent="Margin/Panel/VBox/Body"]
+[node name="Detail" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox/Body"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
@@ -102,30 +115,30 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.1
 theme_override_constants/separation = 12
 
-[node name="DetailTitle" type="Label" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="DetailTitle" type="Label" parent="Scroll/Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HeadingLabel"
 text_overrun_behavior = 3
 
-[node name="DetailVariant" type="Label" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="DetailVariant" type="Label" parent="Scroll/Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 autowrap_mode = 3
 
-[node name="DetailRows" type="GridContainer" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="DetailRows" type="GridContainer" parent="Scroll/Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 6
 columns = 2
 
-[node name="ChartHeader" type="HBoxContainer" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="ChartHeader" type="HBoxContainer" parent="Scroll/Margin/Panel/VBox/Body/Detail"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="ChartLabel" type="Label" parent="Margin/Panel/VBox/Body/Detail/ChartHeader"]
+[node name="ChartLabel" type="Label" parent="Scroll/Margin/Panel/VBox/Body/Detail/ChartHeader"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -133,50 +146,53 @@ theme_type_variation = &"DimLabel"
 text = "PROGRESS_CHART"
 autowrap_mode = 3
 
-[node name="RangeButtons" type="HBoxContainer" parent="Margin/Panel/VBox/Body/Detail/ChartHeader"]
+[node name="RangeButtons" type="HBoxContainer" parent="Scroll/Margin/Panel/VBox/Body/Detail/ChartHeader"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 4
 
-[node name="Sparkline" type="Control" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="Sparkline" type="Control" parent="Scroll/Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("2_sparkline")
 
-[node name="Footer" type="BoxContainer" parent="Margin/Panel/VBox"]
+[node name="Footer" type="HFlowContainer" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 8
 
-[node name="FooterSpacer" type="Control" parent="Margin/Panel/VBox/Footer"]
+[node name="FooterSpacer" type="Control" parent="Scroll/Margin/Panel/VBox/Footer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ExportButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+[node name="ExportButton" type="Button" parent="Scroll/Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "PROGRESS_EXPORT"
 
-[node name="BackupButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+[node name="BackupButton" type="Button" parent="Scroll/Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "PROGRESS_IMPORT_HINT"
 text = "PROGRESS_BACKUP"
 
-[node name="ImportButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+[node name="ImportButton" type="Button" parent="Scroll/Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "PROGRESS_IMPORT_HINT"
 text = "PROGRESS_IMPORT"
 
-[node name="ClearButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+[node name="ClearButton" type="Button" parent="Scroll/Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "PROGRESS_CLEAR"
 
-[node name="StatusLabel" type="Label" parent="Margin/Panel/VBox"]
+[node name="StatusLabel" type="Label" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"

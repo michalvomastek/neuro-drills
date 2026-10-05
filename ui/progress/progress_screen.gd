@@ -18,7 +18,8 @@ extends Control
 @onready var _margin: MarginContainer = %Margin
 @onready var _body: BoxContainer = %Body
 @onready var _list_scroll: ScrollContainer = %ListScroll
-@onready var _footer: BoxContainer = %Footer
+@onready var _footer_spacer: Control = %FooterSpacer
+@onready var _variant_option: OptionButton = %VariantOption
 @onready var _week_label: Label = %WeekLabel
 @onready var _chart_label: Label = %ChartLabel
 @onready var _range_buttons: HBoxContainer = %RangeButtons
@@ -39,6 +40,7 @@ var _web_import_callback: JavaScriptObject
 
 func _ready() -> void:
 	_back_button.pressed.connect(SceneRouter.show_menu)
+	_variant_option.item_selected.connect(func(index: int) -> void: _select(StatsStore.history.variants()[index]))
 	_export_button.pressed.connect(_on_export_pressed)
 	_backup_button.pressed.connect(_on_backup_pressed)
 	_import_button.pressed.connect(_on_import_pressed)
@@ -68,8 +70,10 @@ func _populate() -> void:
 	_export_button.disabled = variants.is_empty()
 	_backup_button.disabled = variants.is_empty()
 	_clear_button.disabled = variants.is_empty()
+	_variant_option.clear()
 	for variant in variants:
 		_add_variant_button(variant)
+		_variant_option.add_item(_variant_title(variant))
 	if _buttons.is_empty():
 		_back_button.grab_focus()
 	else:
@@ -88,11 +92,13 @@ func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
 	_body.vertical = narrow
-	_list_scroll.custom_minimum_size = Vector2(0, 150) if narrow else Vector2(320, 0)
-	_list_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
+	# A phone picks the variant from a dropdown (the whole screen scrolls, so
+	# a nested scrolling list would fight the finger); a wide screen lists them.
+	_list_scroll.visible = not narrow
+	_variant_option.visible = narrow
 	_detail.custom_minimum_size = Vector2(0, 0) if narrow else Vector2(320, 0)
 	_detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_footer.vertical = narrow
+	_footer_spacer.visible = not narrow
 
 
 func _on_export_pressed() -> void:
@@ -197,6 +203,8 @@ func _select(variant: String) -> void:
 		var selected := variants[i] == variant
 		_buttons[i].button_pressed = selected
 		_buttons[i].theme_type_variation = &"PrimaryButton" if selected else &""
+		if selected and _variant_option.selected != i:
+			_variant_option.select(i)
 	var definition := DrillRegistry.find(MetricCatalog.drill_id_of(variant))
 	_detail_title.text = tr(definition.title_key) if definition != null else variant
 	var label := MetricCatalog.variant_label(variant)
