@@ -10,6 +10,7 @@ var _flash: Panel
 var _flash_style: StyleBoxFlat
 var _question: VBoxContainer
 var _question_label: Label
+var _answer_label: Label
 var _answer: String = ""
 var _keypad: GridContainer
 var _window_open: bool = false
@@ -64,6 +65,7 @@ func _build_play_area(parent: Control) -> void:
 	_question_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_question_label.add_theme_font_size_override("font_size", 32)
 	_question.add_child(_question_label)
+	_answer_label = _make_answer_label(_question)
 	_keypad = _make_keypad(_question, _on_key)
 	_question.visible = false
 
@@ -136,6 +138,7 @@ func _ask_centre_count() -> void:
 	_pad.visible = false
 	_centre.text = ""
 	_question_label.text = tr("PERIPHERAL_QUESTION")
+	_answer_label.text = ""
 	_question.visible = true
 
 
@@ -152,4 +155,4 @@ func _on_key(key: String) -> void:
 		return
 	elif _answer.length() < 2:
 		_answer += key
-	_question_label.text = tr("PERIPHERAL_QUESTION") + ("\n" + _answer if not _answer.is_empty() else "")
+	_answer_label.text = _answer

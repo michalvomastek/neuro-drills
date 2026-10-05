@@ -232,6 +232,17 @@ const KEY_BACKSPACE_LABEL := "⌫"
 const KEY_OK_LABEL := "OK"
 
 
+## A line for the digits typed on the keypad. It reserves its height while
+## empty, so the keypad below does not jump when the first digit appears.
+func _make_answer_label(parent: Control, font_size: int = 40) -> Label:
+	var label := Label.new()
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.custom_minimum_size = Vector2(0, label.get_theme_font("font").get_height(font_size))
+	parent.add_child(label)
+	return label
+
+
 ## A 3x4 numeric keypad; [param on_key] receives the key label ("0".."9", "⌫", "OK").
 func _make_keypad(parent: Control, on_key: Callable) -> GridContainer:
 	var keypad := GridContainer.new()

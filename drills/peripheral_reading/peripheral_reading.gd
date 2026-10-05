@@ -12,6 +12,7 @@ var _target_hint: Label
 var _discs: Array[Panel] = []
 var _question: VBoxContainer
 var _question_label: Label
+var _answer_label: Label
 var _keypad: GridContainer
 var _answer: String = ""
 var _asking_step: int = 0
@@ -50,6 +51,7 @@ func _build_play_area(parent: Control) -> void:
 	_question_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_question_label.add_theme_font_size_override("font_size", 32)
 	_question.add_child(_question_label)
+	_answer_label = _make_answer_label(_question)
 	_keypad = _make_keypad(_question, _on_key)
 	_question.visible = false
 
@@ -109,6 +111,7 @@ func _ask(step: int) -> void:
 	_answer = ""
 	_target_hint.text = ""
 	_question_label.text = tr("READING_Q_LETTERS") % _logic.target_letter if step == 1 else tr("READING_Q_REDS")
+	_answer_label.text = ""
 	_question.visible = true
 
 
@@ -130,8 +133,7 @@ func _on_key(key: String) -> void:
 		return
 	elif _answer.length() < 2:
 		_answer += key
-	var base := tr("READING_Q_LETTERS") % _logic.target_letter if _asking_step == 1 else tr("READING_Q_REDS")
-	_question_label.text = base + ("\n" + _answer if not _answer.is_empty() else "")
+	_answer_label.text = _answer
 
 
 func _reset_play_state() -> void:
