@@ -8,10 +8,13 @@ extends Control
 @onready var _training_button: Button = %TrainingButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _stats: HFlowContainer = %Stats
+@onready var _tab_strip: ScrollContainer = %TabStrip
+@onready var _tab_buttons: HBoxContainer = %TabButtons
 @onready var _footer_spacer: Control = %Spacer
 @onready var _quit_button: Button = %QuitButton
 
 var _first_buttons: Array[Button] = []
+var _strip_buttons: Array[Button] = []
 var _grids: Array[GridContainer] = []
 
 
@@ -22,6 +25,7 @@ func _ready() -> void:
 			continue
 		_add_category_tab(category, definitions)
 	_tabs.current_tab = clampi(DrillRegistry.last_menu_tab, 0, maxi(0, _tabs.get_tab_count() - 1))
+	_build_tab_strip()
 	_tabs.tab_changed.connect(_on_tab_changed)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
@@ -42,6 +46,10 @@ func _relayout() -> void:
 		grid.columns = 1 if narrow else 2
 	_footer_spacer.visible = not narrow
 	_build_stats(narrow)
+	# The tab bar can only be paged with its small arrows; a phone gets a
+	# strip of pills that scrolls by dragging instead.
+	_tabs.tabs_visible = not narrow
+	_tab_strip.visible = narrow
 	_tabs.clip_tabs = narrow
 
 
@@ -78,7 +86,30 @@ func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]
 
 func _on_tab_changed(tab: int) -> void:
 	DrillRegistry.last_menu_tab = tab
+	_update_tab_strip()
 	_focus_current_tab()
+
+
+## One pill per category, mirroring the tab bar.
+func _build_tab_strip() -> void:
+	for i in _tabs.get_tab_count():
+		var button := Button.new()
+		button.text = _tabs.get_tab_title(i)
+		button.toggle_mode = true
+		button.focus_mode = Control.FOCUS_NONE
+		button.pressed.connect(func() -> void: _tabs.current_tab = i)
+		_tab_buttons.add_child(button)
+		_strip_buttons.append(button)
+	_update_tab_strip()
+
+
+func _update_tab_strip() -> void:
+	for i in _strip_buttons.size():
+		var selected := i == _tabs.current_tab
+		_strip_buttons[i].button_pressed = selected
+		_strip_buttons[i].theme_type_variation = &"SmallPrimaryButton" if selected else &"SmallButton"
+	if _tabs.current_tab >= 0 and _tabs.current_tab < _strip_buttons.size():
+		_tab_strip.ensure_control_visible(_strip_buttons[_tabs.current_tab])
 
 
 func _focus_current_tab() -> void:

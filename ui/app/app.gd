@@ -7,6 +7,9 @@ const DEFAULT_LOCALE := "cs"
 func _ready() -> void:
 	TranslationServer.set_locale(StatsStore.locale if not StatsStore.locale.is_empty() else DEFAULT_LOCALE)
 	apply_theme(self, StatsStore.theme_name)
+	get_tree().node_added.connect(_on_node_added)
+	for scroll in find_children("*", "ScrollContainer", true, false):
+		DragScroll.attach(scroll as ScrollContainer)
 	StatsStore.theme_changed.connect(_on_theme_changed)
 	Layout.watch(self, _apply_scale)
 	SceneRouter.attach(self)
@@ -18,6 +21,13 @@ func _ready() -> void:
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
+
+
+## Every list scrolls by dragging, not only through its scrollbar.
+func _on_node_added(node: Node) -> void:
+	var scroll := node as ScrollContainer
+	if scroll != null:
+		DragScroll.attach(scroll)
 
 
 func _on_theme_changed(name: String) -> void:
