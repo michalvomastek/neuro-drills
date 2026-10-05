@@ -40,6 +40,8 @@ const DIM_FOUND_ALPHA := 0.3
 @onready var _fixation_dot: Control = %FixationDot
 @onready var _countdown_panel: Control = %CountdownPanel
 @onready var _countdown_label: Label = %CountdownLabel
+@onready var _countdown_hint: Label = %CountdownHint
+@onready var _countdown_word: Label = %CountdownWord
 
 var _config := SchulteConfig.new()
 var _logic: SchulteLogic
@@ -198,6 +200,8 @@ func _begin_table() -> void:
 	_setup_panel.visible = false
 	_play_panel.visible = false
 	_build_grid()
+	_countdown_hint.text = tr("COUNTDOWN_READY") % tr(definition.title_key)
+	_countdown_word.visible = false
 	if _config.test_mode:
 		_countdown_panel.visible = true
 		_countdown_label.remove_theme_color_override("font_color")
@@ -210,11 +214,13 @@ func _begin_table() -> void:
 		# Only the countdown is on screen; the play panel (with its Back button) follows it.
 		_countdown_panel.visible = true
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
+		_countdown_word.visible = true
 		for i in range(COUNTDOWN_FROM, 0, -1):
-			_countdown_label.text = tr("COUNTDOWN_IN") % i
+			_countdown_label.text = str(i)
 			await get_tree().create_timer(1.0).timeout
 			if token != _run_token or not is_inside_tree():
 				return
+		_countdown_word.visible = false
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("green", "App"))
 		_countdown_label.text = tr("COUNTDOWN_GO")
 		await get_tree().create_timer(0.6).timeout

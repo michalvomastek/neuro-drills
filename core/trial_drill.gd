@@ -38,6 +38,7 @@ var _progress_label: Label
 var _countdown_panel: CenterContainer
 var _countdown_label: Label
 var _countdown_hint: Label
+var _countdown_word: Label
 var _countdown_box: VBoxContainer
 
 
@@ -192,10 +193,12 @@ func _begin_run() -> void:
 		_countdown_box.custom_minimum_size = Vector2(Layout.panel_width(self, 480.0), 0)
 		_countdown_hint.text = tr("COUNTDOWN_READY") % tr(definition.title_key)
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
+		_countdown_word.visible = true
 		for i in range(COUNTDOWN_FROM, 0, -1):
-			_countdown_label.text = tr("COUNTDOWN_IN") % i
+			_countdown_label.text = str(i)
 			if not await _wait(1.0):
 				return
+		_countdown_word.visible = false
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("green", "App"))
 		_countdown_label.text = tr("COUNTDOWN_GO")
 		if not await _wait(COUNTDOWN_GO_SECONDS):
@@ -439,6 +442,12 @@ func _build_ui() -> void:
 	_countdown_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_countdown_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_countdown_box.add_child(_countdown_hint)
+	# "Start in" on its own line, the number below it.
+	_countdown_word = Label.new()
+	_countdown_word.text = "COUNTDOWN_IN"
+	_countdown_word.theme_type_variation = &"HeadingLabel"
+	_countdown_word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_countdown_box.add_child(_countdown_word)
 	_countdown_label = Label.new()
 	_countdown_label.theme_type_variation = &"HeadingLabel"
 	_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
