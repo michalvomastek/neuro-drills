@@ -140,10 +140,10 @@ func _input(event: InputEvent) -> void:
 		_flash_pad(_right as Button, get_theme_color("selected", "Board"), 0.12)
 
 
-## [param relative] is in window pixels; the gain was tuned in design units.
+## Events reaching _input are already in design units (the viewport applies
+## the content scale before delivery), the same units the gain was tuned in.
 func _steer(relative: Vector2) -> void:
-	var scale := get_viewport().get_final_transform().get_scale()
-	_offset += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001)) * MOUSE_GAIN
+	_offset += relative * MOUSE_GAIN
 
 
 func _process(delta: float) -> void:

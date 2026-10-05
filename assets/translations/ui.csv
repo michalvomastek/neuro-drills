@@ -469,6 +469,7 @@ VARIANT_DURATION,%s s,%s s
 VARIANT_RADIUS,poloměr %s %%,radius %s %%
 VARIANT_SET_SIZE,%s znaků,%s symbols
 VARIANT_WPM,%s slov/min,%s wpm
+VARIANT_TOUCH,dotyk,touch
 VARIANT_SPEED,rychlost %s,speed %s
 VARIANT_RED_BLACK,červeno-černá,red-black
 VARIANT_REVERSE,pozpátku,reverse

@@ -88,8 +88,8 @@ func _input(event: InputEvent) -> void:
 		relative = drag.relative
 	else:
 		return
-	var scale := get_viewport().get_final_transform().get_scale()
-	_pointer_input += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001))
+	# Already in design units: the viewport scales events before _input.
+	_pointer_input += relative
 
 
 func _process(delta: float) -> void:

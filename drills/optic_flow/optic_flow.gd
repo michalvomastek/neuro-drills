@@ -134,9 +134,9 @@ func _input(event: InputEvent) -> void:
 		relative = drag.relative
 	else:
 		return
-	# Window pixels to design units, the gain was tuned in those.
-	var scale := get_viewport().get_final_transform().get_scale()
-	_pointer_input += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001))
+	# Events reaching _input are already in design units, like the old
+	# pointer deltas the gain was tuned for.
+	_pointer_input += relative
 
 
 func _run_trials() -> void:
