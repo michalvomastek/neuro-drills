@@ -36,13 +36,16 @@ func _ready() -> void:
 const BADGE_ICON_SIZE := 32.0
 
 
-func _size_row(label: Label, value_label: Label) -> void:
+## [param value] is a Label, or the icon-and-name box of a badge row.
+func _size_row(label: Label, value: Control) -> void:
 	var narrow := Layout.is_narrow(self)
 	label.size_flags_stretch_ratio = 3.0
-	value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_END
-	value_label.size_flags_stretch_ratio = 2.0
-	# Wrapping needs a width to wrap to; a shrinking column would wrap per letter.
-	value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if narrow else TextServer.AUTOWRAP_OFF
+	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_SHRINK_END
+	value.size_flags_stretch_ratio = 2.0
+	var value_label := value as Label
+	if value_label != null:
+		# Wrapping needs a width to wrap to; a shrinking column would wrap per letter.
+		value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if narrow else TextServer.AUTOWRAP_OFF
 
 
 ## On a phone the panel takes the whole width, the RPE buttons drop under
@@ -57,7 +60,7 @@ func _relayout() -> void:
 		grid.add_theme_constant_override("h_separation", 12 if narrow else 32)
 		grid.add_theme_constant_override("v_separation", 4 if narrow else 8)
 		for i in range(0, grid.get_child_count() - 1, 2):
-			_size_row(grid.get_child(i) as Label, grid.get_child(i + 1) as Label)
+			_size_row(grid.get_child(i) as Label, grid.get_child(i + 1) as Control)
 	_buttons_spacer.visible = not narrow
 	_buttons.columns = 2 if narrow else 5
 	for child in _buttons.get_children():
@@ -224,11 +227,7 @@ func _add_badge_row(id: String) -> void:
 	name.add_theme_color_override("font_color", get_theme_color("yellow", "App"))
 	value.add_child(name)
 	_rows.add_child(value)
-	_size_row(label, name)
-	value.size_flags_horizontal = name.size_flags_horizontal
-	value.size_flags_stretch_ratio = name.size_flags_stretch_ratio
-	name.size_flags_horizontal = Control.SIZE_SHRINK_END
-	name.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_size_row(label, value)
 
 
 func _on_more_pressed() -> void:
