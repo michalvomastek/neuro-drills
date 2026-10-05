@@ -18,6 +18,12 @@ var lower_is_better: bool = true:
 	set(v):
 		lower_is_better = v
 		queue_redraw()
+## Benchmark bounds drawn as dashed lines: {"advanced": x, "elite": y}; a bound
+## far outside the data range is left out so it cannot flatten the line.
+var bands: Dictionary = {}:
+	set(v):
+		bands = v
+		queue_redraw()
 ## Unit key understood by MetricCatalog.format_value ("ms", "s", "%", ...).
 var unit: String = "":
 	set(v):
@@ -43,6 +49,14 @@ func _draw() -> void:
 	for v in values:
 		low = minf(low, v)
 		high = maxf(high, v)
+	var shown_bands: Dictionary = {}
+	var data_span := maxf(maxf(high - low, absf(high) * 0.1), 0.000001)
+	for key: String in bands:
+		var bound: float = bands[key]
+		if bound >= low - data_span and bound <= high + data_span:
+			shown_bands[key] = bound
+			low = minf(low, bound)
+			high = maxf(high, bound)
 	var top_text := MetricCatalog.format_value(low if lower_is_better else high, unit)
 	var bottom_text := MetricCatalog.format_value(high if lower_is_better else low, unit)
 	var label_width := maxf(font.get_string_size(top_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x, font.get_string_size(bottom_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x)
@@ -76,6 +90,17 @@ func _draw() -> void:
 		var better := values[i] < values[best_index] if lower_is_better else values[i] > values[best_index]
 		if better:
 			best_index = i
+	for key: String in shown_bands:
+		var bound: float = shown_bands[key]
+		var tb := (bound - low) / span
+		if lower_is_better:
+			tb = 1.0 - tb
+		var by := rect.position.y + rect.size.y * (1.0 - tb)
+		var band_color := get_theme_color("level_elite" if key == "elite" else "level_advanced", "App")
+		draw_dashed_line(Vector2(rect.position.x, by), Vector2(rect.end.x, by), band_color, 1.5, 6.0)
+		var text := tr("LEVEL_ELITE" if key == "elite" else "LEVEL_ADVANCED")
+		var text_width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x
+		draw_string(font, Vector2(rect.end.x - text_width, by - 3.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, band_color)
 	if points.size() > 1:
 		draw_polyline(points, accent, 2.0, true)
 	for i in points.size():

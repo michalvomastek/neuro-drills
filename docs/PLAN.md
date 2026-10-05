@@ -232,10 +232,10 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [x] B9 (S) Týdenní souhrn na obrazovce Pokrok: kola, minuty, zlepšení za týden.
 
 ### C. Data a pokrok
-- [ ] C10 (M) Import historie ze souboru (spojení mobilu a počítače).
-- [ ] C11 (M) Index únavy u N-back a MOT (ukládat časy pokusů).
-- [ ] C12 (M) U prahových her „nejlepší 3 z posledních 5 dní“ místo jediného rekordu.
-- [ ] C13 (M) Graf v Pokroku s delší historií (20 / 50 / vše) a s hranicemi pásem.
+- [x] C10 (M) Import historie ze souboru: tlačítka Záloha (JSON Lines ke stažení) a Import (na webu přes `<input type=file>`, jinde přes `FileDialog`) na obrazovce Pokrok; sloučení podle id záznamu.
+- [x] C11 (M) Index únavy u N-back (časy odpovědí) a MOT (čas výběru za kolo) v `details.times_ms`.
+- [x] C12 (M) U prahových her (`MetricCatalog.THRESHOLD_DRILLS`) řádek „nejlepší 3 z posledních 5 dní“ ve výsledcích i v Pokroku (`StatsHistory.stable_best`).
+- [x] C13 (M) Graf v Pokroku s rozsahem 20 / 50 / vše a čárkovanými hranicemi pásem pokročilý a zkušený (`Benchmarks.bounds_for`), pokud leží blízko dat.
 - [ ] C14 (M) Revize pásem v `docs/BENCHMARKS.md` podle reálných dat (po pár týdnech hraní).
 
 ### D. Zvuk

@@ -445,3 +445,15 @@ BADGE_ALL_CATEGORIES,Všestrannost,All-rounder
 BADGE_ALL_CATEGORIES_DESC,Vyzkoušej hru z každé kategorie.,Try a drill from every category.
 BADGE_GOAL_7,Cíl celý týden,Goal all week
 BADGE_GOAL_7_DESC,Splň denní cíl sedm dní po sobě.,Reach the daily goal seven days running.
+RESULT_STABLE_BEST,Nejlepší 3 z posledních 5 dní,Best 3 of the last 5 days
+PROGRESS_STABLE_BEST,Nejlepší 3 z posledních 5 dní,Best 3 of the last 5 days
+PROGRESS_CHART_N,Posledních %d kol · čas zleva doprava · lepší výsledek výš,Last %d runs · time left to right · better results higher
+PROGRESS_CHART_ALL,Všechna kola · čas zleva doprava · lepší výsledek výš,All runs · time left to right · better results higher
+PROGRESS_CHART_BANDS,Čárkované čáry: hranice pásem pokročilý a zkušený,Dashed lines: bounds of the advanced and elite bands
+PROGRESS_RANGE_ALL,Vše,All
+PROGRESS_BACKUP,Záloha,Backup
+PROGRESS_IMPORT,Import,Import
+PROGRESS_IMPORT_TITLE,Vyber zálohu (neuro-drills-results.jsonl),Choose a backup (neuro-drills-results.jsonl)
+PROGRESS_IMPORTED,Importováno nových kol: %d,New runs imported: %d
+PROGRESS_IMPORT_NOTHING,Soubor neobsahuje žádné kolo,The file holds no run
+PROGRESS_IMPORT_HINT,Záloha stáhne historii jako soubor; Import ji na jiném zařízení přidá k té zdejší.,Backup downloads the history as a file; Import on another device merges it with the local one.

@@ -121,11 +121,23 @@ theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 6
 columns = 2
 
-[node name="ChartLabel" type="Label" parent="Margin/Panel/VBox/Body/Detail"]
+[node name="ChartHeader" type="HBoxContainer" parent="Margin/Panel/VBox/Body/Detail"]
 layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ChartLabel" type="Label" parent="Margin/Panel/VBox/Body/Detail/ChartHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"DimLabel"
 text = "PROGRESS_CHART"
 autowrap_mode = 3
+
+[node name="RangeButtons" type="HBoxContainer" parent="Margin/Panel/VBox/Body/Detail/ChartHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 4
 
 [node name="Sparkline" type="Control" parent="Margin/Panel/VBox/Body/Detail"]
 unique_name_in_owner = true
@@ -152,6 +164,18 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "PROGRESS_EXPORT"
 
+[node name="BackupButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "PROGRESS_IMPORT_HINT"
+text = "PROGRESS_BACKUP"
+
+[node name="ImportButton" type="Button" parent="Margin/Panel/VBox/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "PROGRESS_IMPORT_HINT"
+text = "PROGRESS_IMPORT"
+
 [node name="ClearButton" type="Button" parent="Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -163,6 +187,15 @@ layout_mode = 2
 theme_type_variation = &"DimLabel"
 horizontal_alignment = 2
 autowrap_mode = 3
+
+[node name="ImportDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "PROGRESS_IMPORT_TITLE"
+ok_button_text = "PROGRESS_IMPORT"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.jsonl, *.txt, *.json")
+use_native_dialog = true
 
 [node name="ClearDialog" type="ConfirmationDialog" parent="."]
 unique_name_in_owner = true

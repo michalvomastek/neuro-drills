@@ -55,6 +55,7 @@ func setup(result: DrillResult) -> void:
 	_add_benchmark_rows(result)
 	_record = StatsStore.record(result)
 	_add_history_rows(_record)
+	_add_stable_best_row(_record)
 	_add_reward_rows(_record)
 	_build_rpe_row()
 	_apply_training_mode()
@@ -73,6 +74,19 @@ func _apply_training_mode() -> void:
 	_heading_label.text = tr("TRAINING_STEP_HEADING") % [done, total]
 	_settings_button.visible = false
 	_again_button.text = tr("TRAINING_NEXT") % [done + 1, total] if training.has_next() else tr("TRAINING_FINISH")
+
+
+## For staircase drills: the mean of the best 3 runs of the last 5 days.
+func _add_stable_best_row(record: Dictionary) -> void:
+	var drill_id: String = record["drill_id"]
+	if not MetricCatalog.THRESHOLD_DRILLS.has(drill_id):
+		return
+	var variant: String = record["variant"]
+	var stable := StatsStore.history.stable_best(variant, int(Time.get_unix_time_from_system()))
+	if is_nan(stable):
+		return
+	var unit: String = record["unit"]
+	_add_row("RESULT_STABLE_BEST", MetricCatalog.format_value(stable, unit))
 
 
 ## Points for this run and any badge earned by it.
@@ -145,7 +159,7 @@ func _build_rpe_row() -> void:
 func _on_rpe_pressed(rpe: int) -> void:
 	for child in _rpe_buttons.get_children():
 		var button := child as Button
-		button.theme_type_variation = &"PrimaryButton" if button.button_pressed else &""
+		button.theme_type_variation = &"SmallPrimaryButton" if button.button_pressed else &"SmallButton"
 	var id: String = _record["id"]
 	StatsStore.set_rpe(id, rpe)
 

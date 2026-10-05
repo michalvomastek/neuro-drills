@@ -17,6 +17,8 @@ var velocities: Array[Vector2] = []
 var targets: Array[int] = []
 var selected: Array[int] = []
 var correct_total: int = 0
+## Time from the end of the movement to the last pick, per round.
+var times_ms: Array[float] = []
 var _rng: RandomNumberGenerator
 
 
@@ -130,6 +132,6 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["MOT_TRACKED", "%d / %d" % [correct_total, rounds * TARGET_COUNT]]),
 		PackedStringArray(["RESULT_ACCURACY", Format.percent(accuracy())]),
 	]
-	result.details = {"correct": correct_total, "rounds": rounds}
+	result.details = {"correct": correct_total, "rounds": rounds, "times_ms": times_ms.duplicate()}
 	result.metrics = {"accuracy": accuracy()}
 	return result

@@ -58,6 +58,9 @@ const COSMETIC_KEYS: Array[String] = [
 	"countdown", "show_timer", "show_errors", "show_next", "show_next_target",
 	"fixation_dot", "dim_found", "highlight_correct",
 ]
+## Drills measured by an adaptive staircase: one run is noisy, so the results
+## and progress screens also show the mean of the best 3 runs of the last 5 days.
+const THRESHOLD_DRILLS: Array[String] = ["visual_masking", "contrast_sensitivity", "temporal_order", "dynamic_acuity", "flash_number"]
 ## Drills whose primary metric is a total, so the trial count is part of the variant.
 const TRIALS_MATTER: Array[String] = ["trail_making"]
 

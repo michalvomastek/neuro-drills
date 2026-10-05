@@ -9,6 +9,7 @@ var _board: MotBoard
 var _moving: bool = false
 var _move_left: float = 0.0
 var _picking: bool = false
+var _pick_started_usec: int = 0
 
 
 func _trial_options() -> Array[int]:
@@ -35,6 +36,7 @@ func _process(delta: float) -> void:
 	if _move_left <= 0.0:
 		_moving = false
 		_picking = true
+		_pick_started_usec = Time.get_ticks_usec()
 		_board.show_selection = true
 		_board.queue_redraw()
 
@@ -73,6 +75,7 @@ func _on_disc_clicked(index: int) -> void:
 	if not _logic.is_round_complete():
 		return
 	_picking = false
+	_logic.times_ms.append((Time.get_ticks_usec() - _pick_started_usec) / 1000.0)
 	_logic.finish_round()
 	_board.reveal = true
 	_board.queue_redraw()

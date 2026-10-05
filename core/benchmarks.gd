@@ -85,6 +85,18 @@ static func entry_for(result: DrillResult) -> Dictionary:
 	return {}
 
 
+## Band bounds for a drill and config whose benchmark metric is [param metric]:
+## {"elite", "advanced", "lower"} or empty when none applies.
+static func bounds_for(drill_id: StringName, config: Dictionary, metric: String) -> Dictionary:
+	var probe := DrillResult.new()
+	probe.drill_id = drill_id
+	probe.config = config
+	var entry := entry_for(probe)
+	if entry.is_empty() or entry["metric"] != metric:
+		return {}
+	return {"elite": entry["elite"], "advanced": entry["advanced"], "lower": entry["lower"]}
+
+
 ## N-back is graded by level and accuracy rather than by one metric.
 static func _n_back_level(result: DrillResult) -> Level:
 	var n: float = result.metrics.get("level", 0.0)

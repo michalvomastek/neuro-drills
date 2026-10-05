@@ -130,7 +130,7 @@ func test_week_summary() -> void:
 		var r := DrillResult.new()
 		r.drill_id = &"reaction_time"
 		r.total_ms = 40000
-		r.metrics = {"median_rt_ms": 300.0 - i * 20}
+		r.metrics = {"median_rt_ms": 300.0 + i * 20}
 		r.finished_at_unix = now - i * 86400
 		history.add(StatsHistory.make_record(r))
 	var old := DrillResult.new()

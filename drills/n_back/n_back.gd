@@ -14,6 +14,7 @@ var _cell_style: StyleBoxFlat
 var _lit_style: StyleBoxFlat
 var _current: int = -1
 var _window_open: bool = false
+var _stimulus_at_usec: int = 0
 
 
 func _trial_options() -> Array[int]:
@@ -94,6 +95,7 @@ func _run_trials() -> void:
 	for i in trials:
 		_current = i
 		_cells[_logic.positions[i]].add_theme_stylebox_override("panel", _lit_style)
+		_stimulus_at_usec = Time.get_ticks_usec()
 		_window_open = true
 		if not await _wait(NBackLogic.STIMULUS_MS / 1000.0):
 			return
@@ -109,5 +111,5 @@ func _run_trials() -> void:
 func _on_response() -> void:
 	if not _running or not _window_open or _current < 0:
 		return
-	var hit := _logic.respond(_current)
+	var hit := _logic.respond(_current, (Time.get_ticks_usec() - _stimulus_at_usec) / 1000.0)
 	_flash_pad(_pad, get_theme_color("correct" if hit else "wrong_dim", "Pad"), 0.3)

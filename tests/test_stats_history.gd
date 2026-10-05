@@ -148,3 +148,41 @@ func test_serialize_roundtrip_and_rpe() -> void:
 	assert_eq(again.records.size(), 2)
 	assert_true(is_nan(StatsHistory.number(again.records[1], "variability_ms")))
 	assert_eq(again.for_variant("corsi_blocks").size(), 1)
+
+
+func test_stable_best_merge_and_chart_range() -> void:
+	var history := StatsHistory.new()
+	var day := 86400
+	var now := 10 * day
+	# thresholds: 40, 30, 20 (today..2 days ago), 10 nine days ago (outside the window)
+	for i in 3:
+		history.add(StatsHistory.make_record(_result(&"visual_masking", {"threshold_ms": 40.0 - 10 * i}, {"trials": 30}, {}, now - i * day)))
+	history.add(StatsHistory.make_record(_result(&"visual_masking", {"threshold_ms": 10.0}, {"trials": 30}, {}, now - 9 * day)))
+	var stable := history.stable_best("visual_masking", now)
+	assert_true(absf(stable - 30.0) < 0.001, "mean of 20, 30, 40: %f" % stable)
+	assert_true(is_nan(history.stable_best("visual_masking", now, 5, 4)), "only three runs in the window")
+	var higher := StatsHistory.new()
+	for v: float in [1.0, 3.0, 2.0, 2.5]:
+		higher.add(StatsHistory.make_record(_result(&"dynamic_acuity", {"best_speed": v}, {}, {}, now)))
+	assert_true(absf(higher.stable_best("dynamic_acuity", now) - 2.5) < 0.001, "best three of a higher-is-better metric")
+	# merge skips known ids and sorts by time
+	var other := StatsHistory.parse(history.serialize())
+	other.add(StatsHistory.make_record(_result(&"visual_masking", {"threshold_ms": 15.0}, {"trials": 30}, {}, now - 5 * day)))
+	assert_eq(history.merge(other), 1)
+	assert_eq(history.records.size(), 5)
+	assert_eq(history.merge(other), 0)
+	var previous := 0
+	for record in history.records:
+		var at: int = record["at"]
+		assert_true(at >= previous, "sorted by time")
+		previous = at
+	# chart range
+	var all := history.overview("visual_masking", StatsHistory.TREND_WINDOW, 0)
+	var values: PackedFloat64Array = all["values"]
+	assert_eq(values.size(), 5)
+	var two := history.overview("visual_masking", StatsHistory.TREND_WINDOW, 2)
+	values = two["values"]
+	assert_eq(values.size(), 2)
+	assert_eq(Benchmarks.bounds_for(&"visual_masking", {"trials": 30}, "threshold_ms"), {"elite": 20.0, "advanced": 85.0, "lower": true})
+	assert_eq(Benchmarks.bounds_for(&"visual_masking", {"trials": 30}, "other"), {})
+	assert_eq(Benchmarks.bounds_for(&"n_back", {}, "accuracy"), {})

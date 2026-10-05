@@ -5,6 +5,8 @@ extends RefCounted
 
 const TREND_WINDOW := 10
 const SPARKLINE_RUNS := 20
+const STABLE_DAYS := 5
+const STABLE_RUNS := 3
 
 var records: Array[Dictionary] = []
 
@@ -56,11 +58,16 @@ func set_rpe(id: String, rpe: int) -> bool:
 
 
 ## Runs of one variant with a usable primary value, oldest first.
+## Runs of one variant, oldest first.
 func for_variant(variant: String) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for record in records:
 		if record["variant"] == variant and _has_value(record):
 			out.append(record)
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var at_a: int = a["at"]
+		var at_b: int = b["at"]
+		return at_a < at_b)
 	return out
 
 
@@ -122,10 +129,51 @@ func summary(record: Dictionary, window: int = TREND_WINDOW) -> Dictionary:
 	return out
 
 
+## Mean of the best [param count] values of [param variant] within the last
+## [param days] days ("best 3 of 5 days": a steadier figure than one lucky
+## record for threshold drills). NAN with fewer runs in the window.
+func stable_best(variant: String, now_unix: int, days: int = STABLE_DAYS, count: int = STABLE_RUNS) -> float:
+	var since := now_unix - days * 86400
+	var values := PackedFloat64Array()
+	var lower := true
+	for run in for_variant(variant):
+		var at: int = run["at"]
+		if at >= since:
+			var v: float = run["value"]
+			values.append(v)
+			lower = run["lower"]
+	if values.size() < count:
+		return NAN
+	values.sort()
+	if not lower:
+		values.reverse()
+	return _mean(values, 0, count)
+
+
+## Adds the records of [param other] whose id is not stored yet; keeps the
+## order by time. Returns how many were added.
+func merge(other: StatsHistory) -> int:
+	var known: Dictionary = {}
+	for record in records:
+		known[record["id"]] = true
+	var added := 0
+	for record in other.records:
+		if not known.has(record["id"]):
+			records.append(record)
+			known[record["id"]] = true
+			added += 1
+	if added > 0:
+		records.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			var at_a: int = a["at"]
+			var at_b: int = b["at"]
+			return at_a < at_b)
+	return added
+
+
 ## Aggregate for the progress screen: {"runs", "last", "best", "recent_mean",
 ## "change" (recent window mean minus the window before it, NAN when there is
 ## no earlier window), "last_level", "values" and "dates" (last SPARKLINE_RUNS runs)}.
-func overview(variant: String, window: int = TREND_WINDOW) -> Dictionary:
+func overview(variant: String, window: int = TREND_WINDOW, chart_runs: int = SPARKLINE_RUNS) -> Dictionary:
 	var runs := for_variant(variant)
 	if runs.is_empty():
 		return {}
@@ -155,8 +203,9 @@ func overview(variant: String, window: int = TREND_WINDOW) -> Dictionary:
 		"last_level": last["level"],
 		"lower": lower,
 		"unit": last["unit"],
-		"values": values.slice(maxi(0, values.size() - SPARKLINE_RUNS)),
-		"dates": ats.slice(maxi(0, ats.size() - SPARKLINE_RUNS)),
+		"config": last["config"],
+		"values": values.slice(maxi(0, values.size() - chart_runs) if chart_runs > 0 else 0),
+		"dates": ats.slice(maxi(0, ats.size() - chart_runs) if chart_runs > 0 else 0),
 	}
 
 
@@ -178,7 +227,10 @@ func week_summary(now_unix: int) -> Dictionary:
 		total_ms += ms
 		drills[record["drill_id"]] = true
 		if _has_value(record):
-			latest_in_window[record["variant"]] = record
+			var known: Dictionary = latest_in_window.get(record["variant"], {})
+			var known_at: int = known.get("at", -1)
+			if at >= known_at:
+				latest_in_window[record["variant"]] = record
 	var improved := 0
 	for variant: String in latest_in_window:
 		var record: Dictionary = latest_in_window[variant]

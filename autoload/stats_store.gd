@@ -6,6 +6,7 @@ extends Node
 const HISTORY_PATH := "user://results.jsonl"
 const SETTINGS_PATH := "user://settings.cfg"
 const EXPORT_PATH := "user://neuro-drills-results.csv"
+const BACKUP_PATH := "user://neuro-drills-results.jsonl"
 const FEEDBACK_PATH := "user://feedback.jsonl"
 const FEEDBACK_EXPORT_PATH := "user://neuro-drills-feedback.txt"
 const PLANS_PATH := "user://plans.json"
@@ -54,6 +55,23 @@ func set_rpe(id: String, rpe: int) -> void:
 ## Returns the readable path of the written file, or "" on failure.
 func export_csv() -> String:
 	return _export(EXPORT_PATH, history.to_csv(), "text/csv")
+
+
+## Writes the raw history (JSON Lines) for a backup or for another device.
+func export_backup() -> String:
+	return _export(BACKUP_PATH, history.serialize(), "application/x-ndjson")
+
+
+## Merges a backup (the JSON Lines text) into the history; returns how many
+## runs were new, or -1 when the text held no run at all.
+func import_backup(text: String) -> int:
+	var other := StatsHistory.parse(text)
+	if other.records.is_empty():
+		return -1
+	var added := history.merge(other)
+	if added > 0:
+		_save_all()
+	return added
 
 
 func _export(path: String, content: String, mime: String) -> String:

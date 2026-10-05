@@ -57,8 +57,8 @@ const PALETTES := {
 	"light": {
 		"bg": Color("eaf0ff"),
 		"panel": Color("ffffff"),
-		"card": Color("ffffff"),
-		"card_hover": Color("f3f5ff"),
+		"card": Color("f1f4fd"),
+		"card_hover": Color("e6ebfa"),
 		"card_shadow": Color("d6dcf0"),
 		"sunken": Color("e3e8f6"),
 		"line": Color("dfe4f3"),
@@ -266,6 +266,25 @@ func _build(p: Dictionary) -> Theme:
 	t.set_stylebox("disabled", "PrimaryButton", _box(_c(p, "sunken"), RADIUS, margins, LIFT, _c(p, "sunken")))
 	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
 		t.set_color(state, "PrimaryButton", Color.WHITE)
+
+	# Compact buttons for toggles inside a panel (chart range, RPE).
+	var small := Vector4(12, 4, 12, 4)
+	t.set_type_variation("SmallButton", "Button")
+	t.set_stylebox("normal", "SmallButton", _box(_c(p, "card"), 12, small, 3, _c(p, "card_shadow")))
+	t.set_stylebox("hover", "SmallButton", _box(_c(p, "card_hover"), 12, small, 3, _c(p, "card_shadow")))
+	t.set_stylebox("pressed", "SmallButton", _box_pressed(_c(p, "card_hover"), 12, small, 3))
+	t.set_stylebox("hover_pressed", "SmallButton", _box_pressed(_c(p, "card_hover"), 12, small, 3))
+	t.set_stylebox("focus", "SmallButton", _outline(_c(p, "focus"), 12))
+	t.set_font_size("font_size", "SmallButton", 16)
+	t.set_type_variation("SmallPrimaryButton", "Button")
+	t.set_stylebox("normal", "SmallPrimaryButton", _box(_c(p, "primary"), 12, small, 3, _c(p, "primary_shadow")))
+	t.set_stylebox("hover", "SmallPrimaryButton", _box(_c(p, "primary_hover"), 12, small, 3, _c(p, "primary_shadow")))
+	t.set_stylebox("pressed", "SmallPrimaryButton", _box_pressed(_c(p, "primary_hover"), 12, small, 3))
+	t.set_stylebox("hover_pressed", "SmallPrimaryButton", _box_pressed(_c(p, "primary_hover"), 12, small, 3))
+	t.set_stylebox("focus", "SmallPrimaryButton", _outline(_c(p, "focus"), 12))
+	t.set_font_size("font_size", "SmallPrimaryButton", 16)
+	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		t.set_color(state, "SmallPrimaryButton", Color.WHITE)
 
 	# Tile-like buttons inside a drill (the title card of a drill entry).
 	t.set_type_variation("CardButton", "Button")

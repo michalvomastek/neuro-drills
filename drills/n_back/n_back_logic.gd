@@ -17,6 +17,8 @@ var hits: int = 0
 var misses: int = 0
 var false_alarms: int = 0
 var correct_rejections: int = 0
+## Response times of the first response per stimulus, for fatigue and variability.
+var times_ms: Array[float] = []
 
 
 func _init(p_n: int, p_trials: int, rng: RandomNumberGenerator) -> void:
@@ -46,11 +48,13 @@ func target_count() -> int:
 	return count
 
 
-## A response inside the window of stimulus [param index]; returns whether it was a hit.
-func respond(index: int) -> bool:
+## A response inside the window of stimulus [param index], [param rt_ms] after
+## its onset; returns whether it was a hit.
+func respond(index: int, rt_ms: float = 0.0) -> bool:
 	if responded[index]:
 		return is_target(index)
 	responded[index] = true
+	times_ms.append(rt_ms)
 	return is_target(index)
 
 
@@ -89,6 +93,6 @@ func build_result(drill_id: StringName, config: Dictionary) -> DrillResult:
 		PackedStringArray(["RESULT_HITS", "%d / %d" % [hits, target_count()]]),
 		PackedStringArray(["RESULT_FALSE_ALARMS", str(false_alarms)]),
 	]
-	result.details = {"n": n, "hits": hits, "misses": misses, "false_alarms": false_alarms}
+	result.details = {"n": n, "hits": hits, "misses": misses, "false_alarms": false_alarms, "times_ms": times_ms.duplicate()}
 	result.metrics = {"level": float(n), "accuracy": accuracy()}
 	return result
