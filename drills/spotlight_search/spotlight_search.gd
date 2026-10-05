@@ -1,5 +1,7 @@
 ## Spotlight search: find every T among the Ls, but you only see a small
-## circle around the pointer. Move the mouse to scan the board.
+## circle around the pointer. Move the mouse to scan the board. On a
+## touchscreen the finger is the pointer, so a touch into the dark only
+## moves the light; a cell counts as clicked only when it was already lit.
 extends TrialDrill
 
 const SET_SIZE := 64
@@ -17,6 +19,8 @@ var _fog: ColorRect
 var _material: ShaderMaterial
 var _started_ms: int = 0
 var _accepting: bool = false
+## Centre of the lit circle as drawn in the last frame (fog UV space).
+var _spot_uv: Vector2 = Vector2(0.5, 0.5)
 
 
 func _uses_trial_count() -> bool:
@@ -75,7 +79,8 @@ func _process(_delta: float) -> void:
 	if not _running:
 		return
 	var local := _fog.get_local_mouse_position()
-	_material.set_shader_parameter("spot_center", local / _fog.size)
+	_spot_uv = local / _fog.size
+	_material.set_shader_parameter("spot_center", _spot_uv)
 
 
 func _run_trials() -> void:
@@ -89,8 +94,20 @@ func _run_trials() -> void:
 	_accepting = true
 
 
+## True when the cell lies inside the circle lit before this press. The pads
+## fire on press, so a touch that lands in the dark reaches here before the
+## light has followed the finger; with a mouse the pointer is already there.
+func _cell_in_spot(cell: Button) -> bool:
+	var centre := _fog.get_global_transform().affine_inverse() * cell.get_global_rect().get_center()
+	var spot := _spot_uv * _fog.size
+	var radius := _radius_percent / 100.0 * _fog.size.y + cell.size.y * 0.5
+	return centre.distance_to(spot) <= radius
+
+
 func _on_cell_pressed(index: int) -> void:
 	if not _running or not _accepting:
+		return
+	if DragScroll.touch_ui() and not _cell_in_spot(_cells[index]):
 		return
 	if _logic.click(index, Time.get_ticks_msec() - _started_ms):
 		_set_pad_color(_cells[index], get_theme_color("correct", "Pad"))
