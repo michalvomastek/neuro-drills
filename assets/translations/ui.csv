@@ -383,6 +383,7 @@ LOOMING_TITLE,Optický tok a úhyb,Optic flow and evasion
 LOOMING_DESCRIPTION,"Pruhy proudí ze středu jako při jízdě vpřed. Když se k tobě začne blížit překážka, uhni: nakloněním zařízení, šipkami nebo pohybem myši.","Streaks rush from the centre as if you were moving forward. When an obstacle swells towards you, steer away: tilt the device, use the arrow keys or move the mouse."
 LOOMING_HINT_TILT,Uhýbej nakloněním zařízení,Steer by tilting the device
 LOOMING_HINT_KEYS,Uhýbej šipkami nebo myší,Steer with the arrow keys or the mouse
+LOOMING_HINT_DRAG,Uhýbej tažením prstu,Steer by dragging a finger
 LOOMING_EVADED,Úspěšné úhyby,Successful evasions
 LOOMING_FIRST_MOVE,Čas do prvního pohybu,Time to first movement
 CATEGORY_DUAL,Rozdělená pozornost a dvojité úlohy,Divided attention and dual tasks

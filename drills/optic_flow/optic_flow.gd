@@ -1,6 +1,6 @@
 ## Optic flow with looming obstacles: streaks rush past as if you were moving
-## forward; when an obstacle swells towards you, tilt the device (or use the
-## arrow keys / mouse) to steer out of its way.
+## forward; when an obstacle swells towards you, tilt the device (or drag a
+## finger, or use the arrow keys / mouse) to steer out of its way.
 extends TrialDrill
 
 const TILT_GAIN := 0.9
@@ -21,6 +21,10 @@ var _active: bool = false
 var _uses_tilt: bool = false
 var _tilt_rest := Vector3.ZERO
 var _last_pointer := Vector2.ZERO
+## On a touchscreen without a usable sensor the finger steers while it drags;
+## a tap must not move anything, so pointer jumps outside a drag are ignored.
+var _touch_steering: bool = false
+var _dragging: bool = false
 
 
 func _trial_options() -> Array[int]:
@@ -55,13 +59,33 @@ func _build_play_area(parent: Control) -> void:
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hint.offset_top = -40
 	parent.add_child(_hint)
-	_uses_tilt = OS.has_feature("mobile") and Input.get_gravity().length() > 0.1
+	_touch_steering = DragScroll.touch_ui()
+
+
+## The gravity vector arrives only on a device with a sensor, on iOS only
+## after the permission asked for on the Start tap, so it is checked at run
+## start and again every frame until it shows up.
+func _tilt_available() -> bool:
+	return Input.get_gravity().length() > 0.1
+
+
+func _update_hint() -> void:
+	if _uses_tilt:
+		_hint.text = tr("LOOMING_HINT_TILT")
+	elif _touch_steering:
+		_hint.text = tr("LOOMING_HINT_DRAG")
+	else:
+		_hint.text = tr("LOOMING_HINT_KEYS")
 
 
 func _process(delta: float) -> void:
 	if not _running:
 		return
 	var input := Vector2.ZERO
+	if not _uses_tilt and _tilt_available():
+		_uses_tilt = true
+		_tilt_rest = Input.get_gravity()
+		_update_hint()
 	if _uses_tilt:
 		var gravity := Input.get_gravity() - _tilt_rest
 		input = Vector2(gravity.x, -gravity.y) / 9.81 * TILT_GAIN
@@ -71,7 +95,7 @@ func _process(delta: float) -> void:
 		var pointer := get_local_mouse_position()
 		var pointer_delta := pointer - _last_pointer
 		_last_pointer = pointer
-		if pointer_delta.length() > 40.0:
+		if pointer_delta.length() > 40.0 or (_touch_steering and not _dragging):
 			pointer_delta = Vector2.ZERO
 		input = keys * KEY_SPEED * delta + pointer_delta * MOUSE_GAIN
 		_shift = (_shift + input).limit_length(MAX_SHIFT)
@@ -102,12 +126,23 @@ func _on_start_pressed() -> void:
 	super()
 
 
+## A touch starts a drag from where it lands; the landing itself is no steering.
+func _handle_response(event: InputEvent) -> void:
+	var touch := event as InputEventScreenTouch
+	if touch == null:
+		return
+	_dragging = touch.pressed
+	_last_pointer = get_local_mouse_position()
+
+
 func _run_trials() -> void:
 	_logic = LoomingLogic.new(trials, _rng)
+	_uses_tilt = _tilt_available()
 	_tilt_rest = Input.get_gravity()
 	_shift = Vector2.ZERO
+	_dragging = false
 	_last_pointer = get_local_mouse_position()
-	_hint.text = tr("LOOMING_HINT_TILT") if _uses_tilt else tr("LOOMING_HINT_KEYS")
+	_update_hint()
 	_next_trial()
 
 
@@ -135,5 +170,6 @@ func _after_trial() -> void:
 
 func _reset_play_state() -> void:
 	_active = false
+	_dragging = false
 	if _obstacle != null:
 		_obstacle.visible = false

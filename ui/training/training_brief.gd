@@ -16,7 +16,7 @@ extends Control
 
 func _ready() -> void:
 	_stop_button.pressed.connect(_on_stop_pressed)
-	_start_button.pressed.connect(SceneRouter.start_training_step_now)
+	_start_button.pressed.connect(_on_start_pressed)
 	Layout.watch(self, _relayout)
 
 
@@ -27,7 +27,7 @@ func _relayout() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
-		SceneRouter.start_training_step_now()
+		_on_start_pressed()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_cancel"):
 		_on_stop_pressed()
@@ -54,3 +54,10 @@ func setup(session: TrainingSession) -> void:
 func _on_stop_pressed() -> void:
 	SceneRouter.abort_training()
 	SceneRouter.show_training()
+
+
+## The step may be a tilt drill; iOS grants the motion sensor only inside a
+## user gesture, and the drill autostarts without a tap of its own.
+func _on_start_pressed() -> void:
+	Drill.request_motion_permission()
+	SceneRouter.start_training_step_now()
