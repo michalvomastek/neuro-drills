@@ -7,6 +7,8 @@ const PROGRESS_SCENE_PATH := "res://ui/progress/progress_screen.tscn"
 const FEEDBACK_SCENE_PATH := "res://ui/feedback/feedback_screen.tscn"
 const TRAINING_SCENE_PATH := "res://ui/training/training_screen.tscn"
 const SETTINGS_SCENE_PATH := "res://ui/settings/settings_screen.tscn"
+const PROFILE_SCENE_PATH := "res://ui/profile/profile_screen.tscn"
+const ONBOARDING_SCENE_PATH := "res://ui/onboarding/onboarding_screen.tscn"
 const TRAINING_SUMMARY_SCENE_PATH := "res://ui/training/training_summary.tscn"
 
 ## The training in progress, or null when drills are played one by one.
@@ -95,6 +97,28 @@ func _start_training_step() -> void:
 
 func show_feedback() -> void:
 	_swap(_instantiate(FEEDBACK_SCENE_PATH))
+
+
+func show_profile() -> void:
+	_swap(_instantiate(PROFILE_SCENE_PATH))
+
+
+func show_onboarding() -> void:
+	_swap(_instantiate(ONBOARDING_SCENE_PATH))
+
+
+## Composes a training of [param minutes] from the weakest categories and starts it.
+func start_suggested_training(minutes: int) -> void:
+	var definitions := DrillRegistry.get_all()
+	var now := int(Time.get_unix_time_from_system())
+	var order := TrainingPlan.weak_categories(definitions, StatsStore.history, DrillRegistry.CATEGORY_ORDER, now)
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var steps := TrainingPlan.suggest(definitions, minutes, order, rng, TrainingPlan.harder_configs(StatsStore.history))
+	if steps.is_empty():
+		show_menu()
+		return
+	start_training(TrainingSession.new(steps, ""))
 
 
 func show_settings() -> void:

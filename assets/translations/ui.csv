@@ -505,3 +505,21 @@ METRIC_TIME_ERROR_MS,chyba načasování,timing error
 METRIC_TOTAL_MS,celkový čas,total time
 METRIC_VALIDITY_EFFECT_MS,efekt nápovědy,cue validity effect
 METRIC_WPM,slov za minutu,words per minute
+MENU_PROFILE_BADGES,Profil · odznaky %d / %d,Profile · badges %d / %d
+PROFILE_TITLE,Profil,Profile
+PROFILE_SUBTITLE,Série · úroveň · denní cíl · odznaky,Streak · level · daily goal · badges
+PROFILE_WEEK_EMPTY,Posledních 7 dní: zatím žádné kolo,Last 7 days: no run yet
+PROFILE_BADGE_EARNED,Získáno,Earned
+PROFILE_BADGE_LOCKED,Zatím ne,Not yet
+SETTINGS_SHOW_INTRO,Zobrazit úvod,Show the introduction
+ONBOARDING_STEP,Úvod %d / %d,Introduction %d / %d
+ONBOARDING_SKIP,Přeskočit,Skip
+ONBOARDING_NEXT,Další,Next
+ONBOARDING_TO_MENU,Do menu,To the menu
+ONBOARDING_START_TRAINING,Začít prvním tréninkem (5 min),Start a first training (5 min)
+ONBOARDING_1_TITLE,Krátká cvičení pro hlavu,Short drills for the mind
+ONBOARDING_1_BODY,"Neuro drills je sbírka her na pozornost, reakce, paměť, zrak a koordinaci. Každá trvá minutu až několik minut. V menu jsou po kategoriích; u každé hry najdeš, co měří a jaké jsou orientační hranice pásem začátečník · pokročilý · zkušený.","Neuro drills is a set of games for attention, reaction, memory, vision and coordination. Each takes one to a few minutes. The menu groups them by category; every game shows what it measures and the indicative bounds of the beginner · advanced · elite bands."
+ONBOARDING_2_TITLE,Trénink za tebe poskládá aplikace,The app composes your training
+ONBOARDING_2_BODY,"Tlačítko Trénink navrhne sestavu na zvolenou délku (1 až 30 minut) z oblastí, které jsi dlouho netrénoval nebo kde jsi nejslabší. Sestavu můžeš upravit a uložit. Každé dohrané kolo přidá body, drží denní sérii a plní denní cíl.","The Training button suggests a set for the chosen length (1 to 30 minutes) from the areas you have not trained for a while or where you are weakest. You can edit and save the set. Every finished run adds points, keeps the daily streak and fills the daily goal."
+ONBOARDING_3_TITLE,Tvoje data zůstávají u tebe,Your data stays with you
+ONBOARDING_3_BODY,"Historie kol se ukládá jen v tomto prohlížeči nebo počítači. V Pokroku si ji můžeš stáhnout jako zálohu a na jiném zařízení ji importovat. Nápady a chyby zapisuj přes Poznámku u výsledku; posbírají se v Zpětné vazbě.","Run history is stored only in this browser or computer. On the Progress screen you can download it as a backup and import it on another device. Write ideas and bugs through the Note on a result; they collect under Feedback."

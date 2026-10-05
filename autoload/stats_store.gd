@@ -21,6 +21,8 @@ var training_minutes: int = 10
 var rpe_enabled: bool = true
 ## Feedback sounds (correct / wrong / finished).
 var sound_enabled: bool = true
+## Whether the first-start introduction was seen (or skipped).
+var onboarding_done: bool = false
 ## UI language: "cs" (default) or "en".
 var locale: String = "cs"
 ## Global zoom, see Layout.text_scale.
@@ -132,6 +134,11 @@ func export_feedback() -> String:
 func set_rpe_enabled(enabled: bool) -> void:
 	rpe_enabled = enabled
 	_set_setting("results", "rpe_enabled", enabled)
+
+
+func set_onboarding_done(done: bool) -> void:
+	onboarding_done = done
+	_set_setting("ui", "onboarding_done", done)
 
 
 func set_locale(new_locale: String) -> void:
@@ -248,6 +255,7 @@ func _load() -> void:
 		theme_name = config.get_value("ui", "theme", "dark")
 		sound_enabled = config.get_value("sound", "enabled", true)
 		locale = config.get_value("ui", "locale", "cs")
+		onboarding_done = config.get_value("ui", "onboarding_done", false)
 		text_scale = config.get_value("ui", "text_scale", 1.0)
 		badges_seen = config.get_value("gamification", "badges_seen", PackedStringArray())
 	Layout.text_scale = text_scale

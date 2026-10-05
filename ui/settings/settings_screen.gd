@@ -17,6 +17,7 @@ const TEXT_SCALE_KEYS: Array[String] = ["SETTINGS_TEXT_SMALL", "SETTINGS_TEXT_NO
 @onready var _progress_button: Button = %ProgressButton
 @onready var _feedback_button: Button = %FeedbackButton
 @onready var _clear_button: Button = %ClearButton
+@onready var _intro_button: Button = %IntroButton
 @onready var _clear_dialog: ConfirmationDialog = %ClearDialog
 
 
@@ -24,6 +25,7 @@ func _ready() -> void:
 	_back_button.pressed.connect(SceneRouter.show_menu)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
+	_intro_button.pressed.connect(SceneRouter.show_onboarding)
 	_clear_button.pressed.connect(_clear_dialog.popup_centered)
 	_clear_dialog.confirmed.connect(_on_clear_confirmed)
 	_clear_dialog.ok_button_text = tr("PROGRESS_CLEAR")

@@ -10,7 +10,10 @@ func _ready() -> void:
 	StatsStore.theme_changed.connect(_on_theme_changed)
 	Layout.watch(self, _apply_scale)
 	SceneRouter.attach(self)
-	SceneRouter.show_menu()
+	if StatsStore.onboarding_done or not StatsStore.history.records.is_empty():
+		SceneRouter.show_menu()
+	else:
+		SceneRouter.show_onboarding()
 
 
 func _apply_scale() -> void:

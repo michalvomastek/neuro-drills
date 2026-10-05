@@ -8,7 +8,6 @@ extends Control
 @onready var _training_button: Button = %TrainingButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _stats: HFlowContainer = %Stats
-@onready var _badges: HFlowContainer = %Badges
 @onready var _footer_spacer: Control = %Spacer
 @onready var _quit_button: Button = %QuitButton
 
@@ -43,7 +42,6 @@ func _relayout() -> void:
 		grid.columns = 1 if narrow else 2
 	_footer_spacer.visible = not narrow
 	_build_stats(narrow)
-	_build_badges(narrow)
 	_tabs.clip_tabs = narrow
 
 
@@ -114,82 +112,12 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 
 
 
-## Streak, level with its XP bar and today's minutes against the daily goal.
-## A phone drops the XP numbers (the bar keeps them as a tooltip).
+## Streak, level, today's goal and a pill button to the profile with the
+## badge count; the phone drops the XP numbers.
 func _build_stats(compact: bool) -> void:
 	for child in _stats.get_children():
 		_stats.remove_child(child)
 		child.queue_free()
-	var streak := StatsStore.current_streak()
-	var streak_text := tr("GAMI_STREAK_NONE")
-	if streak == 1:
-		streak_text = tr("GAMI_STREAK_ONE")
-	elif streak > 1:
-		streak_text = tr("GAMI_STREAK") % streak
-	_add_pill(_stats, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
-	var info := StatsStore.level_info()
-	var level: int = info["level"]
-	var into: int = info["into"]
-	var span: int = info["span"]
-	var xp_pill := _add_pill(_stats, &"XpPill", tr("GAMI_LEVEL") % level, true)
-	var xp_box := xp_pill.get_child(0) as BoxContainer
-	var bar := ProgressBar.new()
-	bar.theme_type_variation = &"XpBar"
-	bar.show_percentage = false
-	bar.max_value = span
-	bar.value = into
-	bar.custom_minimum_size = Vector2(90, 0)
-	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bar.tooltip_text = tr("GAMI_XP") % [into, span]
-	xp_box.add_child(bar)
-	if not compact:
-		var xp_label := Label.new()
-		xp_label.text = tr("GAMI_XP") % [into, span]
-		xp_label.theme_type_variation = &"PillLabel"
-		xp_box.add_child(xp_label)
-	var minutes := StatsStore.minutes_today()
-	var goal := StatsStore.training_minutes
-	var done := minutes >= goal
-	_add_pill(_stats, &"GoalDonePill" if done else &"GoalPill", tr("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal], true)
-
-
-## One rounded pill with a label (and room for more controls in its box).
-func _add_pill(parent: Control, variation: StringName, text: String, bright: bool) -> PanelContainer:
-	var pill := PanelContainer.new()
-	pill.theme_type_variation = variation
-	pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var box := HBoxContainer.new()
-	box.add_theme_constant_override("separation", 10)
-	pill.add_child(box)
-	var label := Label.new()
-	label.text = text
-	label.theme_type_variation = &"PillLabel" if bright else &"DimLabel"
-	box.add_child(label)
-	parent.add_child(pill)
-	return pill
-
-
-## Every badge as a pill: earned ones bright, the rest dim; the description is
-## the tooltip. A phone shows only the earned ones and a count, in the stats row.
-func _build_badges(compact: bool) -> void:
-	for child in _badges.get_children():
-		_badges.remove_child(child)
-		child.queue_free()
-	_badges.visible = not compact
-	var parent: Container = _stats if compact else _badges
-	var earned := StatsStore.earned_badges()
-	if compact:
-		_add_pill(parent, &"Pill", tr("GAMI_BADGES") % [earned.size(), Gamification.BADGE_ORDER.size()], false)
-	for id in Gamification.BADGE_ORDER:
-		var has := earned.has(id)
-		if compact and not has:
-			continue
-		var pill := PanelContainer.new()
-		pill.theme_type_variation = &"BadgePill" if has else &"BadgeOffPill"
-		pill.tooltip_text = tr("BADGE_%s_DESC" % id.to_upper())
-		var label := Label.new()
-		label.text = tr("BADGE_%s" % id.to_upper())
-		label.theme_type_variation = &"BadgeLabel" if has else &"BadgeOffLabel"
-		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		pill.add_child(label)
-		parent.add_child(pill)
+	GamiWidgets.add_stats(_stats, compact)
+	var earned := StatsStore.earned_badges().size()
+	GamiWidgets.add_pill_button(_stats, tr("MENU_PROFILE_BADGES") % [earned, Gamification.BADGE_ORDER.size()], SceneRouter.show_profile)
