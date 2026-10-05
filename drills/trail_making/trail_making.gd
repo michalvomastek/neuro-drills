@@ -1,7 +1,7 @@
 ## Trail Making Test: click the nodes in order (1-2-3 or 1-A-2-B), as fast as possible.
 extends TrialDrill
 
-const NODE_SIZE := 0.1
+const NODE_SIZE := 0.12
 const DRIFT_SPEEDS: Array[float] = [0.0, 0.06, 0.14]
 const SPEED_LEVELS: Array[int] = [0, 1, 2]
 const ORDER_KEYS: Array[String] = ["TRAIL_ORDER_NUM_ASC", "TRAIL_ORDER_NUM_DESC", "TRAIL_ORDER_NUM_ASC_LET_DESC", "TRAIL_ORDER_NUM_DESC_LET_ASC"]

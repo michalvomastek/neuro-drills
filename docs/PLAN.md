@@ -251,6 +251,9 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 ### F. Hry
 - [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`). Zatím: na iOS se šipky, kolečka a další symboly kreslily jako prázdný rámeček (webový export nemá systémové fonty a Nunito/Baloo je neobsahují) – přibyl `assets/fonts/symbols.ttf` (podmnožina DejaVu Sans) jako fallback všech písem motivu; Pokrok na telefonu nešel posouvat ani opustit (celá obrazovka teď roluje, varianta se vybírá z rozbalovacího seznamu); seznamy nešly posouvat tažením prstu, jen posuvníkem (`DragScroll` na každém `ScrollContainer`); kategorie v menu šly na telefonu přepínat jen šipkami (pruh pilulek posouvatelný tažením); periferní vzory šly na telefonu odpovědět jen klávesnicí – přibyla řada tlačítek 1–8 pod scénou (našel to průchod E20).
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
+- [x] F25 Dotykové ovládání tréninku: kroky se přesouvají tažením za úchyt (na telefonu bez šipek), ovládací prvky jsou viditelná tlačítka.
+- [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
+- [x] F27 Rychlejší načtení: Nunito a Baloo 2 zúženy na latinku s češtinou (z 960 kB na 230 kB se symboly); skript v hlavičce webu nechá novou verzi service workeru převzít stránku a jednou ji znovu načíst, takže se aktualizace projeví hned při dalším otevření (ověřeno v Chromiu proti lokálnímu serveru).
 - [x] F23 Profil (`ui/profile/`): série, úroveň s XP, denní cíl, posledních 7 dní a všechny odznaky s popisem; menu má místo řady odznaků jen kompaktní řádek s tlačítkem „Profil · odznaky n / 12“.
 - [x] F24 Úvod při prvním spuštění (`ui/onboarding/`, tři stránky: co to je, jak funguje trénink, kde jsou data) s tlačítkem na první pětiminutový trénink; znovu dostupný z Nastavení. Hráč s historií ho neuvidí.
 
