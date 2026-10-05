@@ -28,6 +28,8 @@ var _plan_name: String = ""
 ## True once the player loaded or edited the list, so a new length keeps it.
 var _custom: bool = false
 var _rng := RandomNumberGenerator.new()
+## Row being dragged by its handle, or null.
+var _drag_row: Control
 
 
 func _ready() -> void:
@@ -73,6 +75,8 @@ func _relayout() -> void:
 	var wide_mode := ScrollContainer.SCROLL_MODE_SHOW_NEVER if DragScroll.touch_ui() else ScrollContainer.SCROLL_MODE_AUTO
 	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if narrow else wide_mode
 	_steps_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
+	if not _steps.is_empty():
+		_rebuild_steps()
 
 
 func _minutes() -> int:
@@ -119,10 +123,19 @@ func _rebuild_steps() -> void:
 func _make_step_row(index: int) -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
+	row.set_meta(&"step_index", index)
+	var handle := Button.new()
+	handle.text = "☰"
+	handle.theme_type_variation = &"SmallButton"
+	handle.focus_mode = Control.FOCUS_NONE
+	handle.tooltip_text = tr("TRAINING_DRAG_HINT")
+	handle.set_meta(&"no_drag_scroll", true)
+	handle.button_down.connect(_on_handle_down.bind(row))
+	row.add_child(handle)
 	var number := Label.new()
 	number.text = "%d." % (index + 1)
 	number.theme_type_variation = &"DimLabel"
-	number.custom_minimum_size = Vector2(32, 0)
+	number.custom_minimum_size = Vector2(28, 0)
 	row.add_child(number)
 	var step := _steps[index]
 	var drill_id: String = step["drill_id"]
@@ -142,7 +155,11 @@ func _make_step_row(index: int) -> Control:
 	duration.text = tr("TRAINING_STEP_TIME") % TrainingPlan.estimate_seconds(StringName(drill_id))
 	duration.theme_type_variation = &"DimLabel"
 	row.add_child(duration)
+	# A phone reorders by dragging the handle; the arrow buttons would only
+	# crowd the title out.
+	var narrow := Layout.is_narrow(self)
 	var up := Button.new()
+	up.visible = not narrow
 	up.text = "▲"
 	up.theme_type_variation = &"SmallButton"
 	up.focus_mode = Control.FOCUS_NONE
@@ -150,6 +167,7 @@ func _make_step_row(index: int) -> Control:
 	up.pressed.connect(_move_step.bind(index, -1))
 	row.add_child(up)
 	var down := Button.new()
+	down.visible = not narrow
 	down.text = "▼"
 	down.theme_type_variation = &"SmallButton"
 	down.focus_mode = Control.FOCUS_NONE
@@ -164,6 +182,52 @@ func _make_step_row(index: int) -> Control:
 	remove.pressed.connect(_remove_step.bind(index))
 	row.add_child(remove)
 	return row
+
+
+## Dragging a row's handle moves the row within the list; the step order is
+## read back from the rows when the handle is released.
+func _on_handle_down(row: Control) -> void:
+	_drag_row = row
+	row.modulate.a = 0.6
+
+
+func _input(event: InputEvent) -> void:
+	if _drag_row == null:
+		return
+	var motion := event as InputEventMouseMotion
+	if motion != null:
+		var local_y := _step_list.get_global_transform().affine_inverse() * motion.position
+		var target := _drag_row.get_index()
+		for i in _step_list.get_child_count():
+			var child := _step_list.get_child(i) as Control
+			if child == null:
+				continue
+			if local_y.y >= child.position.y and local_y.y <= child.position.y + child.size.y:
+				target = i
+				break
+		if target != _drag_row.get_index():
+			_step_list.move_child(_drag_row, target)
+		get_viewport().set_input_as_handled()
+		return
+	var button := event as InputEventMouseButton
+	if button != null and button.button_index == MOUSE_BUTTON_LEFT and not button.pressed:
+		_finish_drag()
+
+
+func _finish_drag() -> void:
+	if _drag_row == null:
+		return
+	_drag_row.modulate.a = 1.0
+	_drag_row = null
+	var reordered: Array[Dictionary] = []
+	for child in _step_list.get_children():
+		var index: int = child.get_meta(&"step_index", -1)
+		if index >= 0 and index < _steps.size():
+			reordered.append(_steps[index])
+	if reordered.size() == _steps.size():
+		_steps = reordered
+	_custom = true
+	_rebuild_steps()
 
 
 func _move_step(index: int, delta: int) -> void:

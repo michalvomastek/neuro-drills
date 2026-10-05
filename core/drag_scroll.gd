@@ -156,7 +156,7 @@ func _try_arm(position: Vector2) -> void:
 	if hovered != null:
 		var node: Node = hovered
 		while node != null and node != _scroll:
-			if node is Range or node is LineEdit or node is TextEdit:
+			if node is Range or node is LineEdit or node is TextEdit or node.has_meta(&"no_drag_scroll"):
 				return
 			# A nested container that can scroll takes the drag; one that cannot
 			# (a list that grows with its content on a phone) is skipped.

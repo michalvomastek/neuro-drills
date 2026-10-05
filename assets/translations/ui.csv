@@ -525,3 +525,4 @@ ONBOARDING_3_TITLE,Tvoje data zůstávají u tebe,Your data stays with you
 ONBOARDING_3_BODY,"Historie kol se ukládá jen v tomto prohlížeči nebo počítači. V Pokroku si ji můžeš stáhnout jako zálohu a na jiném zařízení ji importovat. Nápady a chyby zapisuj přes Poznámku u výsledku; posbírají se v Zpětné vazbě.","Run history is stored only in this browser or computer. On the Progress screen you can download it as a backup and import it on another device. Write ideas and bugs through the Note on a result; they collect under Feedback."
 TRAINING_SUGGEST_SHORT,Navrhnout,Suggest
 TRAINING_SAVE_SHORT,Uložit,Save
+TRAINING_DRAG_HINT,Tažením změníš pořadí,Drag to reorder
