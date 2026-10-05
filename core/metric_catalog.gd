@@ -229,6 +229,27 @@ static func fatigue_index(details: Dictionary) -> float:
 	return last / first
 
 
+## Help shown on a setup panel: what the drill measures, which direction is
+## better and, when a benchmark applies to [param config], the band bounds.
+static func help_text(drill_id: StringName, config: Dictionary) -> String:
+	var primary := primary_of(drill_id)
+	if primary.is_empty():
+		return ""
+	var metric: String = primary["metric"]
+	var unit: String = primary["unit"]
+	var lower: bool = primary["lower"]
+	var name := TranslationServer.translate("METRIC_" + metric.to_upper())
+	if not unit.is_empty():
+		name += " (%s)" % unit
+	var text := TranslationServer.translate("HELP_MEASURES_LOWER" if lower else "HELP_MEASURES_HIGHER") % name
+	var bounds := Benchmarks.bounds_for(drill_id, config, metric)
+	if not bounds.is_empty():
+		var advanced: float = bounds["advanced"]
+		var elite: float = bounds["elite"]
+		text += "\n" + TranslationServer.translate("HELP_BANDS") % [format_value(advanced, unit), format_value(elite, unit)]
+	return text
+
+
 ## Formats a primary-metric value in its unit.
 static func format_value(value: float, unit: String) -> String:
 	return Benchmarks.format_bound(value, unit)

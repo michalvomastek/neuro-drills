@@ -475,3 +475,33 @@ SETTINGS_TEXT_SMALL,Menší,Smaller
 SETTINGS_TEXT_NORMAL,Běžná,Normal
 SETTINGS_TEXT_LARGE,Větší,Larger
 SETTINGS_DATA_HINT,Data: historie kol a poznámky zůstávají v tomto prohlížeči či počítači. Zálohu a import najdeš v Pokroku.,Data: run history and notes stay in this browser or computer. Backup and import live on the Progress screen.
+HELP_MEASURES_LOWER,Měří: %s · méně je lépe,Measures: %s · lower is better
+HELP_MEASURES_HIGHER,Měří: %s · více je lépe,Measures: %s · higher is better
+HELP_BANDS,Pásma (orientačně): pokročilý od %s · zkušený od %s,Bands (indicative): advanced from %s · elite from %s
+METRIC_ACCURACY,přesnost,accuracy
+METRIC_BEST_LENGTH,nejdelší zopakovaná sekvence,longest repeated sequence
+METRIC_BEST_SPEED,nejvyšší zvládnutá rychlost,highest speed handled
+METRIC_DETECTION_RATE,podíl zachycených podnětů,share of detected stimuli
+METRIC_DIGITS,počet zapamatovaných číslic,digits remembered
+METRIC_EVASION_RATE,podíl úspěšných vyhnutí,share of successful evasions
+METRIC_INTERFERENCE_MS,interference (rozdíl časů),interference (time difference)
+METRIC_INTERFERENCE_PERCENT,pokles výkonu při dvojí úloze,performance drop under the dual task
+METRIC_JITTER_MS,kolísání ťukání,tapping jitter
+METRIC_JUMP_RT_MS,čas přeostření,refocus time
+METRIC_LETTERS_ERROR,chyby v písmenech,letter errors
+METRIC_MAX_LEVEL,nejvyšší zvládnutá úroveň,highest level reached
+METRIC_MAX_WIDTH,nejširší přečtený řádek,widest line read
+METRIC_MEAN_ABS_ERROR_MS,průměrná odchylka odhadu,mean estimate error
+METRIC_MEAN_RT_MS,průměrný reakční čas,mean reaction time
+METRIC_MEDIAN_RT_MS,medián reakčního času,median reaction time
+METRIC_MS_PER_ANSWER,čas na odpověď,time per answer
+METRIC_MS_PER_TARGET,čas na cíl,time per target
+METRIC_ON_TARGET,podíl času na cíli,time on target
+METRIC_SPAN,rozsah (počet položek),span (items)
+METRIC_SWITCH_COST_MS,cena přepnutí,switch cost
+METRIC_THRESHOLD,práh kontrastu,contrast threshold
+METRIC_THRESHOLD_MS,časový práh,time threshold
+METRIC_TIME_ERROR_MS,chyba načasování,timing error
+METRIC_TOTAL_MS,celkový čas,total time
+METRIC_VALIDITY_EFFECT_MS,efekt nápovědy,cue validity effect
+METRIC_WPM,slov za minutu,words per minute

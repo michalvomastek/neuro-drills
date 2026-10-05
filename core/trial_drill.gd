@@ -20,6 +20,7 @@ var _rng := RandomNumberGenerator.new()
 var _setup_panel: CenterContainer
 var _title_label: Label
 var _description_label: Label
+var _help_label: Label
 var _trials_row: HBoxContainer
 var _trials_option: OptionButton
 var _countdown_check: CheckBox
@@ -105,6 +106,8 @@ func _on_setup(config: Dictionary, autostart: bool) -> void:
 	_apply_extra_config(config)
 	_trials_option.select(_trials_option.get_item_index(trials))
 	_countdown_check.button_pressed = countdown
+	_help_label.text = MetricCatalog.help_text(definition.id, get_config())
+	_help_label.visible = not _help_label.text.is_empty()
 	if autostart:
 		_begin_run()
 	else:
@@ -304,6 +307,11 @@ func _build_ui() -> void:
 	_description_label.theme_type_variation = &"DimLabel"
 	_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(_description_label)
+	_help_label = Label.new()
+	_help_label.theme_type_variation = &"DimLabel"
+	_help_label.add_theme_font_size_override("font_size", 16)
+	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(_help_label)
 
 	_trials_row = HBoxContainer.new()
 	_trials_row.add_theme_constant_override("separation", 16)

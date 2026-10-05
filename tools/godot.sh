@@ -16,6 +16,7 @@
 #                           render a scene with software OpenGL (Xvfb when there is no display)
 #                           and save the main viewport as PNG
 #   icons                   render icon.svg into assets/icon/icon_{144,180,512}.png for the web manifest
+#   playthrough             play every registered drill to the end with random input and check the result (tools/playthrough_drills.gd; PLAYTHROUGH_ONLY=id,id limits it)
 #   theme                   build ui/theme/{dark,light}_theme.tres from the palettes in tools/make_theme.gd
 #   templates               install the export templates of $GODOT_VERSION (GitHub download)
 #   export <preset> [out]   release export with a preset from export_presets.cfg ("Web",
@@ -170,6 +171,17 @@ templates_dir() {
   printf '%s/export_templates/%s\n' "$data_dir" "${GODOT_VERSION/-/.}"
 }
 
+cmd_playthrough() {
+  local -a cmd=("$GODOT" --path "$REPO_ROOT" --rendering-driver opengl3 --audio-driver Dummy
+    --resolution 1280x720 -s res://tools/playthrough_drills.gd)
+  if [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]] && command -v xvfb-run >/dev/null 2>&1; then
+    LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "${cmd[@]}" 2>&1 | grep -vE '^Godot Engine v|^$|vsync|gl_manager'
+  else
+    "${cmd[@]}" 2>&1 | grep -vE '^Godot Engine v|^$'
+  fi
+  return "${PIPESTATUS[0]}"
+}
+
 cmd_icons() {
   "$GODOT" --headless --path "$REPO_ROOT" -s res://tools/make_icons.gd 2>&1 | grep -vE '^Godot Engine v|^$'
   return "${PIPESTATUS[0]}"
@@ -259,6 +271,7 @@ main() {
     docs) cmd_docs "$@" ;;
     screenshot) cmd_screenshot "$@" ;;
     smoke) cmd_smoke "$@" ;;
+    playthrough) cmd_playthrough "$@" ;;
     icons) cmd_icons "$@" ;;
     theme) cmd_theme "$@" ;;
     templates) cmd_templates "$@" ;;

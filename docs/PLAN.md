@@ -244,12 +244,12 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 
 ### E. Aplikace jako celek
 - [x] E17 (M) Obrazovka Nastavení (`ui/settings/`): jazyk (ukládá se), motiv, velikost písma (globální měřítko `Layout.text_scale` 0,9 / 1 / 1,15), zvuky, RPE, odkazy na Pokrok a Zpětnou vazbu, smazání historie. Menu má místo přepínačů jazyka a motivu tlačítko Nastavení.
-- [ ] E18 (S) Nápověda u každé hry: jak na to a co měří.
+- [x] E18 (S) Nápověda u každé hry: popis (jak na to) doplňuje generovaný řádek `MetricCatalog.help_text` – co hra měří, kterým směrem je lépe a hranice pásem pro zvolené nastavení (klíče `METRIC_*`, `HELP_*`).
 - [x] E19 (M) Vlastní písmo s podporou češtiny: Nunito (text) a Baloo 2 (nadpisy), obě OFL, součást motivu.
-- [ ] E20 (L) Automatický test, který každou hru dohraje do konce a ověří výsledek.
+- [x] E20 (L) `tools/godot.sh playthrough` (`tools/playthrough_drills.gd`): každou hru spustí bez odpočtu a náhodně ji „hraje“ (tlačítka, mezerník, kliknutí) se zrychleným časem, dokud neskončí; kontroluje metriky, řádky výsledků, záznam historie a pásmo. Běží i v CI.
 
 ### F. Hry
-- [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`).
+- [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`). Zatím: periferní vzory šly na telefonu odpovědět jen klávesnicí – přibyla řada tlačítek 1–8 pod scénou (našel to průchod E20).
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 
 ### G. Gamifikace a hravější grafika (na vedlejší větvi)

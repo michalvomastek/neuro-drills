@@ -1,6 +1,7 @@
 ## Peripheral pattern search: keep looking at the centre digit; patterns flash
 ## in eight sectors around it. Press the number of the sector holding three
-## blue bars. At the end, count the centre changes.
+## blue bars (keyboard or the row of buttons below the stage, so it works on
+## a phone too). At the end, count the centre changes.
 extends TrialDrill
 
 const RADIUS := 0.4
@@ -18,6 +19,7 @@ var _answer: String = ""
 var _centre_digit: int = 5
 var _accepting: bool = false
 var _asking: bool = false
+var _sector_buttons: Array[Button] = []
 
 
 func _trial_options() -> Array[int]:
@@ -29,9 +31,26 @@ func _default_trials() -> int:
 
 
 func _build_play_area(parent: Control) -> void:
+	var column := VBoxContainer.new()
+	column.set_anchors_preset(Control.PRESET_FULL_RECT)
+	column.add_theme_constant_override("separation", 8)
+	parent.add_child(column)
 	_stage = Control.new()
-	_stage.set_anchors_preset(Control.PRESET_FULL_RECT)
-	parent.add_child(_stage)
+	_stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(_stage)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 6)
+	column.add_child(row)
+	for i in PatternLogic.SECTORS:
+		var button := Button.new()
+		button.text = str(i + 1)
+		button.focus_mode = Control.FOCUS_NONE
+		button.custom_minimum_size = Vector2(48, 0)
+		Drill.make_press_button(button)
+		button.pressed.connect(_on_sector.bind(i))
+		row.add_child(button)
+		_sector_buttons.append(button)
 	_centre = Label.new()
 	_centre.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_centre.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

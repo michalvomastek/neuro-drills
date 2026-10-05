@@ -14,6 +14,7 @@ const DIM_FOUND_ALPHA := 0.3
 
 @onready var _setup_panel: Control = %SetupPanel
 @onready var _setup_vbox: VBoxContainer = %SetupVBox
+@onready var _help_label: Label = %HelpLabel
 @onready var _options_grid: GridContainer = %Options
 @onready var _grid_size_option: OptionButton = %GridSizeOption
 @onready var _symbols_option: OptionButton = %SymbolsOption
@@ -143,6 +144,10 @@ func _read_config_from_controls() -> SchulteConfig:
 func _show_setup() -> void:
 	_run_token += 1
 	_running = false
+	# _ready() shows the panel before setup() hands over the definition.
+	if definition != null:
+		_help_label.text = MetricCatalog.help_text(definition.id, _config.to_dict())
+		_help_label.visible = not _help_label.text.is_empty()
 	_setup_panel.visible = true
 	_play_panel.visible = false
 	_countdown_panel.visible = false

@@ -35,6 +35,9 @@ jobs:
       - name: Smoke-start every drill
         run: tools/godot.sh smoke
 
+      - name: Play every drill to the end
+        run: tools/godot.sh playthrough
+
       - name: Render screenshots
         run: |
           mkdir -p screenshots
