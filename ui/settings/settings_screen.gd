@@ -11,7 +11,7 @@ const THEME_KEYS: Array[String] = ["SETTINGS_THEME_DARK", "SETTINGS_THEME_LIGHT"
 const TEXT_SCALES: Array[float] = [0.9, 1.0, 1.15]
 const TEXT_SCALE_KEYS: Array[String] = ["SETTINGS_TEXT_SMALL", "SETTINGS_TEXT_NORMAL", "SETTINGS_TEXT_LARGE"]
 
-@onready var _vbox: VBoxContainer = %VBox
+@onready var _margin: MarginContainer = %Margin
 @onready var _rows: GridContainer = %Rows
 @onready var _progress_button: Button = %ProgressButton
 @onready var _feedback_button: Button = %FeedbackButton
@@ -38,7 +38,7 @@ func _ready() -> void:
 
 
 func _relayout() -> void:
-	_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 520.0), 0)
+	Layout.set_margins(_margin, Layout.side_margin(self), 12 if Layout.is_narrow(self) else 32)
 
 
 func _unhandled_input(event: InputEvent) -> void:

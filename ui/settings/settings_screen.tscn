@@ -20,60 +20,62 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="Center" type="CenterContainer" parent="Scroll"]
+[node name="Margin" type="MarginContainer" parent="Scroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 80
+theme_override_constants/margin_bottom = 32
 
-[node name="Panel" type="PanelContainer" parent="Scroll/Center"]
+[node name="Panel" type="PanelContainer" parent="Scroll/Margin"]
 layout_mode = 2
+theme_type_variation = &"Screen"
 
-[node name="VBox" type="VBoxContainer" parent="Scroll/Center/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Scroll/Margin/Panel"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Separator" type="HSeparator" parent="Scroll/Center/Panel/VBox"]
-layout_mode = 2
-
-[node name="Rows" type="GridContainer" parent="Scroll/Center/Panel/VBox"]
+[node name="Rows" type="GridContainer" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 14
 columns = 2
 
-[node name="Separator2" type="HSeparator" parent="Scroll/Center/Panel/VBox"]
+[node name="Separator2" type="HSeparator" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
 
-[node name="DataLabel" type="Label" parent="Scroll/Center/Panel/VBox"]
+[node name="DataLabel" type="Label" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "SETTINGS_DATA_HINT"
 autowrap_mode = 3
 
-[node name="DataButtons" type="HFlowContainer" parent="Scroll/Center/Panel/VBox"]
+[node name="DataButtons" type="HFlowContainer" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 8
 
-[node name="ProgressButton" type="Button" parent="Scroll/Center/Panel/VBox/DataButtons"]
+[node name="ProgressButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "MENU_PROGRESS"
 
-[node name="FeedbackButton" type="Button" parent="Scroll/Center/Panel/VBox/DataButtons"]
+[node name="FeedbackButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "MENU_FEEDBACK"
 
-[node name="IntroButton" type="Button" parent="Scroll/Center/Panel/VBox/DataButtons"]
+[node name="IntroButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SETTINGS_SHOW_INTRO"
 
-[node name="ClearButton" type="Button" parent="Scroll/Center/Panel/VBox/DataButtons"]
+[node name="ClearButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "PROGRESS_CLEAR"

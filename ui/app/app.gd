@@ -39,6 +39,9 @@ var _screen: StringName = &""
 var _tabs: Dictionary = {}
 ## Top and bottom safe-area insets of the device in design units.
 var _insets: Vector2 = Vector2.ZERO
+## Theme laid on the host on a phone: the screen panel loses its card look
+## and the content sits on the background between the bars.
+var _flat_theme: Theme
 
 
 func _ready() -> void:
@@ -49,6 +52,14 @@ func _ready() -> void:
 		DragScroll.attach(scroll as ScrollContainer)
 	StatsStore.theme_changed.connect(_on_theme_changed)
 	_build_bars()
+	_flat_theme = Theme.new()
+	_flat_theme.set_type_variation(&"Screen", &"PanelContainer")
+	var flat := StyleBoxEmpty.new()
+	flat.content_margin_left = FLAT_SCREEN_MARGIN
+	flat.content_margin_right = FLAT_SCREEN_MARGIN
+	flat.content_margin_top = FLAT_SCREEN_MARGIN
+	flat.content_margin_bottom = FLAT_SCREEN_MARGIN
+	_flat_theme.set_stylebox("panel", &"Screen", flat)
 	SceneRouter.screen_changed.connect(_on_screen_changed)
 	Layout.watch(self, _apply_scale)
 	SceneRouter.attach(_host)
@@ -126,6 +137,8 @@ func _refresh_stats() -> void:
 
 ## Max width of the bottom bar's tabs on a wide screen, in design units.
 const NAV_MAX_WIDTH := 640.0
+## Inner margin of a flattened screen panel on a phone (plus Layout.NARROW_MARGIN outside).
+const FLAT_SCREEN_MARGIN := 4
 
 
 func _apply_scale() -> void:
@@ -137,7 +150,9 @@ func _apply_scale() -> void:
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
 	var padding := bar_style.get_content_margin(SIDE_LEFT) + bar_style.get_content_margin(SIDE_RIGHT)
 	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
-	_title_label.add_theme_font_size_override("font_size", 20 if Layout.is_narrow(self) else 24)
+	var narrow := Layout.is_narrow(self)
+	_title_label.add_theme_font_size_override("font_size", 20 if narrow else 24)
+	_host.theme = _flat_theme if narrow else null
 	if _top_bar.visible:
 		_refresh_stats()
 
