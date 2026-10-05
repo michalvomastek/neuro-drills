@@ -239,8 +239,8 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [ ] C14 (M) Revize pásem v `docs/BENCHMARKS.md` podle reálných dat (po pár týdnech hraní).
 
 ### D. Zvuk
-- [ ] D15 (S) Tóny správně / špatně, zapnutelné v nastavení.
-- [ ] D16 (S) Slyšitelný metronom u rytmického ťukání; sluchové varianty reakčních her (reakce na tón, sluchový Go/No-Go).
+- [x] D15 (S) Tóny správně / špatně / hotovo: autoload `Sfx` syntetizuje krátké tóny při startu (žádné zvukové soubory); vypínatelné (`StatsStore.sound_enabled`, přepínač v Nastavení).
+- [x] D16 (S) Metronom (tik na každý předehraný úder) u rytmického ťukání; sluchové varianty reakčního času (tón místo barvy) a Go/No-Go (vysoký tón = klikni, hluboký = nic), klíč `auditory` v konfiguraci tvoří vlastní variantu bez pásma.
 
 ### E. Aplikace jako celek
 - [ ] E17 (M) Jedna obrazovka Nastavení: jazyk, RPE, zvuk, velikost písma, smazání dat.

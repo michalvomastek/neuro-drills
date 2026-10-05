@@ -272,6 +272,7 @@ func _on_cell_pressed(index: int) -> void:
 			_mark_found(_cells[index])
 			_finish()
 		SchulteLogic.ClickOutcome.WRONG:
+			Sfx.play("wrong")
 			if _config.show_errors:
 				_flash_cell(_cells[index], get_theme_color("wrong_flash", "SchulteCell"))
 				_update_error_count()
@@ -279,6 +280,7 @@ func _on_cell_pressed(index: int) -> void:
 
 
 func _mark_found(cell: Button) -> void:
+	Sfx.play("correct")
 	if _config.highlight_correct:
 		_flash_cell(cell, get_theme_color("correct_flash", "SchulteCell"))
 	if _config.dim_found:

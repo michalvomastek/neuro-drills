@@ -23,6 +23,7 @@ run/main_scene="res://ui/app/app.tscn"
 DrillRegistry="*res://autoload/drill_registry.gd"
 SceneRouter="*res://autoload/scene_router.gd"
 StatsStore="*res://autoload/stats_store.gd"
+Sfx="*res://autoload/sfx.gd"
 
 [debug]
 

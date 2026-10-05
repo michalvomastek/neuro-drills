@@ -30,11 +30,11 @@ const TABLE: Dictionary = {
 	"posner_cueing": [{"metric": "validity_effect_ms", "lower": true, "elite": 25.0, "advanced": 80.0, "unit": "ms"}],
 	"object_tracking": [{"metric": "accuracy", "lower": false, "elite": 1.0, "advanced": 0.65, "unit": "%"}],
 	"spotlight_search": [{"metric": "ms_per_target", "lower": true, "elite": 900.0, "advanced": 3200.0, "unit": "s"}],
-	"reaction_time": [{"metric": "median_rt_ms", "lower": true, "elite": 180.0, "advanced": 270.0, "unit": "ms"}],
+	"reaction_time": [{"config": {"auditory": false}, "metric": "median_rt_ms", "lower": true, "elite": 180.0, "advanced": 270.0, "unit": "ms"}],
 	"choice_reaction": [{"metric": "median_rt_ms", "lower": true, "elite": 280.0, "advanced": 420.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"go_no_go": [
-		{"config": {"adaptive": false}, "metric": "mean_rt_ms", "lower": true, "elite": 260.0, "advanced": 380.0, "gate": "false_alarm_rate", "elite_gate": 0.02, "beginner_gate": 0.12, "unit": "ms"},
-		{"config": {"adaptive": true}, "metric": "threshold_ms", "lower": true, "elite": 170.0, "advanced": 350.0, "unit": "ms"},
+		{"config": {"adaptive": false, "auditory": false}, "metric": "mean_rt_ms", "lower": true, "elite": 260.0, "advanced": 380.0, "gate": "false_alarm_rate", "elite_gate": 0.02, "beginner_gate": 0.12, "unit": "ms"},
+		{"config": {"adaptive": true, "auditory": false}, "metric": "threshold_ms", "lower": true, "elite": 170.0, "advanced": 350.0, "unit": "ms"},
 	],
 	"stroop": [{"metric": "interference_ms", "lower": true, "elite": 30.0, "advanced": 140.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"flanker": [{"metric": "interference_ms", "lower": true, "elite": 15.0, "advanced": 80.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
@@ -77,7 +77,8 @@ static func entry_for(result: DrillResult) -> Dictionary:
 		var requirements: Dictionary = entry.get("config", {})
 		var matches := true
 		for key: String in requirements:
-			if not result.config.has(key) or result.config[key] != requirements[key]:
+			# A flag that was added later is missing from old records; missing means off.
+			if result.config.get(key, false) != requirements[key]:
 				matches = false
 				break
 		if matches:

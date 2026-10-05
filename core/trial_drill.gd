@@ -468,6 +468,10 @@ func _set_pad_color(pad: Button, color: Color) -> StyleBoxFlat:
 
 ## Temporarily recolours a pad and fades it back, like the Schulte flash.
 func _flash_pad(pad: Button, color: Color, fade_seconds: float = 0.4) -> void:
+	if color == get_theme_color("correct", "Pad"):
+		Sfx.play("correct")
+	elif color == get_theme_color("wrong", "Pad") or color == get_theme_color("wrong_dim", "Pad"):
+		Sfx.play("wrong")
 	var base := get_theme_stylebox("normal", "Pad") as StyleBoxFlat
 	var style := _set_pad_color(pad, color)
 	var tween := pad.create_tween()

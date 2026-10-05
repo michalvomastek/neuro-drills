@@ -35,6 +35,7 @@ func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = fals
 		show_menu()
 		return
 	drill.finished.connect(show_results)
+	drill.finished.connect(func(_result: DrillResult) -> void: Sfx.play("done"))
 	drill.aborted.connect(_on_drill_aborted)
 	_swap(drill)
 	drill.setup(definition, config, autostart)

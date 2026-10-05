@@ -88,6 +88,9 @@ func _process(_delta: float) -> void:
 		_cueing = false
 		_hint.text = tr("RHYTHM_CONTINUE")
 		return
+	if beat != _beats_shown:
+		_beats_shown = beat
+		Sfx.play("tick")
 	var phase := fmod(elapsed, _logic.period_ms()) / 1000.0
 	_disc_style.bg_color = get_theme_color("lit", "Board") if phase < PULSE_SECONDS else get_theme_color("cell", "Board")
 
@@ -106,6 +109,7 @@ func _run_trials() -> void:
 	if not await _wait(1.0):
 		return
 	_started_ms = Time.get_ticks_msec()
+	_beats_shown = -1
 	_cueing = true
 	_accepting = true
 

@@ -5,6 +5,8 @@ const DISC_SIZE := 220.0
 
 var _adaptive: bool = false
 var _adaptive_check: CheckBox
+var _auditory: bool = false
+var _auditory_check: CheckBox
 var _logic: GoNoGoLogic
 var _pad: Button
 var _disc: Panel
@@ -26,19 +28,25 @@ func _build_extras(parent: VBoxContainer) -> void:
 	_adaptive_check = CheckBox.new()
 	_adaptive_check.text = tr("GONOGO_OPT_ADAPTIVE")
 	parent.add_child(_adaptive_check)
+	_auditory_check = CheckBox.new()
+	_auditory_check.text = tr("GONOGO_OPT_AUDITORY")
+	parent.add_child(_auditory_check)
 
 
 func _apply_extra_config(config: Dictionary) -> void:
 	_adaptive = config.get("adaptive", false)
 	_adaptive_check.button_pressed = _adaptive
+	_auditory = config.get("auditory", false)
+	_auditory_check.button_pressed = _auditory
 
 
 func _collect_extra_config() -> Dictionary:
-	return {"adaptive": _adaptive}
+	return {"adaptive": _adaptive, "auditory": _auditory}
 
 
 func _on_start_pressed() -> void:
 	_adaptive = _adaptive_check.button_pressed
+	_auditory = _auditory_check.button_pressed
 	super()
 
 
@@ -85,8 +93,11 @@ func _next_trial() -> void:
 		return
 	_stimulus_id += 1
 	var stimulus := _stimulus_id
-	_disc_style.bg_color = get_theme_color("go" if _logic.current_is_go() else "wrong", "Pad")
-	_disc.visible = true
+	if _auditory:
+		Sfx.play("high" if _logic.current_is_go() else "low")
+	else:
+		_disc_style.bg_color = get_theme_color("go" if _logic.current_is_go() else "wrong", "Pad")
+		_disc.visible = true
 	_stimulus_active = true
 	_stimulus_ms = Time.get_ticks_msec()
 	if not await _wait(_logic.stimulus_ms() / 1000.0):

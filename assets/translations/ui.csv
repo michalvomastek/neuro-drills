@@ -457,3 +457,8 @@ PROGRESS_IMPORT_TITLE,Vyber zálohu (neuro-drills-results.jsonl),Choose a backup
 PROGRESS_IMPORTED,Importováno nových kol: %d,New runs imported: %d
 PROGRESS_IMPORT_NOTHING,Soubor neobsahuje žádné kolo,The file holds no run
 PROGRESS_IMPORT_HINT,Záloha stáhne historii jako soubor; Import ji na jiném zařízení přidá k té zdejší.,Backup downloads the history as a file; Import on another device merges it with the local one.
+REACTION_OPT_AUDITORY,Sluchová varianta: reaguj na tón místo na barvu,Auditory variant: react to a tone instead of the colour
+REACTION_LISTEN,Poslouchej…,Listen…
+GONOGO_OPT_AUDITORY,Sluchová varianta: vysoký tón = klikni · hluboký tón = nic,Auditory variant: high tone = click · low tone = nothing
+VARIANT_AUDITORY,sluchově,auditory
+SETTINGS_SOUND,Zvuky správně / špatně / hotovo,Sounds for correct / wrong / done

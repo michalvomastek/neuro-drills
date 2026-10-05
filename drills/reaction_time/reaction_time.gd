@@ -11,6 +11,8 @@ var _pad: Button
 var _state := State.IDLE
 var _trial_id: int = 0
 var _stimulus_ms: int = 0
+var _auditory: bool = false
+var _auditory_check: CheckBox
 
 
 func _trial_options() -> Array[int]:
@@ -19,6 +21,26 @@ func _trial_options() -> Array[int]:
 
 func _default_trials() -> int:
 	return 5
+
+
+func _build_extras(parent: VBoxContainer) -> void:
+	_auditory_check = CheckBox.new()
+	_auditory_check.text = tr("REACTION_OPT_AUDITORY")
+	parent.add_child(_auditory_check)
+
+
+func _apply_extra_config(config: Dictionary) -> void:
+	_auditory = config.get("auditory", false)
+	_auditory_check.button_pressed = _auditory
+
+
+func _collect_extra_config() -> Dictionary:
+	return {"auditory": _auditory}
+
+
+func _on_start_pressed() -> void:
+	_auditory = _auditory_check.button_pressed
+	super()
 
 
 func _build_play_area(parent: Control) -> void:
@@ -43,7 +65,7 @@ func _start_trial() -> void:
 	_trial_id += 1
 	var trial := _trial_id
 	_state = State.WAITING
-	_pad.text = tr("REACTION_WAIT")
+	_pad.text = tr("REACTION_LISTEN" if _auditory else "REACTION_WAIT")
 	_clear_pad_flash(_pad)
 	if not await _wait(_logic.next_delay_ms() / 1000.0):
 		return
@@ -51,8 +73,11 @@ func _start_trial() -> void:
 		return
 	_state = State.GO
 	_stimulus_ms = Time.get_ticks_msec()
-	_pad.text = tr("REACTION_GO")
-	_set_pad_color(_pad, get_theme_color("go", "Pad"))
+	if _auditory:
+		Sfx.play("tone")
+	else:
+		_pad.text = tr("REACTION_GO")
+		_set_pad_color(_pad, get_theme_color("go", "Pad"))
 
 
 func _on_pad_pressed() -> void:

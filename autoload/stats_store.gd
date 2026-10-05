@@ -19,6 +19,8 @@ var plans: Array[Dictionary] = []
 var training_minutes: int = 10
 ## Whether the results screen asks for the perceived exertion (RPE 1-10).
 var rpe_enabled: bool = true
+## Feedback sounds (correct / wrong / finished).
+var sound_enabled: bool = true
 ## Name of the active theme: "dark" or "light" (ui/theme/<name>_theme.tres).
 var theme_name: String = "dark"
 
@@ -128,6 +130,12 @@ func set_rpe_enabled(enabled: bool) -> void:
 	_set_setting("results", "rpe_enabled", enabled)
 
 
+func set_sound_enabled(on: bool) -> void:
+	sound_enabled = on
+	_set_setting("sound", "enabled", on)
+	Sfx.enabled = on
+
+
 func set_theme_name(name: String) -> void:
 	theme_name = "light" if name == "light" else "dark"
 	_set_setting("ui", "theme", theme_name)
@@ -222,6 +230,7 @@ func _load() -> void:
 		rpe_enabled = config.get_value("results", "rpe_enabled", true)
 		training_minutes = config.get_value("training", "minutes", 10)
 		theme_name = config.get_value("ui", "theme", "dark")
+		sound_enabled = config.get_value("sound", "enabled", true)
 		badges_seen = config.get_value("gamification", "badges_seen", PackedStringArray())
 
 
