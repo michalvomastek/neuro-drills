@@ -1,6 +1,8 @@
 ## Dual task: tap the rhythm with the left pad or space; after a while
 ## arithmetic problems appear on the right, answered with the keypad or number
-## keys, while the tapping must go on.
+## keys, while the tapping must go on. The keypad is on screen from the start
+## (greyed out), so nothing moves under the tapping finger when the load
+## begins; a phone stacks the pad above the problem instead of beside it.
 extends TrialDrill
 
 const TEMPOS: Array[int] = [60, 90, 120]
@@ -16,6 +18,7 @@ var _hint: Label
 var _problem: Label
 var _input: Label
 var _keypad: GridContainer
+var _halves: BoxContainer
 var _answer: String = ""
 var _started_ms: int = 0
 var _cueing: bool = false
@@ -48,11 +51,13 @@ func _on_start_pressed() -> void:
 
 
 func _build_play_area(parent: Control) -> void:
-	var halves := HBoxContainer.new()
+	var halves := BoxContainer.new()
 	halves.set_anchors_preset(Control.PRESET_FULL_RECT)
 	halves.add_theme_constant_override("separation", 16)
 	parent.add_child(halves)
+	_halves = halves
 	_tap_pad = _make_pad()
+	_tap_pad.custom_minimum_size = Vector2(0, 160)
 	_tap_pad.pressed.connect(_on_tap)
 	halves.add_child(_tap_pad)
 	var left_overlay := CenterContainer.new()
@@ -69,6 +74,7 @@ func _build_play_area(parent: Control) -> void:
 	left_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_theme_constant_override("separation", 12)
 	halves.add_child(right)
 	_hint = Label.new()
@@ -89,7 +95,22 @@ func _build_play_area(parent: Control) -> void:
 	var center := CenterContainer.new()
 	right.add_child(center)
 	_keypad = _make_keypad(center, _on_key)
-	_keypad.visible = false
+	_set_keypad_enabled(false)
+	_relayout_setup()
+
+
+## Side by side on a wide screen, the pad above the problem on a phone.
+func _relayout_setup() -> void:
+	super()
+	if _halves != null:
+		_halves.vertical = Layout.is_narrow(self)
+
+
+func _set_keypad_enabled(enabled: bool) -> void:
+	for child in _keypad.get_children():
+		var button := child as Button
+		if button != null:
+			button.disabled = not enabled
 
 
 func _handle_response(event: InputEvent) -> void:
@@ -123,7 +144,7 @@ func _run_trials() -> void:
 	_loaded = false
 	_problem.text = ""
 	_input.text = ""
-	_keypad.visible = false
+	_set_keypad_enabled(false)
 	_hint.text = tr("DUAL_HINT_TAP")
 	_set_progress_text("%d BPM   0 / %d" % [_bpm, _logic.total_taps()])
 	if not await _wait(1.0):
@@ -142,7 +163,7 @@ func _on_tap() -> void:
 	if _logic.is_loaded_phase() and not _loaded:
 		_loaded = true
 		_hint.text = tr("DUAL_HINT_SOLVE")
-		_keypad.visible = true
+		_set_keypad_enabled(true)
 		_next_problem()
 	if _logic.is_done():
 		_accepting = false
@@ -181,3 +202,5 @@ func _reset_play_state() -> void:
 	_loaded = false
 	if _disc_style != null:
 		_disc_style.bg_color = get_theme_color("cell", "Board")
+	if _keypad != null:
+		_set_keypad_enabled(false)
