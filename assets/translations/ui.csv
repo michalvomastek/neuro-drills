@@ -526,3 +526,7 @@ ONBOARDING_3_BODY,"Historie kol se ukládá jen v tomto prohlížeči nebo poč�
 TRAINING_SUGGEST_SHORT,Navrhnout,Suggest
 TRAINING_SAVE_SHORT,Uložit,Save
 TRAINING_DRAG_HINT,Tažením změníš pořadí,Drag to reorder
+COUNTDOWN_READY,Připrav se: %s,Get ready: %s
+COUNTDOWN_IN,Start za %d,Start in %d
+COUNTDOWN_GO,Teď!,Go!
+TRAINING_BRIEF_STOP,Ukončit trénink,End training

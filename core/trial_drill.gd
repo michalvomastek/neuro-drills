@@ -7,6 +7,10 @@ class_name TrialDrill
 extends Drill
 
 const COUNTDOWN_FROM := 3
+## "Go!" is shown this long, then the screen stays empty for the gap, so the
+## last count can never be mistaken for the first stimulus (SART's digits).
+const COUNTDOWN_GO_SECONDS := 0.6
+const COUNTDOWN_GAP_SECONDS := 0.5
 const PAD_STATES: Array[StringName] = [&"normal", &"hover", &"pressed"]
 const MARGIN_SIDES: Array[StringName] = [&"margin_left", &"margin_top", &"margin_right", &"margin_bottom"]
 
@@ -33,6 +37,7 @@ var _play_area: Control
 var _progress_label: Label
 var _countdown_panel: CenterContainer
 var _countdown_label: Label
+var _countdown_hint: Label
 
 
 func _ready() -> void:
@@ -182,11 +187,19 @@ func _begin_run() -> void:
 	Drill.set_leave_guard(true)
 	if countdown:
 		_countdown_panel.visible = true
+		_countdown_hint.text = tr("COUNTDOWN_READY") % tr(definition.title_key)
+		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
 		for i in range(COUNTDOWN_FROM, 0, -1):
-			_countdown_label.text = str(i)
+			_countdown_label.text = tr("COUNTDOWN_IN") % i
 			if not await _wait(1.0):
 				return
+		_countdown_label.add_theme_color_override("font_color", get_theme_color("green", "App"))
+		_countdown_label.text = tr("COUNTDOWN_GO")
+		if not await _wait(COUNTDOWN_GO_SECONDS):
+			return
 		_countdown_panel.visible = false
+		if not await _wait(COUNTDOWN_GAP_SECONDS):
+			return
 	_play_panel.visible = true
 	_running = true
 	_set_progress(0)
@@ -412,9 +425,19 @@ func _build_ui() -> void:
 	_countdown_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_countdown_panel.visible = false
 	add_child(_countdown_panel)
+	var countdown_box := VBoxContainer.new()
+	countdown_box.add_theme_constant_override("separation", 12)
+	_countdown_panel.add_child(countdown_box)
+	_countdown_hint = Label.new()
+	_countdown_hint.theme_type_variation = &"DimLabel"
+	_countdown_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_countdown_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	countdown_box.add_child(_countdown_hint)
 	_countdown_label = Label.new()
-	_countdown_label.add_theme_font_size_override("font_size", 140)
-	_countdown_panel.add_child(_countdown_label)
+	_countdown_label.theme_type_variation = &"HeadingLabel"
+	_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_countdown_label.add_theme_font_size_override("font_size", 72)
+	countdown_box.add_child(_countdown_label)
 
 
 ## A large flat button that fires on press, used as a response pad or stimulus surface.

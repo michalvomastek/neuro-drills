@@ -207,11 +207,17 @@ func _begin_table() -> void:
 	if _config.countdown:
 		# Only the countdown is on screen; the play panel (with its Back button) follows it.
 		_countdown_panel.visible = true
+		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
 		for i in range(COUNTDOWN_FROM, 0, -1):
-			_countdown_label.text = str(i)
+			_countdown_label.text = tr("COUNTDOWN_IN") % i
 			await get_tree().create_timer(1.0).timeout
 			if token != _run_token or not is_inside_tree():
 				return
+		_countdown_label.add_theme_color_override("font_color", get_theme_color("green", "App"))
+		_countdown_label.text = tr("COUNTDOWN_GO")
+		await get_tree().create_timer(0.6).timeout
+		if token != _run_token or not is_inside_tree():
+			return
 		_countdown_panel.visible = false
 	_play_panel.visible = true
 	_grid.visible = true

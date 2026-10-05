@@ -253,6 +253,8 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 - [x] F25 Dotykové ovládání tréninku: kroky se přesouvají tažením za úchyt (na telefonu bez šipek), ovládací prvky jsou viditelná tlačítka.
 - [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
+- [x] F28 Odpočet se pletl s podněty (SART: „3“ z odpočtu vs. zakázaná trojka): odpočet říká „Start za 3“ v barvě akcentu s názvem hry nad ním, končí zeleným „Teď!“ a půlsekundovou prázdnou pauzou před prvním podnětem; totéž v Schulteho tabulce.
+- [x] F29 Trénink: před každým krokem obrazovka s názvem hry, variantou, popisem a nápovědou (co měří, pásma) a tlačítkem Start; hráč tak ví, co po odpočtu hraje. Tlačítko „Ukončit trénink“ vrátí na sestavu.
 - [x] F27 Rychlejší načtení: Nunito a Baloo 2 zúženy na latinku s češtinou (z 960 kB na 230 kB se symboly); skript v hlavičce webu nechá novou verzi service workeru převzít stránku a jednou ji znovu načíst, takže se aktualizace projeví hned při dalším otevření (ověřeno v Chromiu proti lokálnímu serveru).
 - [x] F23 Profil (`ui/profile/`): série, úroveň s XP, denní cíl, posledních 7 dní a všechny odznaky s popisem; menu má místo řady odznaků jen kompaktní řádek s tlačítkem „Profil · odznaky n / 12“.
 - [x] F24 Úvod při prvním spuštění (`ui/onboarding/`, tři stránky: co to je, jak funguje trénink, kde jsou data) s tlačítkem na první pětiminutový trénink; znovu dostupný z Nastavení. Hráč s historií ho neuvidí.

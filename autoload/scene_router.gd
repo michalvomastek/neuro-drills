@@ -9,6 +9,7 @@ const TRAINING_SCENE_PATH := "res://ui/training/training_screen.tscn"
 const SETTINGS_SCENE_PATH := "res://ui/settings/settings_screen.tscn"
 const PROFILE_SCENE_PATH := "res://ui/profile/profile_screen.tscn"
 const ONBOARDING_SCENE_PATH := "res://ui/onboarding/onboarding_screen.tscn"
+const TRAINING_BRIEF_SCENE_PATH := "res://ui/training/training_brief.tscn"
 const TRAINING_SUMMARY_SCENE_PATH := "res://ui/training/training_summary.tscn"
 
 ## The training in progress, or null when drills are played one by one.
@@ -88,7 +89,19 @@ func show_training_summary() -> void:
 	training = null
 
 
+## Each step opens with a short brief (which drill, how to play, what it
+## measures) so the player knows what comes after the countdown.
 func _start_training_step() -> void:
+	var screen := _instantiate(TRAINING_BRIEF_SCENE_PATH) as TrainingBrief
+	_swap(screen)
+	screen.setup(training)
+
+
+## Called by the brief's Start button.
+func start_training_step_now() -> void:
+	if training == null:
+		show_menu()
+		return
 	var step := training.current_step()
 	var drill_id: String = step["drill_id"]
 	var config: Dictionary = step["config"]

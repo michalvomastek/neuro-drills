@@ -4,7 +4,7 @@
 ## (virtual) display, because the drills render and use the pointer.
 extends SceneTree
 
-const SETTLE_SECONDS := 4.3
+const SETTLE_SECONDS := 5.5
 
 var _host: Control
 var _failures: PackedStringArray = PackedStringArray()
