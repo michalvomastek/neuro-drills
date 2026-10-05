@@ -255,6 +255,7 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
 - [~] F30 Instrukce hry během odpočtu: vyzkoušeno (karta nad plochou, pak text pod „Start za 3“) a na přání správce odstraněno; krok tréninku vysvětluje `TrainingBrief`, rychlý start panel nastavení.
 - [x] F31 Bezpečné okraje iPhonu (výřez, domovský indikátor): hlavička webu vystavuje `env(safe-area-inset-*)`, `Layout.safe_insets` je převede na jednotky a kořen aplikace se o ně odsadí.
+- [x] F34 Odznaky mají barevné medailony (SVG v `assets/badges/`): na profilu vedle názvu, ve výsledcích u řádku „Nový odznak“; nezískané jsou vybledlé.
 - [x] F33 Pevná spodní lišta s ikonami (Hry, Trénink, Pokrok, Profil, Nastavení) a pevná horní lišta (název obrazovky, série a denní cíl, zpětná vazba, konec; šipka zpět na obrazovkách bez záložky). Tlačítka ze spodku menu a hlavičky obrazovek se přesunuly do lišt; hra, výsledky, brief a onboarding běží bez lišt.
 - [x] F32 Výsledky: hlavní řádky a sekce „Více“ (další úroveň, kolísání, únava, nejlepší 3 z 5), aby se výsledek na telefonu vešel bez posouvání.
 - [x] F28 Odpočet se pletl s podněty (SART: „3“ z odpočtu vs. zakázaná trojka): odpočet říká „Start za 3“ v barvě akcentu s názvem hry nad ním, končí zeleným „Teď!“ a půlsekundovou prázdnou pauzou před prvním podnětem; totéž v Schulteho tabulce.

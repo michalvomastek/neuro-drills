@@ -3,6 +3,8 @@
 class_name ProfileScreen
 extends Control
 
+const BADGE_ICON_SIZE := 56.0
+
 @onready var _margin: MarginContainer = %Margin
 @onready var _stats: HFlowContainer = %Stats
 @onready var _week_label: Label = %WeekLabel
@@ -27,7 +29,7 @@ func _ready() -> void:
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
-	_badges.columns = 1 if narrow else 3
+	_badges.columns = 1 if narrow else 2
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -40,9 +42,14 @@ func _add_badge(id: String, earned: bool) -> void:
 	var card := PanelContainer.new()
 	card.theme_type_variation = &"Card" if earned else &"Sunken"
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	card.add_child(row)
+	row.add_child(GamiWidgets.make_badge_icon(id, BADGE_ICON_SIZE, earned))
 	var box := VBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_theme_constant_override("separation", 4)
-	card.add_child(box)
+	row.add_child(box)
 	var name := Label.new()
 	name.text = tr("BADGE_%s" % id.to_upper())
 	name.theme_type_variation = &"HeadingLabel" if earned else &"DimLabel"

@@ -33,6 +33,9 @@ func _ready() -> void:
 
 ## The label column gets three fifths of a phone's width so most labels fit
 ## on one line; a wide panel lets the value column take its natural width.
+const BADGE_ICON_SIZE := 32.0
+
+
 func _size_row(label: Label, value_label: Label) -> void:
 	var narrow := Layout.is_narrow(self)
 	label.size_flags_stretch_ratio = 3.0
@@ -111,7 +114,7 @@ func _add_stable_best_row(record: Dictionary) -> void:
 func _add_reward_rows(record: Dictionary) -> void:
 	_add_row("RESULT_XP", tr("RESULT_XP_VALUE") % Gamification.xp_for_record(record))
 	for id in StatsStore.take_new_badges():
-		_add_row("RESULT_NEW_BADGE", tr("BADGE_%s" % id.to_upper()))
+		_add_badge_row(id)
 
 
 ## Orientational level from the benchmark table, plus the bound of the next band.
@@ -198,6 +201,34 @@ func _add_row(label_key: String, value: String, detail: bool = false) -> void:
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	grid.add_child(value_label)
 	_size_row(label, value_label)
+
+
+## "New badge" with the medallion next to its name.
+func _add_badge_row(id: String) -> void:
+	var label := Label.new()
+	label.text = tr("RESULT_NEW_BADGE")
+	label.theme_type_variation = &"DimLabel"
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_rows.add_child(label)
+	var value := HBoxContainer.new()
+	value.alignment = BoxContainer.ALIGNMENT_END
+	value.add_theme_constant_override("separation", 8)
+	var icon := GamiWidgets.make_badge_icon(id, BADGE_ICON_SIZE, true)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	value.add_child(icon)
+	var name := Label.new()
+	name.text = tr("BADGE_%s" % id.to_upper())
+	name.theme_type_variation = &"PillLabel"
+	name.add_theme_font_size_override("font_size", 18)
+	name.add_theme_color_override("font_color", get_theme_color("yellow", "App"))
+	value.add_child(name)
+	_rows.add_child(value)
+	_size_row(label, name)
+	value.size_flags_horizontal = name.size_flags_horizontal
+	value.size_flags_stretch_ratio = name.size_flags_stretch_ratio
+	name.size_flags_horizontal = Control.SIZE_SHRINK_END
+	name.autowrap_mode = TextServer.AUTOWRAP_OFF
 
 
 func _on_more_pressed() -> void:

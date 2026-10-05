@@ -81,6 +81,25 @@ static func add_brief_stats(parent: Control, short: bool) -> void:
 	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate(key) % [minutes, goal], true)
 
 
+const BADGE_DIR := "res://assets/badges/"
+## Icons of badges not yet earned are shown faded.
+const LOCKED_ALPHA := 0.3
+
+
+## The coloured medallion of a badge (assets/badges/<id>.svg), [param size]
+## design units across; a locked badge fades to a silhouette.
+static func make_badge_icon(id: String, size: float, earned: bool) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = load(BADGE_DIR + id + ".svg") as Texture2D
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = Vector2(size, size)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	if not earned:
+		icon.modulate = Color(1, 1, 1, LOCKED_ALPHA)
+	return icon
+
+
 ## A small pill-shaped button, e.g. "Badges 3 / 12".
 static func add_pill_button(parent: Control, text: String, on_pressed: Callable) -> Button:
 	var button := Button.new()
