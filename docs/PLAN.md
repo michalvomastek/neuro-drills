@@ -236,7 +236,7 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [x] C11 (M) Index únavy u N-back (časy odpovědí) a MOT (čas výběru za kolo) v `details.times_ms`.
 - [x] C12 (M) U prahových her (`MetricCatalog.THRESHOLD_DRILLS`) řádek „nejlepší 3 z posledních 5 dní“ ve výsledcích i v Pokroku (`StatsHistory.stable_best`).
 - [x] C13 (M) Graf v Pokroku s rozsahem 20 / 50 / vše a čárkovanými hranicemi pásem pokročilý a zkušený (`Benchmarks.bounds_for`), pokud leží blízko dat.
-- [ ] C14 (M) Revize pásem v `docs/BENCHMARKS.md` podle reálných dat (po pár týdnech hraní).
+- [~] C14 (M) Revize pásem v `docs/BENCHMARKS.md` podle reálných dat (po pár týdnech hraní). První část hotová 5. 10. 2026: brány chybovosti u Schulteho tabulky, reakčního času, Posnera, reflektoru a dvojité úlohy a spodní hranice reakčních časů (anticipace bez pásma), protože průchod náhodným vstupem dosahoval pásma zkušený; `playthrough` teď vypisuje pásmo každého kola a náhodný vstup žádné nedostane.
 
 ### D. Zvuk
 - [x] D15 (S) Tóny správně / špatně / hotovo: autoload `Sfx` syntetizuje krátké tóny při startu (žádné zvukové soubory); vypínatelné (`StatsStore.sound_enabled`, přepínač v Nastavení).
@@ -253,6 +253,9 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 - [x] F25 Dotykové ovládání tréninku: kroky se přesouvají tažením za úchyt (na telefonu bez šipek), ovládací prvky jsou viditelná tlačítka.
 - [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
+- [x] F30 Karta s instrukcí hry nad herní plochou tři sekundy po odpočtu (`Drill.show_hint`), aby rychlý start i krok tréninku byly stejně srozumitelné jako panel nastavení.
+- [x] F31 Bezpečné okraje iPhonu (výřez, domovský indikátor): hlavička webu vystavuje `env(safe-area-inset-*)`, `Layout.safe_insets` je převede na jednotky a kořen aplikace se o ně odsadí.
+- [x] F32 Výsledky: hlavní řádky a sekce „Více“ (další úroveň, kolísání, únava, nejlepší 3 z 5), aby se výsledek na telefonu vešel bez posouvání.
 - [x] F28 Odpočet se pletl s podněty (SART: „3“ z odpočtu vs. zakázaná trojka): odpočet říká „Start za 3“ v barvě akcentu s názvem hry nad ním, končí zeleným „Teď!“ a půlsekundovou prázdnou pauzou před prvním podnětem; totéž v Schulteho tabulce.
 - [x] F29 Trénink: před každým krokem obrazovka s názvem hry, variantou, popisem a nápovědou (co měří, pásma) a tlačítkem Start; hráč tak ví, co po odpočtu hraje. Tlačítko „Ukončit trénink“ vrátí na sestavu.
 - [x] F27 Rychlejší načtení: Nunito a Baloo 2 zúženy na latinku s češtinou (z 960 kB na 230 kB se symboly); skript v hlavičce webu nechá novou verzi service workeru převzít stránku a jednou ji znovu načíst, takže se aktualizace projeví hned při dalším otevření (ověřeno v Chromiu proti lokálnímu serveru).

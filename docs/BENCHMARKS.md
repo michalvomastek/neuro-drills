@@ -9,16 +9,16 @@ Pravidla:
 
 | Hra / varianta | Metrika | Pokročilý do | Zkušený od | Brána chybovosti (zkušený / začátečník) |
 | --- | --- | --- | --- | --- |
-| Schulteho tabulka 5×5, čísla | celkový čas | 45 s | 20 s | – |
+| Schulteho tabulka 5×5, čísla | celkový čas | 45 s | 20 s | ≤ 1 chyba / > 6 chyb |
 | Gorbov–Schulte 7×7 | celkový čas | 120 s | 55 s | 0 chyb / > 4 chyby |
 | Trail Making A, 20 koleček, čísla vzestupně | celkový čas | 28 s | 12 s | – |
 | Trail Making B, 20 koleček, čísla + písmena (obě kombinace) | celkový čas | 50 s | 20 s | – |
 | Vizuální hledání, 64 znaků | medián reakce | 850 ms | 420 ms | – |
 | SART | průměrná reakce | 380 ms | 290 ms | reakce na trojku ≤ 3 % / > 15 % |
-| Posnerova nápověda | cena přesunu | 80 ms | 25 ms | – |
+| Posnerova nápověda | cena přesunu | 80 ms | 25 ms | chyby ≤ 5 % / > 20 % |
 | Sledování více objektů | úspěšnost | 65 % | 100 % | – |
-| Hledání reflektorem | čas na cíl | 3,2 s | 0,9 s | – |
-| Reakční čas | medián | 270 ms | 180 ms | – |
+| Hledání reflektorem | čas na cíl | 3,2 s | 0,9 s | ≤ 1 chybný klik / > 6 |
+| Reakční čas | medián | 270 ms | 180 ms | předčasné ≤ 10 % / > 50 %; medián pod 100 ms = bez pásma |
 | Výběrová reakce | medián | 420 ms | 280 ms | chyby ≤ 5 % / > 20 % |
 | Go/No-Go standard | průměrná reakce na zelenou | 380 ms | 260 ms | reakce na červenou ≤ 2 % / > 12 % |
 | Go/No-Go adaptivní | nejkratší zvládnutý podnět | 350 ms | 170 ms | – |
@@ -50,8 +50,10 @@ Pravidla:
 | Čas do kontaktu 3D | časová odchylka | 160 ms | 35 ms | místo ≤ 2 % / > 10 % výšky |
 | Brockův provázek | reakce při skoku blízko–daleko | 1500 ms | 500 ms | úspěšnost ≥ 95 % / < 75 % |
 | Mentální rotace 3D | medián | 2600 ms | 1300 ms | úspěšnost ≥ 95 % / < 75 % |
-| Dvojitá úloha | zhoršení rytmu | 35 % | 7 % | – |
+| Dvojitá úloha | zhoršení rytmu | 35 % | 7 % | správné příklady ≥ 90 % / < 60 % |
 | Rozdělená pozornost | průměrná reakce na zelenou | 460 ms | 290 ms | vzdálenost tečky ≤ 8 % / > 30 % |
+
+Reakční hry mají navíc fyziologickou spodní hranici (reakční čas 100 ms, výběrová reakce 150 ms, SART 120 ms): rychlejší medián je anticipace a kolo nedostane pásmo. Brány u Schulteho tabulky, Posnera, reflektoru a dvojité úlohy přibyly 5. 10. 2026 poté, co nástroj `playthrough` (náhodný vstup) dosáhl pásma zkušený.
 
 Úpravy oproti předloze:
 - Mentální rotace 3D: zkušený od 1300 ms místo 850 ms; u Shepard–Metzlerových figur jsou kratší časy nereálné.

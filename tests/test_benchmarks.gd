@@ -62,3 +62,16 @@ func test_config_match_across_types() -> void:
 	var verdict := Benchmarks.evaluate(r)
 	assert_eq(verdict.get("metric"), "total_ms")
 	assert_true(verdict.has("level"))
+
+
+func test_floor_and_random_play_gates() -> void:
+	assert_true(Benchmarks.evaluate(_result(&"reaction_time", {"median_rt_ms": 40.0, "error_rate": 0.0})).is_empty(), "a median under the floor is anticipation")
+	assert_eq(Benchmarks.evaluate(_result(&"reaction_time", {"median_rt_ms": 170.0, "error_rate": 0.6}))["level"], Benchmarks.Level.BEGINNER, "many premature presses")
+	assert_eq(Benchmarks.evaluate(_result(&"reaction_time", {"median_rt_ms": 170.0, "error_rate": 0.0}))["level"], Benchmarks.Level.ELITE)
+	var schulte := _result(&"schulte_table", {"total_ms": 8000.0, "errors": 600.0}, {"grid_size": 5, "symbols": "numbers"})
+	assert_eq(Benchmarks.evaluate(schulte)["level"], Benchmarks.Level.BEGINNER, "a fast table with hundreds of wrong clicks")
+	var spotlight := _result(&"spotlight_search", {"ms_per_target": 400.0, "wrong": 30.0})
+	assert_eq(Benchmarks.evaluate(spotlight)["level"], Benchmarks.Level.BEGINNER)
+	var dual := _result(&"dual_task", {"interference_percent": -50.0, "arith_accuracy": 0.2})
+	assert_eq(Benchmarks.evaluate(dual)["level"], Benchmarks.Level.BEGINNER, "guessing the arithmetic")
+	assert_eq(Benchmarks.evaluate(_result(&"dual_task", {"interference_percent": 5.0, "arith_accuracy": 0.95}))["level"], Benchmarks.Level.ELITE)

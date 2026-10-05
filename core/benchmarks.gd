@@ -13,11 +13,14 @@ const LEVEL_KEYS: Array[String] = ["LEVEL_BEGINNER", "LEVEL_ADVANCED", "LEVEL_EL
 ## Each entry: metric key, whether lower is better, the elite bound, the
 ## advanced bound (values beyond it are beginner), an optional "gate" metric
 ## with an "elite_gate" (max allowed to reach elite) and "beginner_gate"
-## (above it the run drops to beginner), an optional "config" match and an
-## optional "unit" for the "next level from" text.
+## (above it the run drops to beginner; "gate_higher" flips both to minimums),
+## an optional "floor" under which a reaction time counts as anticipation (no
+## band), an optional "config" match and an optional "unit" for the "next
+## level from" text. Random input must never reach a band: the playthrough
+## prints the band of every run, and a gate is added wherever it does.
 const TABLE: Dictionary = {
 	"schulte_table": [
-		{"config": {"grid_size": 5, "red_black": false, "symbols": "numbers", "test_mode": false}, "metric": "total_ms", "lower": true, "elite": 20000.0, "advanced": 45000.0, "unit": "s"},
+		{"config": {"grid_size": 5, "red_black": false, "symbols": "numbers", "test_mode": false}, "metric": "total_ms", "lower": true, "elite": 20000.0, "advanced": 45000.0, "gate": "errors", "elite_gate": 1.0, "beginner_gate": 6.0, "unit": "s"},
 		{"config": {"red_black": true, "test_mode": false}, "metric": "total_ms", "lower": true, "elite": 55000.0, "advanced": 120000.0, "gate": "errors", "elite_gate": 0.0, "beginner_gate": 4.0, "unit": "s"},
 	],
 	"trail_making": [
@@ -26,12 +29,12 @@ const TABLE: Dictionary = {
 		{"config": {"trials": 20, "order": 3}, "metric": "total_ms", "lower": true, "elite": 20000.0, "advanced": 50000.0, "unit": "s"},
 	],
 	"visual_search": [{"config": {"set_size": 64}, "metric": "median_rt_ms", "lower": true, "elite": 420.0, "advanced": 850.0, "unit": "ms"}],
-	"sart": [{"metric": "mean_rt_ms", "lower": true, "elite": 290.0, "advanced": 380.0, "gate": "commission_rate", "elite_gate": 0.03, "beginner_gate": 0.15, "unit": "ms"}],
-	"posner_cueing": [{"metric": "validity_effect_ms", "lower": true, "elite": 25.0, "advanced": 80.0, "unit": "ms"}],
+	"sart": [{"metric": "mean_rt_ms", "lower": true, "elite": 290.0, "advanced": 380.0, "floor": 120.0, "gate": "commission_rate", "elite_gate": 0.03, "beginner_gate": 0.15, "unit": "ms"}],
+	"posner_cueing": [{"metric": "validity_effect_ms", "lower": true, "elite": 25.0, "advanced": 80.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"object_tracking": [{"metric": "accuracy", "lower": false, "elite": 1.0, "advanced": 0.65, "unit": "%"}],
-	"spotlight_search": [{"metric": "ms_per_target", "lower": true, "elite": 900.0, "advanced": 3200.0, "unit": "s"}],
-	"reaction_time": [{"config": {"auditory": false}, "metric": "median_rt_ms", "lower": true, "elite": 180.0, "advanced": 270.0, "unit": "ms"}],
-	"choice_reaction": [{"metric": "median_rt_ms", "lower": true, "elite": 280.0, "advanced": 420.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
+	"spotlight_search": [{"metric": "ms_per_target", "lower": true, "elite": 900.0, "advanced": 3200.0, "gate": "wrong", "elite_gate": 1.0, "beginner_gate": 6.0, "unit": "s"}],
+	"reaction_time": [{"config": {"auditory": false}, "metric": "median_rt_ms", "lower": true, "elite": 180.0, "advanced": 270.0, "floor": 100.0, "gate": "error_rate", "elite_gate": 0.1, "beginner_gate": 0.5, "unit": "ms"}],
+	"choice_reaction": [{"metric": "median_rt_ms", "lower": true, "elite": 280.0, "advanced": 420.0, "floor": 150.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"go_no_go": [
 		{"config": {"adaptive": false, "auditory": false}, "metric": "mean_rt_ms", "lower": true, "elite": 260.0, "advanced": 380.0, "gate": "false_alarm_rate", "elite_gate": 0.02, "beginner_gate": 0.12, "unit": "ms"},
 		{"config": {"adaptive": true, "auditory": false}, "metric": "threshold_ms", "lower": true, "elite": 170.0, "advanced": 350.0, "unit": "ms"},
@@ -65,7 +68,7 @@ const TABLE: Dictionary = {
 	"time_to_contact": [{"metric": "time_error_ms", "lower": true, "elite": 35.0, "advanced": 160.0, "gate": "position_error", "elite_gate": 0.02, "beginner_gate": 0.1, "unit": "ms"}],
 	"brock_string": [{"metric": "jump_rt_ms", "lower": true, "elite": 500.0, "advanced": 1500.0, "gate": "accuracy", "elite_gate": 0.95, "beginner_gate": 0.75, "gate_higher": true, "unit": "ms"}],
 	"rotation_3d": [{"metric": "median_rt_ms", "lower": true, "elite": 1300.0, "advanced": 2600.0, "gate": "accuracy", "elite_gate": 0.95, "beginner_gate": 0.75, "gate_higher": true, "unit": "ms"}],
-	"dual_task": [{"metric": "interference_percent", "lower": true, "elite": 7.0, "advanced": 35.0, "unit": "%p"}],
+	"dual_task": [{"metric": "interference_percent", "lower": true, "elite": 7.0, "advanced": 35.0, "gate": "arith_accuracy", "gate_higher": true, "elite_gate": 0.9, "beginner_gate": 0.6, "unit": "%p"}],
 	"divided_attention": [{"metric": "mean_rt_ms", "lower": true, "elite": 290.0, "advanced": 460.0, "gate": "tracking_mean", "elite_gate": 0.08, "beginner_gate": 0.3, "unit": "ms"}],
 }
 
@@ -137,6 +140,9 @@ static func evaluate(result: DrillResult) -> Dictionary:
 	var metric: String = entry["metric"]
 	var value := MetricCatalog.metric_value(result, metric)
 	if is_nan(value):
+		return {}
+	# A reaction time below the physiological floor is anticipation, not a result.
+	if entry.has("floor") and value < entry["floor"]:
 		return {}
 	var lower: bool = entry["lower"]
 	var elite: float = entry["elite"]
