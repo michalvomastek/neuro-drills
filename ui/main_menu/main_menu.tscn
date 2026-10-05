@@ -31,18 +31,6 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="TitleLabel" type="Label" parent="Center/Panel/VBox"]
-layout_mode = 2
-theme_type_variation = &"TitleLabel"
-text = "APP_TITLE"
-horizontal_alignment = 1
-
-[node name="SubtitleLabel" type="Label" parent="Center/Panel/VBox"]
-layout_mode = 2
-theme_type_variation = &"DimLabel"
-text = "APP_SUBTITLE"
-horizontal_alignment = 1
-
 [node name="Stats" type="HFlowContainer" parent="Center/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -71,39 +59,3 @@ size_flags_vertical = 3
 tab_alignment = 1
 clip_tabs = false
 
-[node name="Footer" type="HFlowContainer" parent="Center/Panel/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-
-[node name="TrainingButton" type="Button" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"PrimaryButton"
-text = "MENU_TRAINING"
-
-[node name="ProgressButton" type="Button" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "MENU_PROGRESS"
-
-[node name="FeedbackButton" type="Button" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "MENU_FEEDBACK"
-
-[node name="SettingsButton" type="Button" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "MENU_SETTINGS"
-
-[node name="Spacer" type="Control" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="QuitButton" type="Button" parent="Center/Panel/VBox/Footer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "MENU_QUIT"

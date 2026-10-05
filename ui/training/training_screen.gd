@@ -4,7 +4,6 @@ class_name TrainingScreen
 extends Control
 
 @onready var _margin: MarginContainer = %Margin
-@onready var _back_button: Button = %BackButton
 @onready var _minutes_slider: HSlider = %MinutesSlider
 @onready var _minutes_label: Label = %MinutesLabel
 @onready var _plans_row: BoxContainer = %PlansRow
@@ -34,7 +33,6 @@ var _drag_row: Control
 
 func _ready() -> void:
 	_rng.randomize()
-	_back_button.pressed.connect(SceneRouter.show_menu)
 	_minutes_slider.min_value = TrainingPlan.MIN_MINUTES
 	_minutes_slider.max_value = TrainingPlan.MAX_MINUTES
 	_minutes_slider.value = StatsStore.training_minutes

@@ -413,6 +413,9 @@ GAMI_LEVEL,Úroveň %d,Level %d
 GAMI_XP,%d / %d XP,%d / %d XP
 GAMI_TODAY,Dnes %d / %d min,Today %d / %d min
 GAMI_TODAY_DONE,Dnes %d / %d min ✓,Today %d / %d min ✓
+GAMI_TODAY_SHORT,%d/%d min,%d/%d min
+GAMI_STREAK_SHORT,Série %d,Streak %d
+NAV_DRILLS,Hry,Drills
 GAMI_BADGES,Odznaky %d / %d,Badges %d / %d
 RESULT_XP,Body,Points
 RESULT_XP_VALUE,+%d XP,+%d XP

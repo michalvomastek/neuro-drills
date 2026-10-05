@@ -10,7 +10,6 @@ extends Control
 @onready var _detail_variant: Label = %DetailVariant
 @onready var _rows: GridContainer = %DetailRows
 @onready var _sparkline: Sparkline = %Sparkline
-@onready var _back_button: Button = %BackButton
 @onready var _status_label: Label = %StatusLabel
 @onready var _export_button: Button = %ExportButton
 @onready var _clear_button: Button = %ClearButton
@@ -39,7 +38,6 @@ var _web_import_callback: JavaScriptObject
 
 
 func _ready() -> void:
-	_back_button.pressed.connect(SceneRouter.show_menu)
 	_variant_option.item_selected.connect(func(index: int) -> void: _select(StatsStore.history.variants()[index]))
 	_export_button.pressed.connect(_on_export_pressed)
 	_backup_button.pressed.connect(_on_backup_pressed)
@@ -74,9 +72,7 @@ func _populate() -> void:
 	for variant in variants:
 		_add_variant_button(variant)
 		_variant_option.add_item(_variant_title(variant))
-	if _buttons.is_empty():
-		_back_button.grab_focus()
-	else:
+	if not _buttons.is_empty():
 		_select(variants[0])
 		_buttons[0].grab_focus()
 

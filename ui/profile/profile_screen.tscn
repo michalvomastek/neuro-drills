@@ -38,23 +38,11 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitleLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
-layout_mode = 2
-theme_type_variation = &"HeadingLabel"
-theme_override_font_sizes/font_size = 32
-text = "PROFILE_TITLE"
-
 [node name="SubtitleLabel" type="Label" parent="Margin/Panel/VBox/Header/Titles"]
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "PROFILE_SUBTITLE"
 autowrap_mode = 3
-
-[node name="BackButton" type="Button" parent="Margin/Panel/VBox/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 0
-text = "COMMON_BACK"
 
 [node name="Stats" type="HFlowContainer" parent="Margin/Panel/VBox"]
 unique_name_in_owner = true

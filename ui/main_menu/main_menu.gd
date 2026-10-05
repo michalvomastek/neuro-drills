@@ -1,17 +1,12 @@
-## Lists the registered drills in one tab per category and offers a language toggle.
+## Lists the registered drills in one tab per category under the player's
+## level and badges; the other destinations live in the app's bottom bar.
 extends Control
 
 @onready var _margin: MarginContainer = %Center
 @onready var _tabs: TabContainer = %Tabs
-@onready var _progress_button: Button = %ProgressButton
-@onready var _feedback_button: Button = %FeedbackButton
-@onready var _training_button: Button = %TrainingButton
-@onready var _settings_button: Button = %SettingsButton
 @onready var _stats: HFlowContainer = %Stats
 @onready var _tab_strip: ScrollContainer = %TabStrip
 @onready var _tab_buttons: HBoxContainer = %TabButtons
-@onready var _footer_spacer: Control = %Spacer
-@onready var _quit_button: Button = %QuitButton
 
 var _first_buttons: Array[Button] = []
 var _strip_buttons: Array[Button] = []
@@ -27,13 +22,6 @@ func _ready() -> void:
 	_tabs.current_tab = clampi(DrillRegistry.last_menu_tab, 0, maxi(0, _tabs.get_tab_count() - 1))
 	_build_tab_strip()
 	_tabs.tab_changed.connect(_on_tab_changed)
-	_progress_button.pressed.connect(SceneRouter.show_progress)
-	_feedback_button.pressed.connect(SceneRouter.show_feedback)
-	_training_button.pressed.connect(SceneRouter.show_training)
-	_training_button.text = tr("MENU_TRAINING_MINUTES") % StatsStore.training_minutes
-	_settings_button.pressed.connect(SceneRouter.show_settings)
-	_quit_button.pressed.connect(get_tree().quit)
-	_quit_button.visible = not OS.has_feature("web")
 	Layout.watch(self, _relayout)
 	_focus_current_tab()
 
@@ -44,7 +32,6 @@ func _relayout() -> void:
 	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
-	_footer_spacer.visible = not narrow
 	_build_stats(narrow)
 	# The tab bar can only be paged with its small arrows; a phone gets a
 	# strip of pills that scrolls by dragging instead.
@@ -145,12 +132,13 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 
 
 
-## Streak, level, today's goal and a pill button to the profile with the
-## badge count; the phone drops the XP numbers.
+## Level with its XP bar and a pill button to the profile with the badge
+## count (streak and daily goal sit in the app's top bar); the phone drops
+## the XP numbers.
 func _build_stats(compact: bool) -> void:
 	for child in _stats.get_children():
 		_stats.remove_child(child)
 		child.queue_free()
-	GamiWidgets.add_stats(_stats, compact)
+	GamiWidgets.add_stats(_stats, compact, false)
 	var earned := StatsStore.earned_badges().size()
 	GamiWidgets.add_pill_button(_stats, tr("MENU_PROFILE_BADGES") % [earned, Gamification.BADGE_ORDER.size()], SceneRouter.show_profile)

@@ -10,12 +10,10 @@ extends Control
 @onready var _copy_button: Button = %CopyButton
 @onready var _export_button: Button = %ExportButton
 @onready var _status_label: Label = %StatusLabel
-@onready var _back_button: Button = %BackButton
 @onready var _margin: MarginContainer = %Margin
 
 
 func _ready() -> void:
-	_back_button.pressed.connect(SceneRouter.show_menu)
 	_save_button.pressed.connect(_on_save_pressed)
 	_copy_button.pressed.connect(_on_copy_pressed)
 	_export_button.pressed.connect(_on_export_pressed)

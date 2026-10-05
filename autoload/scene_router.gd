@@ -12,6 +12,11 @@ const ONBOARDING_SCENE_PATH := "res://ui/onboarding/onboarding_screen.tscn"
 const TRAINING_BRIEF_SCENE_PATH := "res://ui/training/training_brief.tscn"
 const TRAINING_SUMMARY_SCENE_PATH := "res://ui/training/training_summary.tscn"
 
+## Emitted after every swap with the screen's id (menu, training, progress,
+## profile, settings, feedback) or an empty name for a screen without the
+## app bars (drill, results, brief, summary, onboarding).
+signal screen_changed(screen: StringName)
+
 ## The training in progress, or null when drills are played one by one.
 var training: TrainingSession
 
@@ -24,7 +29,7 @@ func attach(host: Control) -> void:
 
 
 func show_menu() -> void:
-	_swap(_instantiate(MAIN_MENU_SCENE_PATH))
+	_swap(_instantiate(MAIN_MENU_SCENE_PATH), &"menu")
 
 
 func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = false) -> void:
@@ -57,7 +62,7 @@ func _on_drill_aborted() -> void:
 
 
 func show_training() -> void:
-	_swap(_instantiate(TRAINING_SCENE_PATH))
+	_swap(_instantiate(TRAINING_SCENE_PATH), &"training")
 
 
 ## Starts the first step of [param session]; the results screen moves on
@@ -109,11 +114,11 @@ func start_training_step_now() -> void:
 
 
 func show_feedback() -> void:
-	_swap(_instantiate(FEEDBACK_SCENE_PATH))
+	_swap(_instantiate(FEEDBACK_SCENE_PATH), &"feedback")
 
 
 func show_profile() -> void:
-	_swap(_instantiate(PROFILE_SCENE_PATH))
+	_swap(_instantiate(PROFILE_SCENE_PATH), &"profile")
 
 
 func show_onboarding() -> void:
@@ -135,11 +140,11 @@ func start_suggested_training(minutes: int) -> void:
 
 
 func show_settings() -> void:
-	_swap(_instantiate(SETTINGS_SCENE_PATH))
+	_swap(_instantiate(SETTINGS_SCENE_PATH), &"settings")
 
 
 func show_progress() -> void:
-	_swap(_instantiate(PROGRESS_SCENE_PATH))
+	_swap(_instantiate(PROGRESS_SCENE_PATH), &"progress")
 
 
 func show_results(result: DrillResult) -> void:
@@ -154,9 +159,10 @@ func _instantiate(path: String) -> Node:
 	return packed.instantiate()
 
 
-func _swap(node: Node) -> void:
+func _swap(node: Node, screen: StringName = &"") -> void:
 	assert(_host != null, "SceneRouter: attach() a host first")
 	if _current != null:
 		_current.queue_free()
 	_current = node
 	_host.add_child(node)
+	screen_changed.emit(screen)

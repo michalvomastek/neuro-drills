@@ -292,6 +292,48 @@ func _build(p: Dictionary) -> Theme:
 	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
 		t.set_color(state, "SmallPrimaryButton", Color.WHITE)
 
+	# App shell: the fixed top and bottom bars and their flat icon buttons.
+	t.set_type_variation("NavBar", "PanelContainer")
+	t.set_stylebox("panel", "NavBar", _box(_c(p, "panel"), 0, Vector4(12, 6, 12, 6)))
+	t.set_type_variation("TopBar", "NavBar")
+	var top_bar := _box(_c(p, "panel"), 0, Vector4(12, 6, 12, 6))
+	top_bar.border_color = _c(p, "line")
+	top_bar.border_width_bottom = 1
+	t.set_stylebox("panel", "TopBar", top_bar)
+	var bottom_bar := _box(_c(p, "panel"), 0, Vector4(8, 6, 8, 4))
+	bottom_bar.border_color = _c(p, "line")
+	bottom_bar.border_width_top = 1
+	t.set_type_variation("BottomBar", "NavBar")
+	t.set_stylebox("panel", "BottomBar", bottom_bar)
+	# A tab of the bottom bar: icon above a short label, no box, the active
+	# one in the primary colour.
+	t.set_type_variation("NavButton", "Button")
+	var flat := StyleBoxEmpty.new()
+	flat.content_margin_left = 4
+	flat.content_margin_right = 4
+	flat.content_margin_top = 6
+	flat.content_margin_bottom = 4
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+		t.set_stylebox(state, "NavButton", flat)
+	t.set_stylebox("focus", "NavButton", _outline(_c(p, "focus"), 12))
+	t.set_font_size("font_size", "NavButton", 13)
+	t.set_constant("icon_max_width", "NavButton", 26)
+	t.set_constant("h_separation", "NavButton", 2)
+	for state: String in ["font_color", "font_focus_color", "icon_normal_color", "icon_focus_color"]:
+		t.set_color(state, "NavButton", _c(p, "dim"))
+	for state: String in ["font_hover_color", "icon_hover_color"]:
+		t.set_color(state, "NavButton", _c(p, "text"))
+	for state: String in ["font_pressed_color", "font_hover_pressed_color", "icon_pressed_color", "icon_hover_pressed_color"]:
+		t.set_color(state, "NavButton", _c(p, "primary"))
+	# A round-ish icon-only button in the top bar.
+	t.set_type_variation("IconButton", "SmallButton")
+	var icon_margins := Vector4(9, 9, 9, 9)
+	t.set_stylebox("normal", "IconButton", _box(_c(p, "card"), 12, icon_margins, 3, _c(p, "card_shadow")))
+	t.set_stylebox("hover", "IconButton", _box(_c(p, "card_hover"), 12, icon_margins, 3, _c(p, "card_shadow")))
+	t.set_stylebox("pressed", "IconButton", _box_pressed(_c(p, "card_hover"), 12, icon_margins, 3))
+	t.set_stylebox("hover_pressed", "IconButton", _box_pressed(_c(p, "card_hover"), 12, icon_margins, 3))
+	t.set_constant("icon_max_width", "IconButton", 20)
+
 	# Tile-like buttons inside a drill (the title card of a drill entry).
 	t.set_type_variation("CardButton", "Button")
 	var card_margins := Vector4(18, 14, 18, 14)

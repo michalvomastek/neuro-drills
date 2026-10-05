@@ -13,7 +13,6 @@ const TEXT_SCALE_KEYS: Array[String] = ["SETTINGS_TEXT_SMALL", "SETTINGS_TEXT_NO
 
 @onready var _vbox: VBoxContainer = %VBox
 @onready var _rows: GridContainer = %Rows
-@onready var _back_button: Button = %BackButton
 @onready var _progress_button: Button = %ProgressButton
 @onready var _feedback_button: Button = %FeedbackButton
 @onready var _clear_button: Button = %ClearButton
@@ -22,7 +21,6 @@ const TEXT_SCALE_KEYS: Array[String] = ["SETTINGS_TEXT_SMALL", "SETTINGS_TEXT_NO
 
 
 func _ready() -> void:
-	_back_button.pressed.connect(SceneRouter.show_menu)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_intro_button.pressed.connect(SceneRouter.show_onboarding)
@@ -37,7 +35,6 @@ func _ready() -> void:
 	_add_toggle("SETTINGS_SOUND", StatsStore.sound_enabled, StatsStore.set_sound_enabled)
 	_add_toggle("PROGRESS_RPE_ENABLED", StatsStore.rpe_enabled, StatsStore.set_rpe_enabled)
 	Layout.watch(self, _relayout)
-	_back_button.grab_focus()
 
 
 func _relayout() -> void:

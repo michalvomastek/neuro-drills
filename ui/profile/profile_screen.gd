@@ -8,12 +8,10 @@ extends Control
 @onready var _week_label: Label = %WeekLabel
 @onready var _badges_title: Label = %BadgesTitle
 @onready var _badges: GridContainer = %Badges
-@onready var _back_button: Button = %BackButton
 @onready var _progress_button: Button = %ProgressButton
 
 
 func _ready() -> void:
-	_back_button.pressed.connect(SceneRouter.show_menu)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	GamiWidgets.add_stats(_stats, false)
 	var week := StatsStore.history.week_summary(int(Time.get_unix_time_from_system()))
@@ -24,7 +22,6 @@ func _ready() -> void:
 	for id in Gamification.BADGE_ORDER:
 		_add_badge(id, earned.has(id))
 	Layout.watch(self, _relayout)
-	_back_button.grab_focus()
 
 
 func _relayout() -> void:

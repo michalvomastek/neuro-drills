@@ -20,15 +20,18 @@ static func add_pill(parent: Control, variation: StringName, text: String, brigh
 
 
 ## Streak, level with its XP bar and today's minutes against the daily goal.
-## [param compact] drops the XP numbers (the bar keeps them as a tooltip).
-static func add_stats(parent: Control, compact: bool) -> void:
+## [param compact] drops the XP numbers (the bar keeps them as a tooltip);
+## [param with_daily] false leaves out the streak and the goal, which the
+## app's top bar already shows above the menu.
+static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -> void:
 	var streak := StatsStore.current_streak()
 	var streak_text := TranslationServer.translate("GAMI_STREAK_NONE")
 	if streak == 1:
 		streak_text = TranslationServer.translate("GAMI_STREAK_ONE")
 	elif streak > 1:
 		streak_text = TranslationServer.translate("GAMI_STREAK") % streak
-	add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
+	if with_daily:
+		add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
 	var info := StatsStore.level_info()
 	var level: int = info["level"]
 	var into: int = info["into"]
@@ -49,10 +52,33 @@ static func add_stats(parent: Control, compact: bool) -> void:
 		xp_label.text = TranslationServer.translate("GAMI_XP") % [into, span]
 		xp_label.theme_type_variation = &"PillLabel"
 		xp_box.add_child(xp_label)
+	if not with_daily:
+		return
 	var minutes := StatsStore.minutes_today()
 	var goal := StatsStore.training_minutes
 	var done := minutes >= goal
 	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal], true)
+
+
+## Streak and today's minutes only, for the top bar; [param short] uses the
+## compact wording that fits next to the title on a phone.
+static func add_brief_stats(parent: Control, short: bool) -> void:
+	var streak := StatsStore.current_streak()
+	var streak_text: String
+	if short:
+		streak_text = TranslationServer.translate("GAMI_STREAK_SHORT") % streak
+	elif streak == 1:
+		streak_text = TranslationServer.translate("GAMI_STREAK_ONE")
+	elif streak > 1:
+		streak_text = TranslationServer.translate("GAMI_STREAK") % streak
+	else:
+		streak_text = TranslationServer.translate("GAMI_STREAK_NONE")
+	add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
+	var minutes := StatsStore.minutes_today()
+	var goal := StatsStore.training_minutes
+	var done := minutes >= goal
+	var key := "GAMI_TODAY_SHORT" if short else ("GAMI_TODAY_DONE" if done else "GAMI_TODAY")
+	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate(key) % [minutes, goal], true)
 
 
 ## A small pill-shaped button, e.g. "Badges 3 / 12".
