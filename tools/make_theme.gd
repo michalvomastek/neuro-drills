@@ -7,6 +7,9 @@ extends SceneTree
 const OUT_DIR := "res://ui/theme/"
 const TEXT_FONT := "res://assets/fonts/nunito.ttf"
 const HEADING_FONT := "res://assets/fonts/baloo2.ttf"
+## Arrows, geometric shapes, box drawing, check marks: a DejaVu Sans subset,
+## because the web export has no system fonts to fall back to.
+const SYMBOL_FONT := "res://assets/fonts/symbols.ttf"
 const RADIUS := 16
 const CARD_RADIUS := 20
 const PANEL_RADIUS := 24
@@ -98,13 +101,15 @@ const PALETTES := {
 
 var _text_font: FontFile
 var _heading_font: FontFile
+var _symbol_font: FontFile
 var _fonts: Dictionary = {}
 
 
 func _initialize() -> void:
 	_text_font = load(TEXT_FONT) as FontFile
 	_heading_font = load(HEADING_FONT) as FontFile
-	if _text_font == null or _heading_font == null:
+	_symbol_font = load(SYMBOL_FONT) as FontFile
+	if _text_font == null or _heading_font == null or _symbol_font == null:
 		push_error("make_theme: fonts not imported; run `tools/godot.sh import` first")
 		quit(1)
 		return
@@ -134,6 +139,7 @@ func _font(base: FontFile, weight: int) -> FontVariation:
 	var variation := FontVariation.new()
 	variation.base_font = base
 	variation.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("weight"): weight}
+	variation.fallbacks = [_symbol_font]
 	_fonts[key] = variation
 	return variation
 

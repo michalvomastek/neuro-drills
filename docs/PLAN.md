@@ -249,7 +249,7 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [x] E20 (L) `tools/godot.sh playthrough` (`tools/playthrough_drills.gd`): každou hru spustí bez odpočtu a náhodně ji „hraje“ (tlačítka, mezerník, kliknutí) se zrychleným časem, dokud neskončí; kontroluje metriky, řádky výsledků, záznam historie a pásmo. Běží i v CI.
 
 ### F. Hry
-- [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`). Zatím: periferní vzory šly na telefonu odpovědět jen klávesnicí – přibyla řada tlačítek 1–8 pod scénou (našel to průchod E20).
+- [ ] F21 Úpravy stávajících her podle zpětné vazby z hraní (issues se štítkem `feedback`). Zatím: na iOS se šipky, kolečka a další symboly kreslily jako prázdný rámeček (webový export nemá systémové fonty a Nunito/Baloo je neobsahují) – přibyl `assets/fonts/symbols.ttf` (podmnožina DejaVu Sans) jako fallback všech písem motivu; periferní vzory šly na telefonu odpovědět jen klávesnicí – přibyla řada tlačítek 1–8 pod scénou (našel to průchod E20).
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 - [x] F23 Profil (`ui/profile/`): série, úroveň s XP, denní cíl, posledních 7 dní a všechny odznaky s popisem; menu má místo řady odznaků jen kompaktní řádek s tlačítkem „Profil · odznaky n / 12“.
 - [x] F24 Úvod při prvním spuštění (`ui/onboarding/`, tři stránky: co to je, jak funguje trénink, kde jsou data) s tlačítkem na první pětiminutový trénink; znovu dostupný z Nastavení. Hráč s historií ho neuvidí.
