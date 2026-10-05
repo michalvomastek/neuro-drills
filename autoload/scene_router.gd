@@ -6,6 +6,7 @@ const RESULTS_SCENE_PATH := "res://ui/results/results_screen.tscn"
 const PROGRESS_SCENE_PATH := "res://ui/progress/progress_screen.tscn"
 const FEEDBACK_SCENE_PATH := "res://ui/feedback/feedback_screen.tscn"
 const TRAINING_SCENE_PATH := "res://ui/training/training_screen.tscn"
+const SETTINGS_SCENE_PATH := "res://ui/settings/settings_screen.tscn"
 const TRAINING_SUMMARY_SCENE_PATH := "res://ui/training/training_summary.tscn"
 
 ## The training in progress, or null when drills are played one by one.
@@ -91,6 +92,10 @@ func _start_training_step() -> void:
 
 func show_feedback() -> void:
 	_swap(_instantiate(FEEDBACK_SCENE_PATH))
+
+
+func show_settings() -> void:
+	_swap(_instantiate(SETTINGS_SCENE_PATH))
 
 
 func show_progress() -> void:

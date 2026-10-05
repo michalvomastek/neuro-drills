@@ -5,7 +5,7 @@ const DEFAULT_LOCALE := "cs"
 
 
 func _ready() -> void:
-	TranslationServer.set_locale(DEFAULT_LOCALE)
+	TranslationServer.set_locale(StatsStore.locale if not StatsStore.locale.is_empty() else DEFAULT_LOCALE)
 	apply_theme(self, StatsStore.theme_name)
 	StatsStore.theme_changed.connect(_on_theme_changed)
 	Layout.watch(self, _apply_scale)

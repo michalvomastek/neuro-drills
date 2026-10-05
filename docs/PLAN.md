@@ -243,9 +243,9 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [x] D16 (S) Metronom (tik na každý předehraný úder) u rytmického ťukání; sluchové varianty reakčního času (tón místo barvy) a Go/No-Go (vysoký tón = klikni, hluboký = nic), klíč `auditory` v konfiguraci tvoří vlastní variantu bez pásma.
 
 ### E. Aplikace jako celek
-- [ ] E17 (M) Jedna obrazovka Nastavení: jazyk, RPE, zvuk, velikost písma, smazání dat.
+- [x] E17 (M) Obrazovka Nastavení (`ui/settings/`): jazyk (ukládá se), motiv, velikost písma (globální měřítko `Layout.text_scale` 0,9 / 1 / 1,15), zvuky, RPE, odkazy na Pokrok a Zpětnou vazbu, smazání historie. Menu má místo přepínačů jazyka a motivu tlačítko Nastavení.
 - [ ] E18 (S) Nápověda u každé hry: jak na to a co měří.
-- [ ] E19 (M) Vlastní písmo s podporou češtiny.
+- [x] E19 (M) Vlastní písmo s podporou češtiny: Nunito (text) a Baloo 2 (nadpisy), obě OFL, součást motivu.
 - [ ] E20 (L) Automatický test, který každou hru dohraje do konce a ověří výsledek.
 
 ### F. Hry

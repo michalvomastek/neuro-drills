@@ -13,11 +13,15 @@ const NARROW_WIDTH := 700.0
 const NARROW_MARGIN := 12
 
 
+## Global zoom chosen in the settings (0.9 small, 1.0 normal, 1.15 large):
+## fewer design units across the window make everything larger.
+static var text_scale: float = 1.0
+
 ## Design-unit size of the content area for a window of [param window_size] pixels.
 static func scale_size(window_size: Vector2i) -> Vector2i:
 	var portrait := window_size.y > window_size.x
 	var short_side := float(mini(window_size.x, window_size.y))
-	var base := PORTRAIT_SHORT_SIDE if portrait else LANDSCAPE_SHORT_SIDE
+	var base := (PORTRAIT_SHORT_SIDE if portrait else LANDSCAPE_SHORT_SIDE) / text_scale
 	var factor := maxf(short_side, 1.0) / base
 	return Vector2i(roundi(window_size.x / factor), roundi(window_size.y / factor))
 

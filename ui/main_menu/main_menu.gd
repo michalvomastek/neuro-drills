@@ -3,11 +3,10 @@ extends Control
 
 @onready var _margin: MarginContainer = %Center
 @onready var _tabs: TabContainer = %Tabs
-@onready var _language_button: Button = %LanguageButton
 @onready var _progress_button: Button = %ProgressButton
 @onready var _feedback_button: Button = %FeedbackButton
 @onready var _training_button: Button = %TrainingButton
-@onready var _theme_button: Button = %ThemeButton
+@onready var _settings_button: Button = %SettingsButton
 @onready var _stats: HFlowContainer = %Stats
 @onready var _badges: HFlowContainer = %Badges
 @onready var _footer_spacer: Control = %Spacer
@@ -25,13 +24,11 @@ func _ready() -> void:
 		_add_category_tab(category, definitions)
 	_tabs.current_tab = clampi(DrillRegistry.last_menu_tab, 0, maxi(0, _tabs.get_tab_count() - 1))
 	_tabs.tab_changed.connect(_on_tab_changed)
-	_language_button.pressed.connect(_on_language_pressed)
 	_progress_button.pressed.connect(SceneRouter.show_progress)
 	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_training_button.pressed.connect(SceneRouter.show_training)
 	_training_button.text = tr("MENU_TRAINING_MINUTES") % StatsStore.training_minutes
-	_theme_button.pressed.connect(_on_theme_pressed)
-	_theme_button.text = tr("MENU_THEME_LIGHT" if StatsStore.theme_name == "dark" else "MENU_THEME_DARK")
+	_settings_button.pressed.connect(SceneRouter.show_settings)
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
 	Layout.watch(self, _relayout)
@@ -113,16 +110,8 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	return button
 
 
-func _on_language_pressed() -> void:
-	var next_locale := "en" if TranslationServer.get_locale().begins_with("cs") else "cs"
-	TranslationServer.set_locale(next_locale)
-	# Texts set from code do not retranslate on their own; rebuild the screen.
-	SceneRouter.show_menu()
 
 
-func _on_theme_pressed() -> void:
-	StatsStore.set_theme_name("light" if StatsStore.theme_name == "dark" else "dark")
-	_theme_button.text = tr("MENU_THEME_LIGHT" if StatsStore.theme_name == "dark" else "MENU_THEME_DARK")
 
 
 ## Streak, level with its XP bar and today's minutes against the daily goal.

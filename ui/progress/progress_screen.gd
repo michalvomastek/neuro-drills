@@ -10,7 +10,6 @@ extends Control
 @onready var _detail_variant: Label = %DetailVariant
 @onready var _rows: GridContainer = %DetailRows
 @onready var _sparkline: Sparkline = %Sparkline
-@onready var _rpe_check: CheckBox = %RpeCheck
 @onready var _back_button: Button = %BackButton
 @onready var _status_label: Label = %StatusLabel
 @onready var _export_button: Button = %ExportButton
@@ -40,8 +39,6 @@ var _web_import_callback: JavaScriptObject
 
 func _ready() -> void:
 	_back_button.pressed.connect(SceneRouter.show_menu)
-	_rpe_check.button_pressed = StatsStore.rpe_enabled
-	_rpe_check.toggled.connect(StatsStore.set_rpe_enabled)
 	_export_button.pressed.connect(_on_export_pressed)
 	_backup_button.pressed.connect(_on_backup_pressed)
 	_import_button.pressed.connect(_on_import_pressed)

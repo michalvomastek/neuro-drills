@@ -21,14 +21,10 @@ const SOUNDS: Dictionary = {
 ## Sounds that are part of the task, so they ignore the feedback toggle.
 const STIMULUS: Array[String] = ["tick", "tone", "high", "low"]
 
-## Feedback sounds on or off (mirrors StatsStore.sound_enabled).
-var enabled: bool = true
-
 var _players: Dictionary = {}
 
 
 func _ready() -> void:
-	enabled = StatsStore.sound_enabled
 	for name: String in SOUNDS:
 		var notes: Array = SOUNDS[name]
 		var stream := AudioStreamWAV.new()
@@ -44,9 +40,9 @@ func _ready() -> void:
 		_players[name] = player
 
 
-## Plays [param name]; feedback sounds only when enabled.
+## Plays [param name]; feedback sounds only when the setting allows them.
 func play(name: String) -> void:
-	if not enabled and not STIMULUS.has(name):
+	if not StatsStore.sound_enabled and not STIMULUS.has(name):
 		return
 	var player: AudioStreamPlayer = _players.get(name)
 	if player != null:

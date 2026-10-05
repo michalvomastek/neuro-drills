@@ -462,3 +462,16 @@ REACTION_LISTEN,Poslouchej…,Listen…
 GONOGO_OPT_AUDITORY,Sluchová varianta: vysoký tón = klikni · hluboký tón = nic,Auditory variant: high tone = click · low tone = nothing
 VARIANT_AUDITORY,sluchově,auditory
 SETTINGS_SOUND,Zvuky správně / špatně / hotovo,Sounds for correct / wrong / done
+MENU_SETTINGS,Nastavení,Settings
+SETTINGS_TITLE,Nastavení,Settings
+SETTINGS_LANGUAGE,Jazyk,Language
+SETTINGS_LANGUAGE_CS,Čeština,Czech
+SETTINGS_LANGUAGE_EN,Angličtina,English
+SETTINGS_THEME,Motiv,Theme
+SETTINGS_THEME_DARK,Tmavý,Dark
+SETTINGS_THEME_LIGHT,Světlý,Light
+SETTINGS_TEXT_SIZE,Velikost písma,Text size
+SETTINGS_TEXT_SMALL,Menší,Smaller
+SETTINGS_TEXT_NORMAL,Běžná,Normal
+SETTINGS_TEXT_LARGE,Větší,Larger
+SETTINGS_DATA_HINT,Data: historie kol a poznámky zůstávají v tomto prohlížeči či počítači. Zálohu a import najdeš v Pokroku.,Data: run history and notes stay in this browser or computer. Backup and import live on the Progress screen.

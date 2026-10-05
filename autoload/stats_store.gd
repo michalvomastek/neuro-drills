@@ -21,6 +21,10 @@ var training_minutes: int = 10
 var rpe_enabled: bool = true
 ## Feedback sounds (correct / wrong / finished).
 var sound_enabled: bool = true
+## UI language: "cs" (default) or "en".
+var locale: String = "cs"
+## Global zoom, see Layout.text_scale.
+var text_scale: float = 1.0
 ## Name of the active theme: "dark" or "light" (ui/theme/<name>_theme.tres).
 var theme_name: String = "dark"
 
@@ -130,10 +134,22 @@ func set_rpe_enabled(enabled: bool) -> void:
 	_set_setting("results", "rpe_enabled", enabled)
 
 
+func set_locale(new_locale: String) -> void:
+	locale = "en" if new_locale == "en" else "cs"
+	_set_setting("ui", "locale", locale)
+	TranslationServer.set_locale(locale)
+
+
+func set_text_scale(scale: float) -> void:
+	text_scale = clampf(scale, 0.75, 1.5)
+	_set_setting("ui", "text_scale", text_scale)
+	Layout.text_scale = text_scale
+	Layout.apply_scale(get_tree().root)
+
+
 func set_sound_enabled(on: bool) -> void:
 	sound_enabled = on
 	_set_setting("sound", "enabled", on)
-	Sfx.enabled = on
 
 
 func set_theme_name(name: String) -> void:
@@ -231,7 +247,10 @@ func _load() -> void:
 		training_minutes = config.get_value("training", "minutes", 10)
 		theme_name = config.get_value("ui", "theme", "dark")
 		sound_enabled = config.get_value("sound", "enabled", true)
+		locale = config.get_value("ui", "locale", "cs")
+		text_scale = config.get_value("ui", "text_scale", 1.0)
 		badges_seen = config.get_value("gamification", "badges_seen", PackedStringArray())
+	Layout.text_scale = text_scale
 
 
 func _save_all() -> void:
