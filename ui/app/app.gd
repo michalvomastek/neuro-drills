@@ -77,7 +77,8 @@ func _build_bars() -> void:
 		var icon_name: String = item["icon"]
 		var button := Button.new()
 		button.theme_type_variation = &"NavButton"
-		button.text = tr(text_key)
+		# The key itself, so a language switch in the settings re-translates it.
+		button.text = text_key
 		button.icon = _icon(icon_name)
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
@@ -102,7 +103,7 @@ func _on_screen_changed(screen: StringName) -> void:
 	if not chrome:
 		return
 	var title_key: String = TITLES[screen]
-	_title_label.text = tr(title_key)
+	_title_label.text = title_key
 	_back_button.visible = not _tabs.has(screen)
 	for id: StringName in _tabs:
 		var button: Button = _tabs[id]
@@ -129,8 +130,10 @@ func _apply_scale() -> void:
 	offset_top = insets.x
 	offset_bottom = -insets.y
 	# The tabs stay together in the middle of a wide window instead of
-	# spreading across it.
-	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self), NAV_MAX_WIDTH)
+	# spreading across it; on a phone they take the bar's inner width.
+	var bar_style := _bottom_bar.get_theme_stylebox("panel")
+	var padding := bar_style.get_content_margin(SIDE_LEFT) + bar_style.get_content_margin(SIDE_RIGHT)
+	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
 	_title_label.add_theme_font_size_override("font_size", 20 if Layout.is_narrow(self) else 24)
 	if _top_bar.visible:
 		_refresh_stats()
