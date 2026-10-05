@@ -33,6 +33,10 @@ func _collect_extra_config() -> Dictionary:
 	return {"backward": _backward}
 
 
+func _preview_extra_config() -> Dictionary:
+	return {"backward": _backward_check.button_pressed}
+
+
 func _on_start_pressed() -> void:
 	_backward = _backward_check.button_pressed
 	super()

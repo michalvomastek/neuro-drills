@@ -44,6 +44,10 @@ func _collect_extra_config() -> Dictionary:
 	return {"adaptive": _adaptive, "auditory": _auditory}
 
 
+func _preview_extra_config() -> Dictionary:
+	return {"adaptive": _adaptive_check.button_pressed, "auditory": _auditory_check.button_pressed}
+
+
 func _on_start_pressed() -> void:
 	_adaptive = _adaptive_check.button_pressed
 	_auditory = _auditory_check.button_pressed

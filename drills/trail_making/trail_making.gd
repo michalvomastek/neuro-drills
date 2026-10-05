@@ -107,6 +107,10 @@ func _collect_extra_config() -> Dictionary:
 	return {"order": _order, "speed": _speed, "show_next": _show_next, "show_timer": _show_timer, "show_errors": _show_errors}
 
 
+func _preview_extra_config() -> Dictionary:
+	return {"order": _order_option.get_selected_id(), "speed": _speed_option.get_selected_id()}
+
+
 func _on_start_pressed() -> void:
 	_order = _order_option.get_selected_id() as TrailLogic.Order
 	_speed = _speed_option.get_selected_id()

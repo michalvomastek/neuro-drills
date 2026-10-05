@@ -96,9 +96,14 @@ func _process(delta: float) -> void:
 	_crosshair.position = _shift * _flow.size.y * 0.5
 
 
+## iOS grants the motion sensor only inside a user gesture, so ask on the Start tap.
+func _on_start_pressed() -> void:
+	Drill.request_motion_permission()
+	super()
+
+
 func _run_trials() -> void:
 	_logic = LoomingLogic.new(trials, _rng)
-	Drill.request_motion_permission()
 	_tilt_rest = Input.get_gravity()
 	_shift = Vector2.ZERO
 	_last_pointer = get_local_mouse_position()

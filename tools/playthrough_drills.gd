@@ -5,7 +5,14 @@
 ## (virtual) display. Time runs fast (Engine.time_scale) so waits are short;
 ## clocks based on Time.get_ticks_msec are unaffected, which is why the real
 ## time limit per drill is generous.
+##
+## The drills run through the real router, so every finished run would be
+## recorded: the user files are set aside first and put back at the end
+## (the wrapper also points the data directory to a temporary one).
 extends SceneTree
+
+const USER_FILES: Array[String] = ["results.jsonl", "settings.cfg", "feedback.jsonl", "plans.json"]
+const BACKUP_SUFFIX := ".playthrough-backup"
 
 const TIME_SCALE := 6.0
 const LIMIT_SECONDS := 150.0
@@ -32,8 +39,32 @@ func _initialize() -> void:
 	root.add_child(_host)
 	_router = root.get_node("SceneRouter")
 	_router.call("attach", _host)
+	_set_aside_user_data()
 	Engine.time_scale = TIME_SCALE
 	_run_all()
+
+
+## Moves the stored history and settings out of the way and starts from an
+## empty history, so random runs never reach the player's statistics.
+func _set_aside_user_data() -> void:
+	var dir := DirAccess.open("user://")
+	if dir == null:
+		return
+	for file in USER_FILES:
+		if dir.file_exists(file):
+			dir.rename(file, file + BACKUP_SUFFIX)
+	root.get_node("StatsStore").call("clear")
+
+
+func _restore_user_data() -> void:
+	var dir := DirAccess.open("user://")
+	if dir == null:
+		return
+	for file in USER_FILES:
+		if dir.file_exists(file):
+			dir.remove(file)
+		if dir.file_exists(file + BACKUP_SUFFIX):
+			dir.rename(file + BACKUP_SUFFIX, file)
 
 
 func _run_all() -> void:
@@ -45,6 +76,7 @@ func _run_all() -> void:
 			continue
 		await _play(definition)
 	print("%d drill(s) played, %d failed" % [definitions.size() if only.is_empty() else only.split(",").size(), _failures.size()])
+	_restore_user_data()
 	quit(1 if not _failures.is_empty() else 0)
 
 

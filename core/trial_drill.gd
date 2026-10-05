@@ -77,6 +77,23 @@ func _collect_extra_config() -> Dictionary:
 	return {}
 
 
+## The config the setup controls currently show, before Start copies it into
+## the drill's fields; drills whose band depends on an extra option override
+## this so the help text follows the control.
+func _preview_extra_config() -> Dictionary:
+	return _collect_extra_config()
+
+
+## Help text for the variant the setup controls currently describe.
+func _refresh_help() -> void:
+	if definition == null or _help_label == null:
+		return
+	var config := {"trials": _trials_option.get_selected_id(), "countdown": _countdown_check.button_pressed}
+	config.merge(_preview_extra_config())
+	_help_label.text = MetricCatalog.help_text(definition.id, config)
+	_help_label.visible = not _help_label.text.is_empty()
+
+
 ## Starts the trial loop; the drill is running and the play panel is visible.
 func _run_trials() -> void:
 	pass
@@ -106,8 +123,7 @@ func _on_setup(config: Dictionary, autostart: bool) -> void:
 	_apply_extra_config(config)
 	_trials_option.select(_trials_option.get_item_index(trials))
 	_countdown_check.button_pressed = countdown
-	_help_label.text = MetricCatalog.help_text(definition.id, get_config())
-	_help_label.visible = not _help_label.text.is_empty()
+	_refresh_help()
 	if autostart:
 		_begin_run()
 	else:
@@ -336,6 +352,8 @@ func _build_ui() -> void:
 	_extras_box.add_theme_constant_override("separation", 12)
 	vbox.add_child(_extras_box)
 	_build_extras(_extras_box)
+	_trials_option.item_selected.connect(func(_index: int) -> void: _refresh_help())
+	Drill.watch_setup_controls(_extras_box, _refresh_help)
 
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", 12)
@@ -456,11 +474,19 @@ func _fit_stimulus_label(label: Label) -> void:
 	if label.text.is_empty() or label.size.x <= 0.0:
 		return
 	var design: int = label.get_meta(&"design_font_size")
+	# A drill may change the font size at runtime (a prompt, a smaller answer);
+	# a size that is not the last fitted one becomes the new design size.
+	var current := label.get_theme_font_size("font_size")
+	var last_fitted: int = label.get_meta(&"fitted_font_size", -1)
+	if current != last_fitted:
+		design = current
+		label.set_meta(&"design_font_size", design)
 	var font := label.get_theme_font("font")
 	var available := label.size.x - 32.0
 	var width := font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_CENTER, -1, design).x
 	var fitted := design if width <= available else maxi(16, int(design * available / width))
-	if label.get_theme_font_size("font_size") != fitted:
+	label.set_meta(&"fitted_font_size", fitted)
+	if current != fitted:
 		label.add_theme_font_size_override("font_size", fitted)
 
 

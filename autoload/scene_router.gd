@@ -28,11 +28,14 @@ func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = fals
 	var definition := DrillRegistry.find(id)
 	if definition == null:
 		push_error("SceneRouter: unknown drill %s" % id)
+		# A saved plan may name a drill that no longer exists; the training cannot go on.
+		training = null
 		show_menu()
 		return
 	var drill := _instantiate(definition.scene_path) as Drill
 	if drill == null:
 		push_error("SceneRouter: scene of %s does not extend Drill" % id)
+		training = null
 		show_menu()
 		return
 	drill.finished.connect(show_results)

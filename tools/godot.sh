@@ -172,6 +172,16 @@ templates_dir() {
 }
 
 cmd_playthrough() {
+  # Random runs must not land in the player's history: use a throw-away data
+  # directory where the platform allows it (the script also sets the user
+  # files aside and restores them, which covers macOS).
+  local tmp_data
+  tmp_data="$(mktemp -d)"
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*) export APPDATA="$tmp_data" ;;
+    Darwin) ;;
+    *) export XDG_DATA_HOME="$tmp_data" ;;
+  esac
   local -a cmd=("$GODOT" --path "$REPO_ROOT" --rendering-driver opengl3 --audio-driver Dummy
     --resolution 1280x720 -s res://tools/playthrough_drills.gd)
   if [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]] && command -v xvfb-run >/dev/null 2>&1; then

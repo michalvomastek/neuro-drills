@@ -53,12 +53,24 @@ static func make_step(drill_id: StringName, config: Dictionary = {}) -> Dictiona
 	return {"drill_id": String(drill_id), "config": config.duplicate()}
 
 
-## Drills whose default variant reached the elite band in its last
-## ELITE_STREAK_FOR_HARDER runs, mapped to the harder config to use instead.
+## Drills whose last ELITE_STREAK_FOR_HARDER runs (of any variant except the
+## harder one itself) reached the elite band, mapped to the harder config.
 static func harder_configs(history: StatsHistory) -> Dictionary:
 	var out: Dictionary = {}
 	for drill_id: String in HARDER:
-		var runs := history.for_variant(drill_id)
+		var harder_config: Dictionary = HARDER[drill_id]
+		var runs: Array[Dictionary] = []
+		for variant in history.variants():
+			if MetricCatalog.drill_id_of(variant) != StringName(drill_id):
+				continue
+			for run in history.for_variant(variant):
+				var run_config: Dictionary = run.get("config", {})
+				if not _satisfies(run_config, harder_config):
+					runs.append(run)
+		runs.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			var at_a: int = a["at"]
+			var at_b: int = b["at"]
+			return at_a < at_b)
 		if runs.size() < ELITE_STREAK_FOR_HARDER:
 			continue
 		var all_elite := true
@@ -70,6 +82,15 @@ static func harder_configs(history: StatsHistory) -> Dictionary:
 			var config: Dictionary = HARDER[drill_id]
 			out[drill_id] = config.duplicate()
 	return out
+
+
+## True when [param config] already has every value of [param harder] (the
+## run was the harder variant, whatever else its key carries, e.g. trials).
+static func _satisfies(config: Dictionary, harder: Dictionary) -> bool:
+	for key: String in harder:
+		if not config.has(key) or MetricCatalog._value_text(config[key]) != MetricCatalog._value_text(harder[key]):
+			return false
+	return true
 
 
 ## Categories ordered by training need: categories not trained in the last

@@ -24,6 +24,8 @@ extends Control
 
 var _steps: Array[Dictionary] = []
 var _plan_name: String = ""
+## True once the player loaded or edited the list, so a new length keeps it.
+var _custom: bool = false
 var _rng := RandomNumberGenerator.new()
 
 
@@ -69,10 +71,13 @@ func _minutes() -> int:
 	return int(_minutes_slider.value)
 
 
+## A new length re-suggests only while the list is still the app's own
+## suggestion; a loaded or edited plan is kept.
 func _on_minutes_changed(_value: float) -> void:
 	StatsStore.set_training_minutes(_minutes())
 	_update_minutes_label()
-	_suggest()
+	if not _custom:
+		_suggest()
 
 
 func _update_minutes_label() -> void:
@@ -87,6 +92,7 @@ func _suggest() -> void:
 	var harder := TrainingPlan.harder_configs(StatsStore.history)
 	_steps = TrainingPlan.suggest(definitions, _minutes(), order, _rng, harder)
 	_plan_name = ""
+	_custom = false
 	_rebuild_steps()
 
 
@@ -153,6 +159,7 @@ func _move_step(index: int, delta: int) -> void:
 	var target := index + delta
 	if target < 0 or target >= _steps.size():
 		return
+	_custom = true
 	var step := _steps[index]
 	_steps.remove_at(index)
 	_steps.insert(target, step)
@@ -160,6 +167,7 @@ func _move_step(index: int, delta: int) -> void:
 
 
 func _remove_step(index: int) -> void:
+	_custom = true
 	_steps.remove_at(index)
 	_rebuild_steps()
 
@@ -169,6 +177,7 @@ func _on_add_pressed() -> void:
 		return
 	var drill_id: String = _drill_option.get_item_metadata(_drill_option.selected)
 	_steps.append(TrainingPlan.make_step(StringName(drill_id)))
+	_custom = true
 	_rebuild_steps()
 
 
@@ -196,6 +205,7 @@ func _on_load_pressed() -> void:
 	var steps: Array[Dictionary] = plan["steps"]
 	_steps = steps.duplicate(true)
 	_plan_name = plan["name"]
+	_custom = true
 	_rebuild_steps()
 
 

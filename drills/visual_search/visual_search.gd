@@ -38,6 +38,10 @@ func _collect_extra_config() -> Dictionary:
 	return {"set_size": _set_size}
 
 
+func _preview_extra_config() -> Dictionary:
+	return {"set_size": _size_option.get_selected_id()}
+
+
 func _on_start_pressed() -> void:
 	_set_size = _size_option.get_selected_id()
 	super()

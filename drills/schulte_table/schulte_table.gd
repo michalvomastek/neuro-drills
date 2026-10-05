@@ -67,6 +67,7 @@ func _ready() -> void:
 	_play_back_button.pressed.connect(_on_play_back_pressed)
 	_grid.resized.connect(_update_cell_font_size)
 	_apply_config_to_controls()
+	Drill.watch_setup_controls(_setup_vbox, _refresh_help)
 	_show_setup()
 
 
@@ -86,7 +87,7 @@ func _process(_delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
-		if is_node_ready() and _play_panel != null and _play_panel.visible:
+		if is_node_ready() and _play_panel != null and (_play_panel.visible or _countdown_panel.visible):
 			_on_play_back_pressed()
 
 
@@ -122,6 +123,15 @@ func _on_red_black_toggled(enabled: bool) -> void:
 	_symbols_option.disabled = enabled
 
 
+## Help text for the variant the setup controls currently describe.
+func _refresh_help() -> void:
+	# _ready() shows the panel before setup() hands over the definition.
+	if definition == null:
+		return
+	_help_label.text = MetricCatalog.help_text(definition.id, _read_config_from_controls().to_dict())
+	_help_label.visible = not _help_label.text.is_empty()
+
+
 func _read_config_from_controls() -> SchulteConfig:
 	var config := SchulteConfig.new()
 	config.grid_size = _grid_size_option.get_selected_id()
@@ -144,10 +154,7 @@ func _read_config_from_controls() -> SchulteConfig:
 func _show_setup() -> void:
 	_run_token += 1
 	_running = false
-	# _ready() shows the panel before setup() hands over the definition.
-	if definition != null:
-		_help_label.text = MetricCatalog.help_text(definition.id, _config.to_dict())
-		_help_label.visible = not _help_label.text.is_empty()
+	_refresh_help()
 	_setup_panel.visible = true
 	_play_panel.visible = false
 	_countdown_panel.visible = false

@@ -71,17 +71,38 @@ func test_harder_configs_after_two_elite_runs() -> void:
 		r.metrics = {"total_ms": 15000.0, "errors": 0.0}
 		r.finished_at_unix = 100 + i
 		history.add(StatsHistory.make_record(r))
-	assert_true(TrainingPlan.harder_configs(history).is_empty(), "the 5x5 variant key is not the default variant key")
-	var plain := StatsHistory.new()
+	var harder := TrainingPlan.harder_configs(history)
+	assert_eq(harder.get("schulte_table"), {"grid_size": 7}, "two elite 5x5 runs unlock the 7x7 grid")
+	var already := StatsHistory.new()
 	for i in 2:
 		var r := DrillResult.new()
 		r.drill_id = &"n_back"
-		r.config = {"n": 2}
+		r.config = {"n": 3}
 		r.metrics = {"level": 3.0, "accuracy": 0.95}
 		r.finished_at_unix = 100 + i
-		plain.add(StatsHistory.make_record(r))
-	var harder := TrainingPlan.harder_configs(plain)
-	assert_true(harder.is_empty(), "n=2 is its own variant, not the default")
+		already.add(StatsHistory.make_record(r))
+	harder = TrainingPlan.harder_configs(already)
+	assert_false(harder.has("n_back"), "runs of the harder variant itself do not count")
+	var mixed := StatsHistory.new()
+	for i in 3:
+		var r := DrillResult.new()
+		r.drill_id = &"go_no_go"
+		r.config = {"trials": 30, "adaptive": false}
+		r.metrics = {"mean_rt_ms": 200.0, "false_alarm_rate": 0.5 if i == 0 else 0.0, "threshold_ms": -1.0}
+		r.finished_at_unix = 100 + i
+		mixed.add(StatsHistory.make_record(r))
+	harder = TrainingPlan.harder_configs(mixed)
+	assert_eq(harder.get("go_no_go"), {"adaptive": true}, "only the last two runs have to be elite")
+	var trail := StatsHistory.new()
+	for i in 2:
+		var r := DrillResult.new()
+		r.drill_id = &"trail_making"
+		r.config = {"trials": 20, "order": 2}
+		r.metrics = {"total_ms": 15000.0, "errors": 0.0}
+		r.finished_at_unix = 100 + i
+		trail.add(StatsHistory.make_record(r))
+	harder = TrainingPlan.harder_configs(trail)
+	assert_false(harder.has("trail_making"), "elite runs of the harder order itself (with trials in the key) do not count")
 	var default_variant := StatsHistory.new()
 	for i in 2:
 		var r := DrillResult.new()

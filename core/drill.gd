@@ -43,6 +43,22 @@ static func make_press_button(button: BaseButton) -> void:
 			button.accept_event())
 
 
+## Calls [param changed] whenever an option, toggle or slider inside
+## [param node] changes (setup panels refresh their help text with it).
+static func watch_setup_controls(node: Node, changed: Callable) -> void:
+	var option := node as OptionButton
+	var toggle := node as BaseButton
+	var range_control := node as Range
+	if option != null:
+		option.item_selected.connect(func(_index: int) -> void: changed.call())
+	elif toggle != null and toggle.toggle_mode:
+		toggle.toggled.connect(func(_on: bool) -> void: changed.call())
+	elif range_control != null:
+		range_control.value_changed.connect(func(_value: float) -> void: changed.call())
+	for child in node.get_children():
+		watch_setup_controls(child, changed)
+
+
 ## A short grow-and-settle on a correct answer (the control scales around its centre).
 static func pop(control: Control, amount: float = 0.06, seconds: float = 0.18) -> void:
 	control.pivot_offset = control.size * 0.5
@@ -54,7 +70,18 @@ static func pop(control: Control, amount: float = 0.06, seconds: float = 0.18) -
 ## A quick sideways shake on a wrong answer; ends exactly where it started.
 static func shake(control: Control, distance: float = 6.0, seconds: float = 0.24) -> void:
 	var origin := control.position
+	if control.has_meta(&"shake_tween"):
+		var previous: Tween = control.get_meta(&"shake_tween")
+		if previous != null and previous.is_valid():
+			previous.kill()
+		origin = control.get_meta(&"shake_origin", origin)
+		control.position = origin
 	var tween := control.create_tween()
+	control.set_meta(&"shake_tween", tween)
+	control.set_meta(&"shake_origin", origin)
+	tween.finished.connect(func() -> void:
+		control.remove_meta(&"shake_tween")
+		control.remove_meta(&"shake_origin"))
 	for i in 3:
 		var sign := 1.0 if i % 2 == 0 else -1.0
 		tween.tween_property(control, "position", origin + Vector2(distance * sign, 0), seconds / 6.0)
