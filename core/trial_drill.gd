@@ -317,6 +317,7 @@ func _complete(result: DrillResult) -> void:
 func _relayout_setup() -> void:
 	if _setup_vbox != null:
 		_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 560.0), 0)
+		Layout.wrap_check_boxes(_setup_vbox)
 
 
 func _build_ui() -> void:
@@ -397,6 +398,8 @@ func _build_ui() -> void:
 	_start_button.theme_type_variation = &"PrimaryButton"
 	_start_button.pressed.connect(_on_start_pressed)
 	buttons.add_child(_start_button)
+	# The watch above ran before the options existed; size them now.
+	_relayout_setup()
 
 	_play_panel = MarginContainer.new()
 	_play_panel.set_anchors_preset(Control.PRESET_FULL_RECT)

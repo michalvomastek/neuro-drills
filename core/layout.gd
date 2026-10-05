@@ -49,14 +49,18 @@ static func safe_insets(window: Window) -> Vector2:
 	return Vector2(maxf(0.0, float(parts[0])), maxf(0.0, float(parts[1]))) * units_per_px
 
 
-## Calls [param relayout] now and after every window resize, for as long as
-## [param control] lives (the callable must be a method of the control, so the
-## connection goes away with it).
+## Calls [param relayout] now, after every window resize and whenever the
+## control itself is resized (a scale or inset change moves the control
+## without a window resize), for as long as [param control] lives (the
+## callable must be a method of the control, so the connection goes away
+## with it).
 static func watch(control: Control, relayout: Callable) -> void:
 	relayout.call()
 	var window := control.get_tree().root
 	if not window.size_changed.is_connected(relayout):
 		window.size_changed.connect(relayout)
+	if not control.resized.is_connected(relayout):
+		control.resized.connect(relayout)
 
 
 static func viewport_width(control: Control) -> float:
@@ -85,6 +89,16 @@ static func set_screen_margins(margin: MarginContainer) -> void:
 	set_margins(margin, side_margin(margin), SCREEN_MARGIN_NARROW if is_narrow(margin) else SCREEN_MARGIN_WIDE)
 
 
+## Lets every CheckBox under [param root] wrap its label and take the row's
+## width: a long option label otherwise widens the whole setup panel past a
+## phone screen (the panel's minimum width is the widest child's).
+static func wrap_check_boxes(root: Control) -> void:
+	for node in root.find_children("*", "CheckBox", true, false):
+		var check := node as CheckBox
+		check.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+
 static func set_margins(margin: MarginContainer, horizontal: int, vertical: int) -> void:
 	margin.add_theme_constant_override("margin_left", horizontal)
 	margin.add_theme_constant_override("margin_right", horizontal)
@@ -97,4 +111,7 @@ static func set_margins(margin: MarginContainer, horizontal: int, vertical: int)
 ## padding on a narrow one.
 static func panel_width(control: Control, design_width: float) -> float:
 	var padding := control.get_theme_stylebox("panel", "PanelContainer").get_minimum_size().x
-	return minf(design_width, viewport_width(control) - 2.0 * NARROW_MARGIN - padding)
+	# The control's own width once it is laid out (it may be narrower than
+	# the viewport, e.g. under the app bars); the viewport before that.
+	var available := control.size.x if control.size.x > 0.0 else viewport_width(control)
+	return minf(design_width, available - 2.0 * NARROW_MARGIN - padding)

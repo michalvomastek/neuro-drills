@@ -164,6 +164,7 @@ func _show_setup() -> void:
 ## Full width and one column of options on a phone.
 func _relayout_setup() -> void:
 	_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0), 0)
+	Layout.wrap_check_boxes(_setup_vbox)
 	_options_grid.columns = 1 if Layout.is_narrow(self) else 2
 
 
