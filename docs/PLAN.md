@@ -253,7 +253,7 @@ Zadání od maintainera: délka tréninku nastavitelná 1–30 minut; sestavu na
 - [ ] F22 Nové hry jen pokud nějaká citelně chybí.
 - [x] F25 Dotykové ovládání tréninku: kroky se přesouvají tažením za úchyt (na telefonu bez šipek), ovládací prvky jsou viditelná tlačítka.
 - [x] F26 Audit všech 43 her na 430×660 ve stavu hry: bez zásadních problémů; zvětšena kolečka Trail Making (0,12 strany místo 0,10).
-- [x] F30 Instrukce hry se čte během odpočtu (pod „Start za 3“), aby rychlý start i krok tréninku byly stejně srozumitelné jako panel nastavení a nic nepřekrývalo podněty.
+- [~] F30 Instrukce hry během odpočtu: vyzkoušeno (karta nad plochou, pak text pod „Start za 3“) a na přání správce odstraněno; krok tréninku vysvětluje `TrainingBrief`, rychlý start panel nastavení.
 - [x] F31 Bezpečné okraje iPhonu (výřez, domovský indikátor): hlavička webu vystavuje `env(safe-area-inset-*)`, `Layout.safe_insets` je převede na jednotky a kořen aplikace se o ně odsadí.
 - [x] F33 Pevná spodní lišta s ikonami (Hry, Trénink, Pokrok, Profil, Nastavení) a pevná horní lišta (název obrazovky, série a denní cíl, zpětná vazba, konec; šipka zpět na obrazovkách bez záložky). Tlačítka ze spodku menu a hlavičky obrazovek se přesunuly do lišt; hra, výsledky, brief a onboarding běží bez lišt.
 - [x] F32 Výsledky: hlavní řádky a sekce „Více“ (další úroveň, kolísání, únava, nejlepší 3 z 5), aby se výsledek na telefonu vešel bez posouvání.
