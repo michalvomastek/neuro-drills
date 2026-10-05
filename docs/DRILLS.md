@@ -105,7 +105,7 @@
 
 ## Zrak a periferní vidění
 
-**RSVP čtení** – slova textu jedno po druhém, na konci otázka.
+**RSVP čtení** – slova jednoho z 12 textů jedno po druhém (200–1000 slov/min), na konci dvě otázky se čtyřmi odpověďmi v náhodném pořadí; stejný text se nehraje dvakrát po sobě.
 - Rychlost 200/300/400/500/650 slov za minutu; 3 texty česky i anglicky.
 - Výsledek: slov za minutu, počet slov, porozumění.
 

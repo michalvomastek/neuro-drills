@@ -35,7 +35,7 @@ Pravidla:
 | Rozsah číslic pozpátku | rozsah | 5 | 7 | – |
 | Paměťová matice | nejvíc políček | 8 | 12 | – |
 | Simon | nejdelší sekvence | 10 | 15 | – |
-| RSVP čtení | slov/min | 450 | 800 | otázka správně (obě úrovně) |
+| RSVP čtení | slov/min | 450 | 800 | obě otázky správně (obě úrovně) |
 | Číselná pyramida | největší šíře | 55 % | 85 % | – |
 | Vizuální maskování | nejkratší expozice | 85 ms | 20 ms | – |
 | Dynamická ostrost | nejvyšší rychlost | 1,6 | 3,2 | – |

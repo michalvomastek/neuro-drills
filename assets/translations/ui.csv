@@ -121,20 +121,137 @@ RSVP_COMPREHENSION,Porozumění,Comprehension
 RSVP_CORRECT,správně,correct
 RSVP_WRONG,špatně,wrong
 RSVP_TEXT_1,"Včelí roj opustil úl brzy ráno a usadil se na větvi staré hrušně na okraji zahrady. Včelař si všiml hustého chomáče až kolem poledne. Přinesl žebřík, prázdný úl a kouřák. Opatrně setřásl roj do bedny a počkal, až se k matce přidají i poslední včely. Večer už nový úl stál vedle ostatních.","The swarm left the hive early in the morning and settled on a branch of the old pear tree at the edge of the garden. The beekeeper noticed the dense cluster only around noon. He brought a ladder, an empty hive and a smoker. He carefully shook the swarm into the box and waited until the last bees joined the queen. By evening the new hive stood next to the others."
-RSVP_Q_1,Kde se roj usadil?,Where did the swarm settle?
-RSVP_A_1_1,Na střeše úlu,On the roof of the hive
-RSVP_A_1_2,Na větvi staré hrušně,On a branch of the old pear tree
-RSVP_A_1_3,Na plotě zahrady,On the garden fence
+RSVP_Q_1_1,Kde se roj usadil?,Where did the swarm settle?
+RSVP_A_1_1_1,Na větvi staré hrušně,On a branch of the old pear tree
+RSVP_A_1_1_2,Na střeše úlu,On the roof of the hive
+RSVP_A_1_1_3,Na plotě zahrady,On the garden fence
+RSVP_A_1_1_4,V koruně lípy,In the crown of a lime tree
+RSVP_Q_1_2,Kdy si včelař roje všiml?,When did the beekeeper notice the swarm?
+RSVP_A_1_2_1,Kolem poledne,Around noon
+RSVP_A_1_2_2,Brzy ráno,Early in the morning
+RSVP_A_1_2_3,Večer,In the evening
+RSVP_A_1_2_4,Až druhý den,Only the next day
 RSVP_TEXT_2,"Městská knihovna otevřela novou čítárnu v bývalé čekárně nádraží. Dlouhé dřevěné lavice zůstaly na místě, jen k nim přibyly lampy a police s časopisy. Návštěvníci si mohou půjčit noviny ze čtyř zemí. Nejvíc prý chodí ráno před odjezdem vlaků, kdy je v sále nejvíc světla.","The city library opened a new reading room in the former station waiting hall. The long wooden benches stayed in place; only lamps and magazine shelves were added. Visitors can borrow newspapers from four countries. Most come in the morning before the trains leave, when the hall gets the most light."
-RSVP_Q_2,Kde vznikla nová čítárna?,Where was the new reading room opened?
-RSVP_A_2_1,V bývalé čekárně nádraží,In the former station waiting hall
-RSVP_A_2_2,V budově radnice,In the town hall
-RSVP_A_2_3,Ve staré škole,In an old school
+RSVP_Q_2_1,Kde vznikla nová čítárna?,Where was the new reading room opened?
+RSVP_A_2_1_1,V bývalé čekárně nádraží,In the former station waiting hall
+RSVP_A_2_1_2,V budově radnice,In the town hall
+RSVP_A_2_1_3,Ve staré škole,In an old school
+RSVP_A_2_1_4,V přízemí knihovny,On the ground floor of the library
+RSVP_Q_2_2,Z kolika zemí jsou noviny k půjčení?,Newspapers from how many countries can be borrowed?
+RSVP_A_2_2_1,Ze čtyř,Four
+RSVP_A_2_2_2,Ze dvou,Two
+RSVP_A_2_2_3,Z šesti,Six
+RSVP_A_2_2_4,Z deseti,Ten
 RSVP_TEXT_3,"Horská chata na hřebeni přešla v zimě na vlastní zdroj energie. Větrná turbína pokrývá většinu spotřeby, zbytek doplňují solární panely na jižní stěně. Hospodář uvedl, že největší úspora přišla nečekaně z nové kuchyně, kde se vaří na menším sporáku. Diesel se dnes používá jen jako záloha při vichřici.","The mountain hut on the ridge switched to its own power source in winter. A wind turbine covers most of the consumption; solar panels on the south wall add the rest. The keeper said the biggest saving came unexpectedly from the new kitchen, where cooking is done on a smaller stove. Diesel is now used only as a backup during storms."
-RSVP_Q_3,Odkud přišla největší úspora energie?,Where did the biggest energy saving come from?
-RSVP_A_3_1,Z větrné turbíny,From the wind turbine
-RSVP_A_3_2,Ze solárních panelů,From the solar panels
-RSVP_A_3_3,Z nové kuchyně,From the new kitchen
+RSVP_Q_3_1,Odkud přišla největší úspora energie?,Where did the biggest energy saving come from?
+RSVP_A_3_1_1,Z nové kuchyně,From the new kitchen
+RSVP_A_3_1_2,Z větrné turbíny,From the wind turbine
+RSVP_A_3_1_3,Ze solárních panelů,From the solar panels
+RSVP_A_3_1_4,Z nových oken,From new windows
+RSVP_Q_3_2,K čemu dnes slouží diesel?,What is diesel used for today?
+RSVP_A_3_2_1,Jako záloha při vichřici,As a backup during storms
+RSVP_A_3_2_2,K vytápění jídelny,To heat the dining room
+RSVP_A_3_2_3,K ohřevu vody,To heat water
+RSVP_A_3_2_4,Už se nepoužívá vůbec,It is no longer used at all
+RSVP_TEXT_4,"Pekárna na náměstí peče chleba podle receptu z roku 1924. Těsto kyne přes noc v dřevěných ošatkách a ráno se peče ve staré kamenné peci na bukové dřevo. Majitelka říká, že tajemství chuti je v dlouhém kynutí a v mouce z místního mlýna. O sobotách se před krámem tvoří fronta už před sedmou hodinou.",The bakery on the square bakes bread to a recipe from 1924. The dough rises overnight in wooden baskets and is baked in the morning in an old stone oven fired with beech wood. The owner says the secret of the taste lies in the long rising and in flour from the local mill. On Saturdays a queue forms outside the shop before seven o'clock.
+RSVP_Q_4_1,Z kterého roku je recept?,Which year is the recipe from?
+RSVP_A_4_1_1,Z roku 1924,From 1924
+RSVP_A_4_1_2,Z roku 1898,From 1898
+RSVP_A_4_1_3,Z roku 1952,From 1952
+RSVP_A_4_1_4,Z roku 2004,From 2004
+RSVP_Q_4_2,Čím se topí v peci?,What is the oven fired with?
+RSVP_A_4_2_1,Bukovým dřevem,With beech wood
+RSVP_A_4_2_2,Uhlím,With coal
+RSVP_A_4_2_3,Plynem,With gas
+RSVP_A_4_2_4,Dubovým dřevem,With oak wood
+RSVP_TEXT_5,"Na okraji města vznikl nový rybník, který má zadržet vodu při přívalových deštích. Hráz je nízká a porostlá trávou, takže ji z dálky skoro není vidět. Během prvního léta se u břehu objevily volavky a dva páry kachen. Děti ze sousední školy sem chodí měřit hloubku vody a kreslit vážky.","A new pond was built on the edge of town to hold back water during heavy rain. The dam is low and covered with grass, so it is barely visible from a distance. During the first summer herons and two pairs of ducks appeared by the shore. Children from the neighbouring school come here to measure the water depth and draw dragonflies."
+RSVP_Q_5_1,Proč rybník vznikl?,Why was the pond built?
+RSVP_A_5_1_1,Aby zadržel vodu při přívalových deštích,To hold back water during heavy rain
+RSVP_A_5_1_2,Pro chov kaprů,For breeding carp
+RSVP_A_5_1_3,Jako koupaliště,As a swimming spot
+RSVP_A_5_1_4,Pro zavlažování polí,To irrigate fields
+RSVP_Q_5_2,Kdo se objevil u břehu během prvního léta?,Who appeared by the shore during the first summer?
+RSVP_A_5_2_1,Volavky a dva páry kachen,Herons and two pairs of ducks
+RSVP_A_5_2_2,Labutě,Swans
+RSVP_A_5_2_3,Bobři,Beavers
+RSVP_A_5_2_4,Čápi a husy,Storks and geese
+RSVP_TEXT_6,"Starý kamenný most přes řeku byl po dvou letech oprav znovu otevřen. Dělníci vyměnili popraskané kvádry a obnovili sochy na zábradlí podle starých fotografií. Doprava přes most zůstane uzavřená, chodci a cyklisté ho mohou používat od pondělí. Město plánuje na mostě večerní osvětlení, které se rozsvítí až na podzim.","The old stone bridge over the river was reopened after two years of repairs. Workers replaced the cracked blocks and restored the statues on the railing from old photographs. The bridge stays closed to traffic; pedestrians and cyclists can use it from Monday. The town plans evening lighting on the bridge, which will be switched on only in autumn."
+RSVP_Q_6_1,Jak dlouho trvaly opravy mostu?,How long did the bridge repairs take?
+RSVP_A_6_1_1,Dva roky,Two years
+RSVP_A_6_1_2,Šest měsíců,Six months
+RSVP_A_6_1_3,Pět let,Five years
+RSVP_A_6_1_4,Jedno léto,One summer
+RSVP_Q_6_2,Kdo může most používat od pondělí?,Who can use the bridge from Monday?
+RSVP_A_6_2_1,Chodci a cyklisté,Pedestrians and cyclists
+RSVP_A_6_2_2,Autobusy,Buses
+RSVP_A_6_2_3,Všechna auta,All cars
+RSVP_A_6_2_4,Jen zásobování,Only delivery vans
+RSVP_TEXT_7,"Observatoř na kopci nad vesnicí pořádá každou jasnou sobotu noční prohlídky. Návštěvníci se dívají hlavním dalekohledem na Měsíc, Saturn a v zimě na mlhovinu v Orionu. Průvodce doporučuje přijít v teplém oblečení, protože kopule se nevytápí. Prohlídka trvá hodinu a půl a začíná hned po setmění.","The observatory on the hill above the village holds night tours every clear Saturday. Visitors look through the main telescope at the Moon, Saturn and, in winter, the nebula in Orion. The guide recommends warm clothes because the dome is not heated. The tour lasts an hour and a half and starts right after dark."
+RSVP_Q_7_1,Kdy se noční prohlídky konají?,When are the night tours held?
+RSVP_A_7_1_1,Každou jasnou sobotu,Every clear Saturday
+RSVP_A_7_1_2,Každý pátek,Every Friday
+RSVP_A_7_1_3,Jen o prázdninách,Only during the holidays
+RSVP_A_7_1_4,Při úplňku,At full moon
+RSVP_Q_7_2,Proč průvodce doporučuje teplé oblečení?,Why does the guide recommend warm clothes?
+RSVP_A_7_2_1,Kopule se nevytápí,The dome is not heated
+RSVP_A_7_2_2,Prohlídka je venku,The tour is outdoors
+RSVP_A_7_2_3,Čeká se dlouho ve frontě,There is a long wait in a queue
+RSVP_A_7_2_4,Dalekohled chladí vzduch,The telescope cools the air
+RSVP_TEXT_8,"Malá továrna na hudební nástroje vyrábí dřevěné flétny už třetí generaci. Dřevo z javoru a hrušně se suší nejméně pět let, než se z něj začne soustružit. Každou flétnu před odesláním vyzkouší ladička a jeden z mistrů. Nejvíc objednávek přichází ze škol, které flétny používají při první hodině hudební výchovy.","A small musical instrument factory has been making wooden recorders for three generations. Maple and pear wood is dried for at least five years before it is turned. Every recorder is tested by a tuner and one of the masters before shipping. Most orders come from schools, which use the recorders in their first music lessons."
+RSVP_Q_8_1,Jak dlouho se dřevo suší?,How long is the wood dried?
+RSVP_A_8_1_1,Nejméně pět let,At least five years
+RSVP_A_8_1_2,Jeden rok,One year
+RSVP_A_8_1_3,Tři měsíce,Three months
+RSVP_A_8_1_4,Deset let,Ten years
+RSVP_Q_8_2,Odkud přichází nejvíc objednávek?,Where do most orders come from?
+RSVP_A_8_2_1,Ze škol,From schools
+RSVP_A_8_2_2,Z orchestrů,From orchestras
+RSVP_A_8_2_3,Z obchodů v zahraničí,From shops abroad
+RSVP_A_8_2_4,Od sběratelů,From collectors
+RSVP_TEXT_9,"Lékárna v horní části ulice se přestěhovala do rohového domu s velkými okny. Majitel nechal zachovat původní dřevěné regály a mosazné váhy z první republiky. Nově nabízí i poradnu, kde si lidé mohou nechat změřit tlak každé úterý dopoledne. Dětem u pultu rozdává samolepky s obrázkem bylin.",The pharmacy in the upper part of the street moved into the corner house with large windows. The owner kept the original wooden shelves and brass scales from the 1920s. It now also offers a consulting corner where people can have their blood pressure measured every Tuesday morning. Children at the counter get stickers with pictures of herbs.
+RSVP_Q_9_1,Kam se lékárna přestěhovala?,Where did the pharmacy move to?
+RSVP_A_9_1_1,Do rohového domu s velkými okny,Into the corner house with large windows
+RSVP_A_9_1_2,Do obchodního centra,Into the shopping centre
+RSVP_A_9_1_3,Na náměstí,To the square
+RSVP_A_9_1_4,Do přízemí nemocnice,To the ground floor of the hospital
+RSVP_Q_9_2,Kdy si lidé mohou nechat změřit tlak?,When can people have their blood pressure measured?
+RSVP_A_9_2_1,Každé úterý dopoledne,Every Tuesday morning
+RSVP_A_9_2_2,Každý den odpoledne,Every afternoon
+RSVP_A_9_2_3,V sobotu ráno,On Saturday mornings
+RSVP_A_9_2_4,Jen po objednání,Only by appointment
+RSVP_TEXT_10,"Vlak z hlavního nádraží do přístavu jede nově každou hodinu a cesta trvá padesát minut. Nové soupravy mají místo pro třicet kol a tichý vůz bez telefonování. Nejvíc cestujících přibylo o víkendech, kdy do přístavu míří rodiny na výletní lodě. Dopravce proto uvažuje o posilových spojích v létě.","The train from the main station to the harbour now runs every hour and the journey takes fifty minutes. The new units have room for thirty bicycles and a quiet carriage without phone calls. Most of the new passengers travel at weekends, when families head to the harbour for boat trips. The operator is therefore considering extra services in summer."
+RSVP_Q_10_1,Jak dlouho trvá cesta do přístavu?,How long does the journey to the harbour take?
+RSVP_A_10_1_1,Padesát minut,Fifty minutes
+RSVP_A_10_1_2,Dvacet minut,Twenty minutes
+RSVP_A_10_1_3,Hodinu a půl,An hour and a half
+RSVP_A_10_1_4,Dvě hodiny,Two hours
+RSVP_Q_10_2,Kolik kol se vejde do nové soupravy?,How many bicycles fit in a new unit?
+RSVP_A_10_2_1,Třicet,Thirty
+RSVP_A_10_2_2,Deset,Ten
+RSVP_A_10_2_3,Padesát,Fifty
+RSVP_A_10_2_4,Žádné,None
+RSVP_TEXT_11,"Zahradnictví za řekou pěstuje přes sto odrůd rajčat a každý srpen pořádá ochutnávku. Návštěvníci dostanou lístek, na který zapisují body jednotlivým odrůdám. Loni vyhrála drobná žlutá odrůda, kterou majitelka dovezla ze Sicílie. Semínka vítěze se pak prodávají na jaře v malých papírových sáčcích.",The nursery across the river grows over a hundred tomato varieties and holds a tasting every August. Visitors get a card on which they score the individual varieties. Last year a small yellow variety that the owner brought from Sicily won. The winner's seeds are then sold in spring in small paper bags.
+RSVP_Q_11_1,Kdy se koná ochutnávka rajčat?,When is the tomato tasting held?
+RSVP_A_11_1_1,Každý srpen,Every August
+RSVP_A_11_1_2,Každý květen,Every May
+RSVP_A_11_1_3,Na podzim,In autumn
+RSVP_A_11_1_4,O Vánocích,At Christmas
+RSVP_Q_11_2,Odkud pochází loňská vítězná odrůda?,Where does last year's winning variety come from?
+RSVP_A_11_2_1,Ze Sicílie,From Sicily
+RSVP_A_11_2_2,Z Holandska,From the Netherlands
+RSVP_A_11_2_3,Z Mexika,From Mexico
+RSVP_A_11_2_4,Z místního trhu,From the local market
+RSVP_TEXT_12,Dobrovolní hasiči z vesnice opravili starou stříkačku taženou koňmi a vozí ji na slavnosti v okolí. Stroj z roku 1911 stále funguje a při ukázce dostříkne až na střechu kostela. Na opravě se podílel místní kovář a studenti průmyslové školy. Výtěžek ze slavností jde na nový hasičský vůz.,The volunteer firefighters from the village repaired an old horse-drawn pump and take it to festivals in the area. The machine from 1911 still works and during the demonstration it sprays water up to the church roof. The local blacksmith and students of the technical school helped with the repair. The proceeds from the festivals go towards a new fire engine.
+RSVP_Q_12_1,Z kterého roku je stříkačka?,Which year is the pump from?
+RSVP_A_12_1_1,Z roku 1911,From 1911
+RSVP_A_12_1_2,Z roku 1887,From 1887
+RSVP_A_12_1_3,Z roku 1946,From 1946
+RSVP_A_12_1_4,Z roku 1970,From 1970
+RSVP_Q_12_2,Kdo pomáhal s opravou?,Who helped with the repair?
+RSVP_A_12_2_1,Místní kovář a studenti průmyslové školy,The local blacksmith and technical school students
+RSVP_A_12_2_2,Městské muzeum,The town museum
+RSVP_A_12_2_3,Profesionální hasiči,Professional firefighters
+RSVP_A_12_2_4,Výrobce stroje,The maker of the machine
 PYRAMID_TITLE,Číselná pyramida,Number pyramid
 PYRAMID_DESCRIPTION,"Dívej se na tečku uprostřed. Po stranách krátce bliknou dvě číslice, napiš je zleva doprava. Po správné odpovědi se vzdálí od středu.","Look at the dot in the centre. Two digits flash briefly on the sides; type them left to right. After a correct answer they move further from the centre."
 PYRAMID_SPAN,Šíře,Width
