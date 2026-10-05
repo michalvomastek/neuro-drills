@@ -46,6 +46,7 @@ Pravidla:
 | Odhad průsečíku | průměrná odchylka | 180 ms | 35 ms | – |
 | Rytmické ťukání | kolísání (SD) | 35 ms | 9 ms | – |
 | Plynulé sledování | čas na terči | 60 % | 94 % | – |
+| Plynulé sledování (dotyk) | podíl času v prstenci; samostatná varianta `touch` | 60 % | 94 % | – |
 | Kompenzační sledování | čas v zóně 15 % od středu | 60 % | 94 % | – |
 | Čas do kontaktu 3D | časová odchylka | 160 ms | 35 ms | místo ≤ 2 % / > 10 % výšky |
 | Brockův provázek | reakce při skoku blízko–daleko | 1500 ms | 500 ms | úspěšnost ≥ 95 % / < 75 % |

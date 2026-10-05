@@ -106,7 +106,7 @@
 ## Zrak a periferní vidění
 
 **RSVP čtení** – slova jednoho z 12 textů jedno po druhém (200–1000 slov/min), na konci dvě otázky se čtyřmi odpověďmi v náhodném pořadí; stejný text se nehraje dvakrát po sobě.
-- Rychlost 200/300/400/500/650 slov za minutu; 3 texty česky i anglicky.
+- Rychlost 200 až 1000 slov za minutu; 12 textů česky i anglicky, otázky a odpovědi v překladech (`RSVP_TEXT_n`, `RSVP_Q_n_q`, `RSVP_A_n_q_k`).
 - Výsledek: slov za minutu, počet slov, porozumění.
 
 **Číselná pyramida** – dvě číslice bliknou po stranách fixačního bodu (300 ms), napiš je.

@@ -112,7 +112,7 @@ SWITCH_RT_REPEAT,Reakce bez přepnutí,Reaction without switch
 SWITCH_RT_SWITCH,Reakce po přepnutí,Reaction after switch
 SWITCH_COST,Cena přepnutí,Switch cost
 RSVP_TITLE,RSVP čtení,RSVP reading
-RSVP_DESCRIPTION,"Slova krátkého textu se promítají jedno po druhém zvolenou rychlostí. Na konci odpovíš na otázku k textu.","Words of a short text are shown one at a time at the chosen speed. At the end you answer a question about it."
+RSVP_DESCRIPTION,"Slova krátkého textu se promítají jedno po druhém zvolenou rychlostí. Na konci odpovíš na dvě otázky k textu, každá se čtyřmi možnostmi.","Words of a short text are shown one at a time at the chosen speed. At the end you answer two questions about it, each with four options."
 RSVP_SPEED,Rychlost (slov za minutu),Speed (words per minute)
 RSVP_WPM,Slov za minutu,Words per minute
 RSVP_WPM_UNIT,slov/min,wpm

@@ -51,7 +51,11 @@ func _apply_extra_config(config: Dictionary) -> void:
 
 
 func _collect_extra_config() -> Dictionary:
-	return {"duration_s": _duration, "speed": _speed}
+	var config := {"duration_s": _duration, "speed": _speed}
+	# The ring target is a different task, so its runs form their own variant.
+	if _ring:
+		config["touch"] = true
+	return config
 
 
 func _on_start_pressed() -> void:

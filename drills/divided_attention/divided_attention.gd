@@ -3,7 +3,10 @@
 ## with space. Both tasks are scored. On a touchscreen the left thumb drags
 ## anywhere on the left half (the steering is relative, the finger need not
 ## cover the dot, which is drawn as a wide ring there) and the right thumb
-## taps the right half.
+## taps the right half. Steering reads the motion events themselves: a real
+## mouse (not the one emulated from touch) or the finger that landed on the
+## left half; the second finger's tap on the right half is answered here
+## because the engine emulates the mouse only from the first finger.
 extends TrialDrill
 
 const DRIFT_SPEED := 0.4
@@ -27,11 +30,9 @@ var _time := 0.0
 var _playing: bool = false
 var _stimulus_active: bool = false
 var _stimulus_ms: int = 0
-var _last_pointer := Vector2.ZERO
-var _pointer_ready: bool = false
 var _touch_steering: bool = false
-## A finger is down on the left half; only then do pointer moves steer.
-var _dragging: bool = false
+## Index of the finger steering on the left half, -1 when none.
+var _drag_index: int = -1
 var _drag_hint: Label
 
 
@@ -109,17 +110,40 @@ func _handle_response(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		_on_response()
 		get_viewport().set_input_as_handled()
+
+
+func _input(event: InputEvent) -> void:
+	if not _playing:
 		return
-	# A touch that lands on the left half starts a drag from where it is; the
-	# landing itself and taps on the right pad must not move the dot.
+	var motion := event as InputEventMouseMotion
+	if motion != null and motion.device != InputEvent.DEVICE_ID_EMULATION:
+		_steer(motion.relative)
+		return
+	var drag := event as InputEventScreenDrag
+	if drag != null:
+		if drag.index == _drag_index:
+			_steer(drag.relative)
+		return
 	var touch := event as InputEventScreenTouch
 	if touch == null:
 		return
-	if touch.pressed:
-		_dragging = _left.get_global_rect().has_point(touch.position)
-	else:
-		_dragging = false
-	_last_pointer = get_local_mouse_position()
+	if not touch.pressed:
+		if touch.index == _drag_index:
+			_drag_index = -1
+		return
+	if _left.get_global_rect().has_point(touch.position):
+		_drag_index = touch.index
+	elif touch.index > 0 and _right.get_global_rect().has_point(touch.position):
+		# The first finger's tap reaches the pad as an emulated click; a later
+		# finger produces no click at all, so it is answered here.
+		_on_response()
+		_flash_pad(_right as Button, get_theme_color("selected", "Board"), 0.12)
+
+
+## [param relative] is in window pixels; the gain was tuned in design units.
+func _steer(relative: Vector2) -> void:
+	var scale := get_viewport().get_final_transform().get_scale()
+	_offset += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001)) * MOUSE_GAIN
 
 
 func _process(delta: float) -> void:
@@ -128,13 +152,6 @@ func _process(delta: float) -> void:
 	_time += delta
 	var drift := Vector2(_noise.get_noise_2d(_time, 0.0), _noise.get_noise_2d(0.0, _time + 50.0)) * DRIFT_SPEED
 	_offset += drift * delta
-	var pointer := get_local_mouse_position()
-	if _pointer_ready and (_dragging or not _touch_steering):
-		var pointer_delta := pointer - _last_pointer
-		if pointer_delta.length() < 60.0:
-			_offset += pointer_delta * MOUSE_GAIN
-	_last_pointer = pointer
-	_pointer_ready = true
 	_offset = _offset.clamp(Vector2(-1, -1), Vector2(1, 1))
 	_tracking.add(_offset.length())
 	var half := minf(_left.size.x, _left.size.y) * 0.5 - 20.0
@@ -147,8 +164,7 @@ func _run_trials() -> void:
 	_noise.seed = _rng.randi()
 	_offset = Vector2.ZERO
 	_time = 0.0
-	_pointer_ready = false
-	_dragging = false
+	_drag_index = -1
 	_playing = true
 	_run_stream()
 
@@ -194,6 +210,6 @@ func _build_result() -> DrillResult:
 func _reset_play_state() -> void:
 	_playing = false
 	_stimulus_active = false
-	_dragging = false
+	_drag_index = -1
 	if _disc != null:
 		_disc.visible = false

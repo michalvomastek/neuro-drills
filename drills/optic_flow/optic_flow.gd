@@ -20,11 +20,11 @@ var _first_move_ms: int = -1
 var _active: bool = false
 var _uses_tilt: bool = false
 var _tilt_rest := Vector3.ZERO
-var _last_pointer := Vector2.ZERO
-## On a touchscreen without a usable sensor the finger steers while it drags;
-## a tap must not move anything, so pointer jumps outside a drag are ignored.
+## Without a usable sensor the pointer steers: a real mouse (not the one
+## emulated from touch) or a dragging finger; a tap moves nothing. The
+## motion arrives through _input as events, summed here until the next frame.
 var _touch_steering: bool = false
-var _dragging: bool = false
+var _pointer_input := Vector2.ZERO
 
 
 func _trial_options() -> Array[int]:
@@ -92,12 +92,8 @@ func _process(delta: float) -> void:
 		_shift = (_shift + input * delta * 3.0).limit_length(MAX_SHIFT)
 	else:
 		var keys := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-		var pointer := get_local_mouse_position()
-		var pointer_delta := pointer - _last_pointer
-		_last_pointer = pointer
-		if pointer_delta.length() > 40.0 or (_touch_steering and not _dragging):
-			pointer_delta = Vector2.ZERO
-		input = keys * KEY_SPEED * delta + pointer_delta * MOUSE_GAIN
+		input = keys * KEY_SPEED * delta + _pointer_input * MOUSE_GAIN
+		_pointer_input = Vector2.ZERO
 		_shift = (_shift + input).limit_length(MAX_SHIFT)
 	if _active:
 		if _first_move_ms < 0 and input.length() > 0.0005:
@@ -126,13 +122,21 @@ func _on_start_pressed() -> void:
 	super()
 
 
-## A touch starts a drag from where it lands; the landing itself is no steering.
-func _handle_response(event: InputEvent) -> void:
-	var touch := event as InputEventScreenTouch
-	if touch == null:
+func _input(event: InputEvent) -> void:
+	if not _running or _uses_tilt:
 		return
-	_dragging = touch.pressed
-	_last_pointer = get_local_mouse_position()
+	var relative := Vector2.ZERO
+	var motion := event as InputEventMouseMotion
+	var drag := event as InputEventScreenDrag
+	if motion != null and motion.device != InputEvent.DEVICE_ID_EMULATION:
+		relative = motion.relative
+	elif drag != null:
+		relative = drag.relative
+	else:
+		return
+	# Window pixels to design units, the gain was tuned in those.
+	var scale := get_viewport().get_final_transform().get_scale()
+	_pointer_input += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001))
 
 
 func _run_trials() -> void:
@@ -140,8 +144,7 @@ func _run_trials() -> void:
 	_uses_tilt = _tilt_available()
 	_tilt_rest = Input.get_gravity()
 	_shift = Vector2.ZERO
-	_dragging = false
-	_last_pointer = get_local_mouse_position()
+	_pointer_input = Vector2.ZERO
 	_update_hint()
 	_next_trial()
 
@@ -170,6 +173,6 @@ func _after_trial() -> void:
 
 func _reset_play_state() -> void:
 	_active = false
-	_dragging = false
+	_pointer_input = Vector2.ZERO
 	if _obstacle != null:
 		_obstacle.visible = false
