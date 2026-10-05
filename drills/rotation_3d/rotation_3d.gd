@@ -49,7 +49,11 @@ func _build_play_area(parent: Control) -> void:
 	vbox.add_child(row)
 	var keys: Array[String] = ["ROTATION_SAME", "ROTATION_MIRROR"]
 	for i in 2:
-		var button := _make_pad(tr(keys[i]), 32)
+		var button := _make_pad(tr(keys[i]), 28)
+		# Equal halves with wrapping labels, so the long "Same (rotated)"
+		# does not push the second pad off a phone screen.
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.pressed.connect(_on_answer.bind(i == 0))
 		row.add_child(button)
 		_buttons.append(button)
