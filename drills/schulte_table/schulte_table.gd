@@ -199,6 +199,7 @@ func _begin_table() -> void:
 	_build_grid()
 	if _config.test_mode:
 		_countdown_panel.visible = true
+		_countdown_label.remove_theme_color_override("font_color")
 		_countdown_label.text = "%d / %d" % [_table_index + 1, SchulteConfig.TEST_TABLE_COUNT]
 		await get_tree().create_timer(1.2).timeout
 		if token != _run_token or not is_inside_tree():

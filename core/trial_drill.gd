@@ -38,6 +38,7 @@ var _progress_label: Label
 var _countdown_panel: CenterContainer
 var _countdown_label: Label
 var _countdown_hint: Label
+var _countdown_box: VBoxContainer
 
 
 func _ready() -> void:
@@ -187,6 +188,8 @@ func _begin_run() -> void:
 	Drill.set_leave_guard(true)
 	if countdown:
 		_countdown_panel.visible = true
+		# A fixed width keeps the hint from rewrapping when the count turns into the short "Go!".
+		_countdown_box.custom_minimum_size = Vector2(Layout.panel_width(self, 480.0), 0)
 		_countdown_hint.text = tr("COUNTDOWN_READY") % tr(definition.title_key)
 		_countdown_label.add_theme_color_override("font_color", get_theme_color("accent", "App"))
 		for i in range(COUNTDOWN_FROM, 0, -1):
@@ -425,19 +428,19 @@ func _build_ui() -> void:
 	_countdown_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_countdown_panel.visible = false
 	add_child(_countdown_panel)
-	var countdown_box := VBoxContainer.new()
-	countdown_box.add_theme_constant_override("separation", 12)
-	_countdown_panel.add_child(countdown_box)
+	_countdown_box = VBoxContainer.new()
+	_countdown_box.add_theme_constant_override("separation", 12)
+	_countdown_panel.add_child(_countdown_box)
 	_countdown_hint = Label.new()
 	_countdown_hint.theme_type_variation = &"DimLabel"
 	_countdown_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_countdown_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	countdown_box.add_child(_countdown_hint)
+	_countdown_box.add_child(_countdown_hint)
 	_countdown_label = Label.new()
 	_countdown_label.theme_type_variation = &"HeadingLabel"
 	_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_countdown_label.add_theme_font_size_override("font_size", 72)
-	countdown_box.add_child(_countdown_label)
+	_countdown_box.add_child(_countdown_label)
 
 
 ## A large flat button that fires on press, used as a response pad or stimulus surface.
