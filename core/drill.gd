@@ -43,6 +43,24 @@ static func make_press_button(button: BaseButton) -> void:
 			button.accept_event())
 
 
+## A short grow-and-settle on a correct answer (the control scales around its centre).
+static func pop(control: Control, amount: float = 0.06, seconds: float = 0.18) -> void:
+	control.pivot_offset = control.size * 0.5
+	var tween := control.create_tween()
+	tween.tween_property(control, "scale", Vector2.ONE * (1.0 + amount), seconds * 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(control, "scale", Vector2.ONE, seconds * 0.6).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## A quick sideways shake on a wrong answer; ends exactly where it started.
+static func shake(control: Control, distance: float = 6.0, seconds: float = 0.24) -> void:
+	var origin := control.position
+	var tween := control.create_tween()
+	for i in 3:
+		var sign := 1.0 if i % 2 == 0 else -1.0
+		tween.tween_property(control, "position", origin + Vector2(distance * sign, 0), seconds / 6.0)
+		tween.tween_property(control, "position", origin, seconds / 6.0)
+
+
 ## On the web, asks the browser to confirm before the page is closed or
 ## reloaded while a run is in progress (a tap on the wrong browser control
 ## otherwise throws the run away). No-op elsewhere.
