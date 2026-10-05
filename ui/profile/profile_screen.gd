@@ -10,11 +10,9 @@ const BADGE_ICON_SIZE := 56.0
 @onready var _week_label: Label = %WeekLabel
 @onready var _badges_title: Label = %BadgesTitle
 @onready var _badges: GridContainer = %Badges
-@onready var _progress_button: Button = %ProgressButton
 
 
 func _ready() -> void:
-	_progress_button.pressed.connect(SceneRouter.show_progress)
 	GamiWidgets.add_stats(_stats, false)
 	var week := StatsStore.history.week_summary(int(Time.get_unix_time_from_system()))
 	var week_runs: int = week["runs"]
