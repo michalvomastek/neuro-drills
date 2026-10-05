@@ -46,7 +46,11 @@ func _build_play_area(parent: Control) -> void:
 	_pad.pressed.connect(_on_response)
 	parent.add_child(_pad)
 	var board := _make_square_board(parent)
+	# The board and its aspect container sit over the pad; a container
+	# defaults to PASS, which hands the tap to its parent, never to the
+	# sibling pad below, so both must let taps through.
 	board.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	(board.get_parent() as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var grid := GridContainer.new()
 	grid.set_anchors_preset(Control.PRESET_FULL_RECT)
 	grid.columns = 3
