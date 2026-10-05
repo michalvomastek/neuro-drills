@@ -29,7 +29,7 @@ func _ready() -> void:
 ## One column and slim margins on a phone, two columns and wide margins otherwise.
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
-	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
+	Layout.set_screen_margins(_margin)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
 	_build_stats(narrow)

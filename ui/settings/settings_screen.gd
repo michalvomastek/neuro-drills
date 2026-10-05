@@ -38,7 +38,7 @@ func _ready() -> void:
 
 
 func _relayout() -> void:
-	Layout.set_margins(_margin, Layout.side_margin(self), 12 if Layout.is_narrow(self) else 32)
+	Layout.set_screen_margins(_margin)
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -74,6 +74,17 @@ static func side_margin(control: Control) -> int:
 	return clampi(int(viewport_width(control) * 0.09), 24, 120)
 
 
+## Vertical margin of a top-level screen: room under the top bar on a phone.
+const SCREEN_MARGIN_NARROW := 24
+const SCREEN_MARGIN_WIDE := 32
+
+
+## Outer margins of a top-level screen, the same on every screen: the side
+## margin of a full-screen panel and SCREEN_MARGIN_* above and below.
+static func set_screen_margins(margin: MarginContainer) -> void:
+	set_margins(margin, side_margin(margin), SCREEN_MARGIN_NARROW if is_narrow(margin) else SCREEN_MARGIN_WIDE)
+
+
 static func set_margins(margin: MarginContainer, horizontal: int, vertical: int) -> void:
 	margin.add_theme_constant_override("margin_left", horizontal)
 	margin.add_theme_constant_override("margin_right", horizontal)

@@ -86,7 +86,7 @@ func _unhandled_input(event: InputEvent) -> void:
 ## On a phone the variant list sits above the detail instead of beside it.
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
-	Layout.set_margins(_margin, Layout.side_margin(self), 12 if narrow else 32)
+	Layout.set_screen_margins(_margin)
 	_body.vertical = narrow
 	# A phone picks the variant from a dropdown (the whole screen scrolls, so
 	# a nested scrolling list would fight the finger); a wide screen lists them.
