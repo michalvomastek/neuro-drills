@@ -221,6 +221,8 @@ func _begin_table() -> void:
 			return
 		_countdown_panel.visible = false
 	_play_panel.visible = true
+	if _table_index == 0:
+		Drill.show_hint(self, tr(definition.description_key))
 	_grid.visible = true
 	_fixation_dot.visible = _config.fixation_dot
 	_started_at_ms = Time.get_ticks_msec()

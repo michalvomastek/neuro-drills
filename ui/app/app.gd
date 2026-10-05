@@ -21,6 +21,9 @@ func _ready() -> void:
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
+	var insets := Layout.safe_insets(get_tree().root)
+	offset_top = insets.x
+	offset_bottom = -insets.y
 
 
 ## Every list scrolls by dragging, not only through its scrollbar.

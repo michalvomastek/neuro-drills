@@ -106,7 +106,9 @@ func _play(definition: DrillDefinition) -> void:
 	else:
 		var problems := _check(_result)
 		if problems.is_empty():
-			print("ok   %-24s %5.1f s  %s" % [definition.id, seconds, _result.metrics])
+			var verdict := Benchmarks.evaluate(_result)
+			var level: int = verdict.get("level", -1)
+			print("ok   %-24s %5.1f s  level %d  %s" % [definition.id, seconds, level, _result.metrics])
 		else:
 			_fail(definition, "; ".join(problems))
 	_router.call("show_menu")

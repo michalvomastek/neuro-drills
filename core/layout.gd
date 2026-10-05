@@ -31,6 +31,20 @@ static func apply_scale(window: Window) -> void:
 	window.content_scale_size = scale_size(window.size)
 
 
+## Top and bottom insets in design units that the device reserves (the
+## iPhone notch and home indicator in a web app on the home screen). The web
+## head include exposes them through window.neuroSafeArea; elsewhere zero.
+static func safe_insets(window: Window) -> Vector2:
+	if not OS.has_feature("web"):
+		return Vector2.ZERO
+	var raw: Variant = JavaScriptBridge.eval("(function(){try{var a=window.neuroSafeArea?window.neuroSafeArea():null;if(!a){return '0,0';}var d=window.devicePixelRatio||1;return (a.top*d)+','+(a.bottom*d);}catch(e){return '0,0';}})()", true)
+	var parts := str(raw).split(",")
+	if parts.size() != 2:
+		return Vector2.ZERO
+	var units_per_px := float(window.content_scale_size.y) / maxf(float(window.size.y), 1.0)
+	return Vector2(maxf(0.0, float(parts[0])), maxf(0.0, float(parts[1]))) * units_per_px
+
+
 ## Calls [param relayout] now and after every window resize, for as long as
 ## [param control] lives (the callable must be a method of the control, so the
 ## connection goes away with it).

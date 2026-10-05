@@ -59,6 +59,34 @@ static func watch_setup_controls(node: Node, changed: Callable) -> void:
 		watch_setup_controls(child, changed)
 
 
+## A card with the drill's instruction over the top of the play area for a
+## few seconds after the countdown, so a player who skipped the setup panel
+## (training, quick start) still knows what to do. Ignores the pointer.
+static func show_hint(host: Control, text: String, seconds: float = 3.0) -> void:
+	if text.is_empty():
+		return
+	var card := PanelContainer.new()
+	card.theme_type_variation = &"Card"
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	card.offset_left = 24
+	card.offset_right = -24
+	card.offset_top = 60
+	card.grow_vertical = Control.GROW_DIRECTION_END
+	var label := Label.new()
+	label.text = text
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", 18)
+	card.add_child(label)
+	host.add_child(card)
+	var tween := card.create_tween()
+	tween.tween_interval(seconds)
+	tween.tween_property(card, "modulate:a", 0.0, 0.4)
+	tween.tween_callback(card.queue_free)
+
+
 ## A short grow-and-settle on a correct answer (the control scales around its centre).
 static func pop(control: Control, amount: float = 0.06, seconds: float = 0.18) -> void:
 	control.pivot_offset = control.size * 0.5

@@ -204,6 +204,7 @@ func _begin_run() -> void:
 		if not await _wait(COUNTDOWN_GAP_SECONDS):
 			return
 	_play_panel.visible = true
+	Drill.show_hint(self, tr(definition.description_key))
 	_running = true
 	_set_progress(0)
 	_run_trials()

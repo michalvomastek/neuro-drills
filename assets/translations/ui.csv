@@ -530,3 +530,5 @@ COUNTDOWN_READY,Připrav se: %s,Get ready: %s
 COUNTDOWN_IN,Start za %d,Start in %d
 COUNTDOWN_GO,Teď!,Go!
 TRAINING_BRIEF_STOP,Ukončit trénink,End training
+RESULT_MORE,Více ▾,More ▾
+RESULT_LESS,Méně ▴,Less ▴

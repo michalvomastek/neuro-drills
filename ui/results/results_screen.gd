@@ -5,6 +5,8 @@ extends Control
 @onready var _heading_label: Label = %HeadingLabel
 @onready var _title_label: Label = %TitleLabel
 @onready var _rows: GridContainer = %Rows
+@onready var _detail_rows: GridContainer = %DetailRows
+@onready var _more_button: Button = %MoreButton
 @onready var _again_button: Button = %AgainButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _menu_button: Button = %MenuButton
@@ -25,6 +27,7 @@ func _ready() -> void:
 	_settings_button.pressed.connect(_on_settings_pressed)
 	_menu_button.pressed.connect(_on_menu_pressed)
 	_note_button.pressed.connect(_on_note_pressed)
+	_more_button.pressed.connect(_on_more_pressed)
 	Layout.watch(self, _relayout)
 
 
@@ -45,12 +48,13 @@ func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 520.0), 0)
 	_vbox.add_theme_constant_override("separation", 10 if narrow else 16)
-	_rows.add_theme_constant_override("v_separation", 4 if narrow else 8)
 	_rpe_box.vertical = narrow
 	_rpe_buttons.columns = 5 if narrow else 10
-	_rows.add_theme_constant_override("h_separation", 12 if narrow else 32)
-	for i in range(0, _rows.get_child_count() - 1, 2):
-		_size_row(_rows.get_child(i) as Label, _rows.get_child(i + 1) as Label)
+	for grid: GridContainer in [_rows, _detail_rows]:
+		grid.add_theme_constant_override("h_separation", 12 if narrow else 32)
+		grid.add_theme_constant_override("v_separation", 4 if narrow else 8)
+		for i in range(0, grid.get_child_count() - 1, 2):
+			_size_row(grid.get_child(i) as Label, grid.get_child(i + 1) as Label)
 	_buttons_spacer.visible = not narrow
 	_buttons.columns = 2 if narrow else 5
 	for child in _buttons.get_children():
@@ -72,6 +76,7 @@ func setup(result: DrillResult) -> void:
 	_add_reward_rows(_record)
 	_build_rpe_row()
 	_apply_training_mode()
+	_more_button.visible = _detail_rows.get_child_count() > 0
 	_again_button.grab_focus()
 
 
@@ -99,7 +104,7 @@ func _add_stable_best_row(record: Dictionary) -> void:
 	if is_nan(stable):
 		return
 	var unit: String = record["unit"]
-	_add_row("RESULT_STABLE_BEST", MetricCatalog.format_value(stable, unit))
+	_add_row("RESULT_STABLE_BEST", MetricCatalog.format_value(stable, unit), true)
 
 
 ## Points for this run and any badge earned by it.
@@ -122,7 +127,7 @@ func _add_benchmark_rows(result: DrillResult) -> void:
 	if next >= 0.0:
 		var unit: String = verdict["unit"]
 		var next_key := Benchmarks.LEVEL_KEYS[mini(level + 1, Benchmarks.LEVEL_KEYS.size() - 1)]
-		_add_row("RESULT_NEXT_LEVEL", "%s: %s" % [tr(next_key), Benchmarks.format_bound(next, unit)])
+		_add_row("RESULT_NEXT_LEVEL", "%s: %s" % [tr(next_key), Benchmarks.format_bound(next, unit)], true)
 
 
 ## Comparison with the earlier runs of the same variant, plus the per-run
@@ -148,10 +153,10 @@ func _add_history_rows(record: Dictionary) -> void:
 			_add_row("RESULT_BEST", tr("RESULT_NEW_BEST") if is_best else MetricCatalog.format_value(best, unit))
 	var variability := StatsHistory.number(record, "variability_ms")
 	if not is_nan(variability):
-		_add_row("RESULT_VARIABILITY", Format.millis(variability))
+		_add_row("RESULT_VARIABILITY", Format.millis(variability), true)
 	var fatigue := StatsHistory.number(record, "fatigue")
 	if not is_nan(fatigue):
-		_add_row("RESULT_FATIGUE", Format.ratio(fatigue))
+		_add_row("RESULT_FATIGUE", Format.ratio(fatigue), true)
 
 
 ## Ten toggle buttons for the perceived exertion; the choice is stored at once.
@@ -177,18 +182,27 @@ func _on_rpe_pressed(rpe: int) -> void:
 	StatsStore.set_rpe(id, rpe)
 
 
-func _add_row(label_key: String, value: String) -> void:
+## The main grid holds what the player looks for first; [param detail] rows
+## go to the collapsible section under "More" so a phone shows the result
+## without scrolling.
+func _add_row(label_key: String, value: String, detail: bool = false) -> void:
+	var grid := _detail_rows if detail else _rows
 	var label := Label.new()
 	label.text = tr(label_key)
 	label.theme_type_variation = &"DimLabel"
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_rows.add_child(label)
+	grid.add_child(label)
 	var value_label := Label.new()
 	value_label.text = tr(value)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_rows.add_child(value_label)
+	grid.add_child(value_label)
 	_size_row(label, value_label)
+
+
+func _on_more_pressed() -> void:
+	_detail_rows.visible = not _detail_rows.visible
+	_more_button.text = tr("RESULT_LESS" if _detail_rows.visible else "RESULT_MORE")
 
 
 ## Opens a small dialog for a feedback note; the result and the environment
