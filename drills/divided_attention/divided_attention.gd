@@ -1,11 +1,17 @@
 ## Asymmetrical divided attention: the left hand keeps a drifting dot centred
 ## with the mouse while the right hand answers a Go/No-Go stream of discs
-## with space. Both tasks are scored.
+## with space. Both tasks are scored. On a touchscreen the left thumb drags
+## anywhere on the left half (the steering is relative, the finger need not
+## cover the dot, which is drawn as a wide ring there) and the right thumb
+## taps the right half.
 extends TrialDrill
 
 const DRIFT_SPEED := 0.4
 const MOUSE_GAIN := 0.0025
 const DISC_SIZE := 120.0
+const DOT_SIZE := 32.0
+const TOUCH_RING_SIZE := 90.0
+const TOUCH_RING_WIDTH := 8
 
 var _tracking := TrackingStats.new()
 var _gonogo: GoNoGoLogic
@@ -23,6 +29,10 @@ var _stimulus_active: bool = false
 var _stimulus_ms: int = 0
 var _last_pointer := Vector2.ZERO
 var _pointer_ready: bool = false
+var _touch_steering: bool = false
+## A finger is down on the left half; only then do pointer moves steer.
+var _dragging: bool = false
+var _drag_hint: Label
 
 
 func _trial_options() -> Array[int]:
@@ -49,14 +59,32 @@ func _build_play_area(parent: Control) -> void:
 	_cross = _make_stimulus_label(_left, 56)
 	_cross.text = "+"
 	_cross.theme_type_variation = &"DimLabel"
+	_touch_steering = DragScroll.touch_ui()
 	_dot = Panel.new()
 	_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_dot.size = Vector2(32, 32)
+	var dot_size := TOUCH_RING_SIZE if _touch_steering else DOT_SIZE
+	_dot.size = Vector2(dot_size, dot_size)
 	var dot_style := StyleBoxFlat.new()
-	dot_style.bg_color = get_theme_color("lit", "Board")
-	dot_style.set_corner_radius_all(16)
+	dot_style.set_corner_radius_all(roundi(dot_size / 2.0))
+	if _touch_steering:
+		dot_style.bg_color = Color(0, 0, 0, 0)
+		dot_style.set_border_width_all(TOUCH_RING_WIDTH)
+		dot_style.border_color = get_theme_color("lit", "Board")
+	else:
+		dot_style.bg_color = get_theme_color("lit", "Board")
 	_dot.add_theme_stylebox_override("panel", dot_style)
 	_left.add_child(_dot)
+	if _touch_steering:
+		_drag_hint = Label.new()
+		_drag_hint.text = "DIVIDED_HINT_DRAG"
+		_drag_hint.theme_type_variation = &"DimLabel"
+		_drag_hint.add_theme_font_size_override("font_size", 16)
+		_drag_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_drag_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_drag_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_drag_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE, Control.PRESET_MODE_MINSIZE, 8)
+		_drag_hint.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		_left.add_child(_drag_hint)
 	var right_pad := _make_pad()
 	right_pad.pressed.connect(_on_response)
 	halves.add_child(right_pad)
@@ -81,6 +109,17 @@ func _handle_response(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		_on_response()
 		get_viewport().set_input_as_handled()
+		return
+	# A touch that lands on the left half starts a drag from where it is; the
+	# landing itself and taps on the right pad must not move the dot.
+	var touch := event as InputEventScreenTouch
+	if touch == null:
+		return
+	if touch.pressed:
+		_dragging = _left.get_global_rect().has_point(touch.position)
+	else:
+		_dragging = false
+	_last_pointer = get_local_mouse_position()
 
 
 func _process(delta: float) -> void:
@@ -90,7 +129,7 @@ func _process(delta: float) -> void:
 	var drift := Vector2(_noise.get_noise_2d(_time, 0.0), _noise.get_noise_2d(0.0, _time + 50.0)) * DRIFT_SPEED
 	_offset += drift * delta
 	var pointer := get_local_mouse_position()
-	if _pointer_ready:
+	if _pointer_ready and (_dragging or not _touch_steering):
 		var pointer_delta := pointer - _last_pointer
 		if pointer_delta.length() < 60.0:
 			_offset += pointer_delta * MOUSE_GAIN
@@ -109,6 +148,7 @@ func _run_trials() -> void:
 	_offset = Vector2.ZERO
 	_time = 0.0
 	_pointer_ready = false
+	_dragging = false
 	_playing = true
 	_run_stream()
 
@@ -154,5 +194,6 @@ func _build_result() -> DrillResult:
 func _reset_play_state() -> void:
 	_playing = false
 	_stimulus_active = false
+	_dragging = false
 	if _disc != null:
 		_disc.visible = false

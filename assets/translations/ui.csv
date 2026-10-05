@@ -396,6 +396,7 @@ DUAL_JITTER_LOAD,Kolísání rytmu při počítání,Rhythm jitter while solving
 DUAL_INTERFERENCE,Zhoršení rytmu,Rhythm degradation
 DUAL_WRONG_SHORT,chybně,wrong
 DIVIDED_TITLE,Rozdělená pozornost,Divided attention
+DIVIDED_HINT_DRAG,Táhni prstem kdekoli v této ploše a drž kroužek u kříže,Drag anywhere on this half and keep the ring at the cross
 DIVIDED_DESCRIPTION,"Levá ruka: myší drž ujíždějící tečku u kříže. Pravá ruka: mezerník na zelené kolečko, na červené nic. Obě úlohy běží naráz.","Left hand: keep the drifting dot at the cross with the mouse. Right hand: space on a green disc, nothing on a red one. Both tasks run at once."
 PATTERN_TITLE,Periferní vzor,Peripheral pattern
 PATTERN_DESCRIPTION,"Dívej se jen na číslici uprostřed. Kolem ní bliknou vzory v osmi sektorech. Stiskni číslo sektoru, kde byly tři modré čárky. Na konci napiš, kolikrát se číslice změnila.","Keep your eyes on the centre digit. Patterns flash in eight sectors around it. Press the number of the sector with three blue bars. At the end, type how many times the digit changed."
