@@ -15,6 +15,7 @@ extends Control
 @onready var _empty_label: Label = %EmptyLabel
 @onready var _add_row: BoxContainer = %AddRow
 @onready var _drill_option: OptionButton = %DrillOption
+@onready var _steps_scroll: ScrollContainer = %StepsScroll
 @onready var _add_button: Button = %AddButton
 @onready var _suggest_button: Button = %SuggestButton
 @onready var _save_button: Button = %SaveButton
@@ -65,6 +66,12 @@ func _relayout() -> void:
 	_footer.columns = 2 if narrow else 4
 	for button: Button in [_suggest_button, _save_button, _start_button]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_FILL
+	# A phone: short button texts so two fit side by side, and the step list
+	# grows with its content while the whole screen scrolls.
+	_suggest_button.text = tr("TRAINING_SUGGEST_SHORT" if narrow else "TRAINING_SUGGEST")
+	_save_button.text = tr("TRAINING_SAVE_SHORT" if narrow else "TRAINING_SAVE")
+	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if narrow else ScrollContainer.SCROLL_MODE_AUTO
+	_steps_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
 
 
 func _minutes() -> int:
@@ -110,7 +117,7 @@ func _rebuild_steps() -> void:
 
 func _make_step_row(index: int) -> Control:
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", 6)
 	var number := Label.new()
 	number.text = "%d." % (index + 1)
 	number.theme_type_variation = &"DimLabel"
@@ -136,19 +143,22 @@ func _make_step_row(index: int) -> Control:
 	row.add_child(duration)
 	var up := Button.new()
 	up.text = "▲"
-	up.flat = true
+	up.theme_type_variation = &"SmallButton"
+	up.focus_mode = Control.FOCUS_NONE
 	up.disabled = index == 0
 	up.pressed.connect(_move_step.bind(index, -1))
 	row.add_child(up)
 	var down := Button.new()
 	down.text = "▼"
-	down.flat = true
+	down.theme_type_variation = &"SmallButton"
+	down.focus_mode = Control.FOCUS_NONE
 	down.disabled = index == _steps.size() - 1
 	down.pressed.connect(_move_step.bind(index, 1))
 	row.add_child(down)
 	var remove := Button.new()
 	remove.text = "✕"
-	remove.flat = true
+	remove.theme_type_variation = &"SmallButton"
+	remove.focus_mode = Control.FOCUS_NONE
 	remove.tooltip_text = tr("TRAINING_REMOVE")
 	remove.pressed.connect(_remove_step.bind(index))
 	row.add_child(remove)
