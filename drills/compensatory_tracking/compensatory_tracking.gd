@@ -28,6 +28,7 @@ var _pointer_parked: bool = false
 ## Warping the pointer is unavailable on web and mobile; there the frame-to-frame
 ## pointer delta is used instead.
 var _can_warp: bool = not (OS.has_feature("web") or OS.has_feature("mobile"))
+var _pointer_input := Vector2.ZERO
 var _last_pointer := Vector2.ZERO
 
 
@@ -75,6 +76,22 @@ func _build_play_area(parent: Control) -> void:
 	_noise.frequency = 0.35
 
 
+func _input(event: InputEvent) -> void:
+	if not _playing or _can_warp:
+		return
+	var relative := Vector2.ZERO
+	var motion := event as InputEventMouseMotion
+	var drag := event as InputEventScreenDrag
+	if motion != null and motion.device != InputEvent.DEVICE_ID_EMULATION:
+		relative = motion.relative
+	elif drag != null:
+		relative = drag.relative
+	else:
+		return
+	var scale := get_viewport().get_final_transform().get_scale()
+	_pointer_input += Vector2(relative.x / maxf(scale.x, 0.001), relative.y / maxf(scale.y, 0.001))
+
+
 func _process(delta: float) -> void:
 	if not _playing:
 		return
@@ -91,10 +108,10 @@ func _process(delta: float) -> void:
 			Input.warp_mouse(_stage.get_screen_position() + centre)
 			_pointer_parked = true
 	else:
-		if _pointer_parked:
-			_offset += (pointer - _last_pointer) * MOUSE_GAIN
-		_last_pointer = pointer
-		_pointer_parked = true
+		# No warping (web): the motion events themselves steer, a real mouse or
+		# a dragging finger; a tap on the screen moves nothing.
+		_offset += _pointer_input * MOUSE_GAIN
+		_pointer_input = Vector2.ZERO
 	var drift := Vector2(_noise.get_noise_2d(_time, 0.0), _noise.get_noise_2d(0.0, _time + 100.0)) * DRIFT_SPEED
 	_offset += drift * delta
 	var keys := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")

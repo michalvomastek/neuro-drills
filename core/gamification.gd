@@ -6,6 +6,9 @@ class_name Gamification
 extends RefCounted
 
 const DAY_S := 86400
+## Minutes of play that count as a done day for the goal pill and the goal
+## badge; independent of the training length the player picks.
+const DAILY_GOAL_MINUTES := 5
 const BASE_XP := 10
 ## Extra points per minute of play, up to [constant MAX_MINUTE_XP] minutes.
 const MINUTE_XP := 2

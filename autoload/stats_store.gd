@@ -192,7 +192,7 @@ func earned_badges(now_unix: int = int(Time.get_unix_time_from_system())) -> Arr
 	for definition in DrillRegistry.get_all():
 		categories[String(definition.id)] = definition.category_key
 		category_keys[definition.category_key] = true
-	return Gamification.badges(history.records, now_unix, tz_bias_min(), training_minutes, categories, category_keys.size())
+	return Gamification.badges(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, category_keys.size())
 
 
 ## Earned badges not announced yet; marks them as seen.

@@ -29,7 +29,7 @@ func _build_extras(parent: VBoxContainer) -> void:
 	_adaptive_check.text = tr("GONOGO_OPT_ADAPTIVE")
 	parent.add_child(_adaptive_check)
 	_auditory_check = CheckBox.new()
-	_auditory_check.text = tr("GONOGO_OPT_AUDITORY")
+	_auditory_check.text = Drill.describe("GONOGO_OPT_AUDITORY")
 	parent.add_child(_auditory_check)
 
 

@@ -44,7 +44,7 @@ func setup(session: TrainingSession) -> void:
 	var variant := MetricCatalog.variant_label(MetricCatalog.variant_key(StringName(drill_id), config))
 	_variant_label.text = variant
 	_variant_label.visible = not variant.is_empty()
-	_description_label.text = tr(definition.description_key) if definition != null else ""
+	_description_label.text = Drill.describe(definition.description_key) if definition != null else ""
 	_help_label.text = MetricCatalog.help_text(StringName(drill_id), config)
 	_help_label.visible = not _help_label.text.is_empty()
 	_start_button.grab_focus()

@@ -100,6 +100,18 @@ static func set_leave_guard(active: bool) -> void:
 		JavaScriptBridge.eval("window.onbeforeunload = null;")
 
 
+## Text of [param key], or of key + "_TOUCH" on a touchscreen when that
+## variant exists: a phone has no mouse, space bar or arrow keys, so the
+## instructions there speak of taps and drags instead.
+static func describe(key: String) -> String:
+	if DragScroll.touch_ui():
+		var touch_key := key + "_TOUCH"
+		var touch_text := TranslationServer.translate(touch_key)
+		if touch_text != touch_key:
+			return touch_text
+	return TranslationServer.translate(key)
+
+
 ## iOS Safari only delivers device motion after the page asked for it inside a
 ## user gesture; call this from the Start button of a drill that uses tilt.
 static func request_motion_permission() -> void:

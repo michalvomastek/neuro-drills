@@ -121,7 +121,7 @@ func _handle_response(_event: InputEvent) -> void:
 
 func _on_setup(config: Dictionary, autostart: bool) -> void:
 	_title_label.text = tr(definition.title_key)
-	_description_label.text = tr(definition.description_key)
+	_description_label.text = Drill.describe(definition.description_key)
 	var requested: int = config.get("trials", _default_trials())
 	if _trial_options().has(requested):
 		trials = requested

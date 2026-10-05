@@ -38,7 +38,7 @@ func setup(session: TrainingSession) -> void:
 		xp += Gamification.xp_for_record(record)
 	_add_row(_rows, "TRAINING_SUMMARY_XP", tr("RESULT_XP_VALUE") % xp)
 	var minutes := StatsStore.minutes_today()
-	var goal := StatsStore.training_minutes
+	var goal := Gamification.DAILY_GOAL_MINUTES
 	var goal_text := tr("TRAINING_SUMMARY_GOAL_DONE") % minutes if minutes >= goal else tr("TRAINING_SUMMARY_GOAL_LEFT") % (goal - minutes)
 	_add_row(_rows, "TRAINING_SUMMARY_GOAL", goal_text)
 	for record in session.records:

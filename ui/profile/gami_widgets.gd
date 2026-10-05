@@ -55,7 +55,7 @@ static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -
 	if not with_daily:
 		return
 	var minutes := StatsStore.minutes_today()
-	var goal := StatsStore.training_minutes
+	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
 	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal], true)
 
@@ -75,7 +75,7 @@ static func add_brief_stats(parent: Control, short: bool) -> void:
 		streak_text = TranslationServer.translate("GAMI_STREAK_NONE")
 	add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
 	var minutes := StatsStore.minutes_today()
-	var goal := StatsStore.training_minutes
+	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
 	var key := "GAMI_TODAY_SHORT" if short else ("GAMI_TODAY_DONE" if done else "GAMI_TODAY")
 	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate(key) % [minutes, goal], true)

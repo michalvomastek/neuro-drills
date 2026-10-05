@@ -118,7 +118,7 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	button.pressed.connect(SceneRouter.start_drill.bind(definition.id))
 	entry.add_child(button)
 	var description := Label.new()
-	description.text = tr(definition.description_key)
+	description.text = Drill.describe(definition.description_key)
 	description.theme_type_variation = &"DimLabel"
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.custom_minimum_size = Vector2(0, 0)
