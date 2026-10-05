@@ -70,7 +70,8 @@ func _relayout() -> void:
 	# grows with its content while the whole screen scrolls.
 	_suggest_button.text = tr("TRAINING_SUGGEST_SHORT" if narrow else "TRAINING_SUGGEST")
 	_save_button.text = tr("TRAINING_SAVE_SHORT" if narrow else "TRAINING_SAVE")
-	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if narrow else ScrollContainer.SCROLL_MODE_AUTO
+	var wide_mode := ScrollContainer.SCROLL_MODE_SHOW_NEVER if DragScroll.touch_ui() else ScrollContainer.SCROLL_MODE_AUTO
+	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if narrow else wide_mode
 	_steps_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
 
 

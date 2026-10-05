@@ -158,7 +158,9 @@ func _try_arm(position: Vector2) -> void:
 		while node != null and node != _scroll:
 			if node is Range or node is LineEdit or node is TextEdit:
 				return
-			if node is ScrollContainer:
+			# A nested container that can scroll takes the drag; one that cannot
+			# (a list that grows with its content on a phone) is skipped.
+			if node is ScrollContainer and _scrollable(node as ScrollContainer):
 				return
 			node = node.get_parent()
 		if node == null:
@@ -230,6 +232,12 @@ func _scroll_by(relative: Vector2) -> void:
 
 
 func _can_scroll() -> bool:
-	var v := _scroll.get_v_scroll_bar()
-	var h := _scroll.get_h_scroll_bar()
-	return (v != null and v.max_value > v.page) or (h != null and h.max_value > h.page)
+	return _scrollable(_scroll)
+
+
+static func _scrollable(scroll: ScrollContainer) -> bool:
+	var v := scroll.get_v_scroll_bar()
+	var h := scroll.get_h_scroll_bar()
+	var vertical := scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED and v != null and v.max_value > v.page
+	var horizontal := scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED and h != null and h.max_value > h.page
+	return vertical or horizontal
