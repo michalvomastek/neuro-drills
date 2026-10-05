@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/training/training_screen.gd" id="1_training"]
+[ext_resource type="Script" path="res://ui/common/list_pick_button.gd" id="9_pick"]
 
 [node name="TrainingScreen" type="Control"]
 layout_mode = 3
@@ -99,12 +100,12 @@ layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "TRAINING_SAVED_PLANS"
 
-[node name="PlansOption" type="OptionButton" parent="Scroll/Margin/Panel/VBox/PlansRow"]
+[node name="PlansOption" type="Button" parent="Scroll/Margin/Panel/VBox/PlansRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-clip_text = true
-fit_to_longest_item = false
+script = ExtResource("9_pick")
+
 
 [node name="LoadButton" type="Button" parent="Scroll/Margin/Panel/VBox/PlansRow"]
 unique_name_in_owner = true
@@ -140,12 +141,12 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DrillOption" type="OptionButton" parent="Scroll/Margin/Panel/VBox/AddRow"]
+[node name="DrillOption" type="Button" parent="Scroll/Margin/Panel/VBox/AddRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-clip_text = true
-fit_to_longest_item = false
+script = ExtResource("9_pick")
+
 
 [node name="AddButton" type="Button" parent="Scroll/Margin/Panel/VBox/AddRow"]
 unique_name_in_owner = true

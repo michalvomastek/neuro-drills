@@ -44,6 +44,14 @@ static func attach(scroll: ScrollContainer) -> void:
 	for child in scroll.get_children(true):
 		if child is DragScroll:
 			return
+	# A PopupMenu activates the item under the pointer when the button is
+	# released, so dragging its list would pick an item; long lists use
+	# ListPickButton instead and short menus keep the engine's behaviour.
+	var ancestor: Node = scroll.get_parent()
+	while ancestor != null:
+		if ancestor is PopupMenu:
+			return
+		ancestor = ancestor.get_parent()
 	var node := DragScroll.new()
 	node._scroll = scroll
 	scroll.add_child(node, false, Node.INTERNAL_MODE_BACK)
