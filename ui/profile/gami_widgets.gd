@@ -62,6 +62,7 @@ static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -
 
 const ICON_DIR := "res://assets/icons/"
 const STAT_ICON_SIZE := 16.0
+const STAT_XP_BAR_WIDTH := 56.0
 
 
 ## A pill with a small white icon in front of its text.
@@ -84,13 +85,22 @@ static func add_icon_pill(parent: Control, variation: StringName, icon_name: Str
 
 
 ## Level, streak and today's minutes as three icon pills for the top bar:
-## star + level, flame + days, clock + minutes / goal.
+## star + level with a short XP bar, flame + days, clock + minutes / goal.
 static func add_brief_stats(parent: Control) -> void:
 	var info := StatsStore.level_info()
 	var level: int = info["level"]
 	var into: int = info["into"]
 	var span: int = info["span"]
-	add_icon_pill(parent, &"XpPill", "stat_level", str(level), true, "%s · %s" % [TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("GAMI_XP") % [into, span]])
+	var level_pill := add_icon_pill(parent, &"XpPill", "stat_level", str(level), true, "%s · %s" % [TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("GAMI_XP") % [into, span]])
+	var bar := ProgressBar.new()
+	bar.theme_type_variation = &"XpBar"
+	bar.show_percentage = false
+	bar.max_value = span
+	bar.value = into
+	bar.custom_minimum_size = Vector2(STAT_XP_BAR_WIDTH, 0)
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	(level_pill.get_child(0) as BoxContainer).add_child(bar)
 	var streak := StatsStore.current_streak()
 	var streak_tip := TranslationServer.translate("GAMI_STREAK_NONE")
 	if streak == 1:

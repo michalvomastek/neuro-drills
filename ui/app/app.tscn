@@ -25,33 +25,24 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"TopBar"
 
-[node name="TopRow" type="HBoxContainer" parent="Column/TopBar"]
+[node name="TopRows" type="VBoxContainer" parent="Column/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StatsRow" type="HBoxContainer" parent="Column/TopBar/TopRows"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BackButton" type="Button" parent="Column/TopBar/TopRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-focus_mode = 0
-theme_type_variation = &"IconButton"
-
-[node name="TopStats" type="HBoxContainer" parent="Column/TopBar/TopRow"]
+[node name="TopStats" type="HBoxContainer" parent="Column/TopBar/TopRows/StatsRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="TitleLabel" type="Label" parent="Column/TopBar/TopRow"]
-unique_name_in_owner = true
+[node name="StatsSpacer" type="Control" parent="Column/TopBar/TopRows/StatsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"HeadingLabel"
-theme_override_font_sizes/font_size = 24
-text = "APP_TITLE"
-horizontal_alignment = 2
-text_overrun_behavior = 3
 
-[node name="FeedbackButton" type="Button" parent="Column/TopBar/TopRow"]
+[node name="FeedbackButton" type="Button" parent="Column/TopBar/TopRows/StatsRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -59,13 +50,33 @@ focus_mode = 0
 tooltip_text = "MENU_FEEDBACK"
 theme_type_variation = &"IconButton"
 
-[node name="QuitButton" type="Button" parent="Column/TopBar/TopRow"]
+[node name="QuitButton" type="Button" parent="Column/TopBar/TopRows/StatsRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 focus_mode = 0
 tooltip_text = "MENU_QUIT"
 theme_type_variation = &"IconButton"
+
+[node name="TitleRow" type="HBoxContainer" parent="Column/TopBar/TopRows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="Column/TopBar/TopRows/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"IconButton"
+
+[node name="TitleLabel" type="Label" parent="Column/TopBar/TopRows/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 24
+text = "APP_TITLE"
+text_overrun_behavior = 3
 
 [node name="Host" type="Control" parent="Column"]
 unique_name_in_owner = true

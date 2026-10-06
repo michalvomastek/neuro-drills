@@ -143,7 +143,7 @@ func _apply_scale() -> void:
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
 	var padding := bar_style.get_content_margin(SIDE_LEFT) + bar_style.get_content_margin(SIDE_RIGHT)
 	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
-	_title_label.add_theme_font_size_override("font_size", 20 if Layout.is_narrow(self) else 24)
+	_title_label.add_theme_font_size_override("font_size", 22 if Layout.is_narrow(self) else 24)
 	if _top_bar.visible:
 		_refresh_stats()
 

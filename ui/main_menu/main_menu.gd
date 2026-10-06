@@ -1,10 +1,9 @@
-## Lists the registered drills in one tab per category under the player's
-## level and badges; the other destinations live in the app's bottom bar.
+## Lists the registered drills in one tab per category; the player's numbers
+## sit in the app's top bar and the other destinations in the bottom bar.
 extends Control
 
 @onready var _margin: MarginContainer = %Center
 @onready var _tabs: TabContainer = %Tabs
-@onready var _stats: HFlowContainer = %Stats
 @onready var _tab_strip: ScrollContainer = %TabStrip
 @onready var _tab_buttons: HBoxContainer = %TabButtons
 
@@ -32,7 +31,6 @@ func _relayout() -> void:
 	Layout.set_screen_margins(_margin)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
-	_build_stats(narrow)
 	# The tab bar can only be paged with its small arrows; a phone gets a
 	# strip of pills that scrolls by dragging instead.
 	_tabs.tabs_visible = not narrow
@@ -126,19 +124,3 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	entry.add_child(description)
 	grid.add_child(entry)
 	return button
-
-
-
-
-
-
-## Level with its XP bar and a pill button to the profile with the badge
-## count (streak and daily goal sit in the app's top bar); the phone drops
-## the XP numbers.
-func _build_stats(compact: bool) -> void:
-	for child in _stats.get_children():
-		_stats.remove_child(child)
-		child.queue_free()
-	GamiWidgets.add_stats(_stats, compact, false)
-	var earned := StatsStore.earned_badges().size()
-	GamiWidgets.add_pill_button(_stats, tr("MENU_PROFILE_BADGES") % [earned, Gamification.BADGE_ORDER.size()], SceneRouter.show_profile)
