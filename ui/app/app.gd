@@ -121,7 +121,7 @@ func _refresh_stats() -> void:
 	for child in _top_stats.get_children():
 		_top_stats.remove_child(child)
 		child.queue_free()
-	GamiWidgets.add_brief_stats(_top_stats)
+	GamiWidgets.add_brief_stats(_top_stats, SceneRouter.show_profile)
 
 
 ## Max width of the bottom bar's tabs on a wide screen, in design units.

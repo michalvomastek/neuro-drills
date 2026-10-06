@@ -65,12 +65,20 @@ const STAT_ICON_SIZE := 14.0
 const STAT_DISC_SIZE := 24.0
 
 
-## A coloured disc with a white icon and a plain number next to it.
-static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String) -> HBoxContainer:
+## A coloured disc with a white icon and a plain number next to it; with
+## [param on_pressed] a tap on the chip calls it.
+static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable()) -> HBoxContainer:
 	var chip := HBoxContainer.new()
 	chip.add_theme_constant_override("separation", 7)
 	chip.tooltip_text = tooltip
 	chip.mouse_filter = Control.MOUSE_FILTER_PASS
+	if on_pressed.is_valid():
+		chip.mouse_filter = Control.MOUSE_FILTER_STOP
+		chip.gui_input.connect(func(event: InputEvent) -> void:
+			var button := event as InputEventMouseButton
+			if button != null and button.pressed and button.button_index == MOUSE_BUTTON_LEFT:
+				chip.accept_event()
+				on_pressed.call())
 	var disc := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -99,10 +107,11 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 	return chip
 
 
-## Level, streak and today's minutes for the top bar: the level inside an
-## XP ring, then a flame disc with the days and a clock disc with
-## minutes / goal (green once the goal is reached).
-static func add_brief_stats(parent: Control) -> void:
+## Level, streak, today's minutes and badges for the top bar: the level
+## inside an XP ring, then a flame disc with the days, a clock disc with
+## minutes / goal (green once the goal is reached) and a rosette disc with
+## earned / all badges that opens the profile.
+static func add_brief_stats(parent: Control, on_badges: Callable = Callable()) -> void:
 	var info := StatsStore.level_info()
 	var level: int = info["level"]
 	var into: int = info["into"]
@@ -123,6 +132,9 @@ static func add_brief_stats(parent: Control) -> void:
 	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
 	add_stat_chip(parent, parent.get_theme_color("green" if done else "primary", "App"), "stat_today", TranslationServer.translate("GAMI_TODAY_SHORT") % [minutes, goal], TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal])
+	var earned := StatsStore.earned_badges().size()
+	var total := Gamification.BADGE_ORDER.size()
+	add_stat_chip(parent, parent.get_theme_color("yellow", "App"), "stat_badges", "%d/%d" % [earned, total], TranslationServer.translate("GAMI_BADGES") % [earned, total], on_badges)
 
 
 const BADGE_DIR := "res://assets/badges/"
