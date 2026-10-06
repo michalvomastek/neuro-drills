@@ -129,8 +129,8 @@ const NAV_MAX_WIDTH := 640.0
 ## The bottom bar takes only part of the home-indicator inset as padding:
 ## the indicator is drawn over content anyway and the full 34 pt left the
 ## tabs floating far above the edge on an iPhone (maintainer, 2026-10-06).
-const BOTTOM_INSET_SHARE := 0.4
-const BOTTOM_INSET_MAX := 16.0
+const BOTTOM_INSET_SHARE := 0.2
+const BOTTOM_INSET_MAX := 8.0
 
 
 func _apply_scale() -> void:
