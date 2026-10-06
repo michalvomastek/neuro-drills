@@ -6,10 +6,15 @@ extends Control
 @onready var _tabs: TabContainer = %Tabs
 @onready var _tab_strip: ScrollContainer = %TabStrip
 @onready var _tab_buttons: HBoxContainer = %TabButtons
+@onready var _strip_margin: MarginContainer = %StripMargin
 
 var _first_buttons: Array[Button] = []
 var _strip_buttons: Array[Button] = []
 var _grids: Array[GridContainer] = []
+## Side margins of the tab contents: the lists scroll edge to edge (so the
+## scroll indicator sits at the window edge like on every other screen) and
+## the content keeps the screen margin inside.
+var _tab_margins: Array[MarginContainer] = []
 
 
 func _ready() -> void:
@@ -29,6 +34,15 @@ func _ready() -> void:
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	Layout.set_screen_margins(_margin)
+	# The outer side margin moves inside the scrolling lists.
+	var side := _margin.get_theme_constant("margin_left")
+	Layout.set_margins(_margin, 0, _margin.get_theme_constant("margin_top"))
+	var inner := maxi(0, side - roundi(get_theme_stylebox("panel", "Screen").get_margin(SIDE_LEFT)))
+	for tab_margin in _tab_margins:
+		tab_margin.add_theme_constant_override("margin_left", inner)
+		tab_margin.add_theme_constant_override("margin_right", inner)
+	_strip_margin.add_theme_constant_override("margin_left", inner)
+	_strip_margin.add_theme_constant_override("margin_right", inner)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
 	# The tab bar can only be paged with its small arrows; a phone gets a
@@ -45,10 +59,14 @@ func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]
 	scroll.name = tr(category_key + "_SHORT")
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_tabs.add_child(scroll)
+	var tab_margin := MarginContainer.new()
+	tab_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(tab_margin)
+	_tab_margins.append(tab_margin)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 12)
-	scroll.add_child(column)
+	tab_margin.add_child(column)
 	var heading := Label.new()
 	heading.text = tr(category_key)
 	heading.theme_type_variation = &"DimLabel"
