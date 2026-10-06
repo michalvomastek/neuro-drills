@@ -9,7 +9,9 @@
 ## (NOTIFICATION_SCROLL_BEGIN, the same thing the engine sends), the release
 ## is swallowed and a short glide follows. Mouse drags scroll the same way.
 ## On a touchscreen the permanent scrollbar is hidden and a thin indicator
-## fades in while the content moves, as native apps do.
+## fades in while the content moves, as native apps do; a container with
+## the meta "no_scroll_indicator" (the menu's strip of category pills)
+## scrolls without one.
 ## [method attach] is called for every ScrollContainer by the app shell.
 class_name DragScroll
 extends Node
@@ -69,6 +71,8 @@ func _setup_touch_ui() -> void:
 	if not is_instance_valid(_scroll) or not _scroll.is_inside_tree():
 		return
 	_hide_native_bars()
+	if _scroll.has_meta(&"no_scroll_indicator"):
+		return
 	# A ScrollContainer lays out and scrolls every child, so the overlay is a
 	# top-level control that follows the container's rectangle instead.
 	_indicator = Control.new()

@@ -100,27 +100,48 @@ func _update_tab_strip() -> void:
 
 
 func _focus_current_tab() -> void:
+	# A focus outline on the first card reads as a selection on a phone.
+	if DragScroll.touch_ui():
+		return
 	var index := _tabs.current_tab
 	if index >= 0 and index < _first_buttons.size() and _first_buttons[index] != null:
 		_first_buttons[index].grab_focus()
 
 
+## One card per drill, the whole card is the button: title and description
+## inside. A Button does not size itself to children, so the card follows
+## the minimum size of its text column.
 func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Button:
-	var entry := VBoxContainer.new()
-	entry.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entry.add_theme_constant_override("separation", 4)
-	var button := Button.new()
-	button.text = tr(definition.title_key)
-	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	button.theme_type_variation = &"PrimaryButton"
-	button.pressed.connect(SceneRouter.start_drill.bind(definition.id))
-	entry.add_child(button)
+	var card := Button.new()
+	card.theme_type_variation = &"CardButton"
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.pressed.connect(SceneRouter.start_drill.bind(definition.id))
+	grid.add_child(card)
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 4)
+	var style := card.get_theme_stylebox("normal")
+	column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	column.offset_left = style.get_margin(SIDE_LEFT)
+	column.offset_top = style.get_margin(SIDE_TOP)
+	column.offset_right = -style.get_margin(SIDE_RIGHT)
+	column.offset_bottom = -style.get_margin(SIDE_BOTTOM)
+	card.add_child(column)
+	var title := Label.new()
+	title.text = tr(definition.title_key)
+	title.theme_type_variation = &"HeadingLabel"
+	title.add_theme_font_size_override("font_size", 20)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(title)
 	var description := Label.new()
 	description.text = Drill.describe(definition.description_key)
 	description.theme_type_variation = &"DimLabel"
+	description.add_theme_font_size_override("font_size", 16)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.custom_minimum_size = Vector2(0, 0)
-	description.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entry.add_child(description)
-	grid.add_child(entry)
-	return button
+	description.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(description)
+	var fit := func() -> void:
+		card.custom_minimum_size = Vector2(0, column.get_combined_minimum_size().y + style.get_margin(SIDE_TOP) + style.get_margin(SIDE_BOTTOM))
+	column.minimum_size_changed.connect(fit)
+	fit.call()
+	return card

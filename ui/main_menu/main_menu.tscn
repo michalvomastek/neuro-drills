@@ -37,6 +37,7 @@ unique_name_in_owner = true
 layout_mode = 2
 vertical_scroll_mode = 0
 horizontal_scroll_mode = 3
+metadata/no_scroll_indicator = true
 
 [node name="TabButtons" type="HBoxContainer" parent="Center/Panel/VBox/TabStrip"]
 unique_name_in_owner = true
