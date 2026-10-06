@@ -180,8 +180,9 @@ func _complete(elapsed_ms: int) -> void:
 	for cell in selection:
 		grid[cell] = 0
 	cleared_count += removed
+	var cleared := selection.duplicate()
 	selection.clear()
-	_refill(removed)
+	_refill(removed, cleared)
 	if dynamic:
 		_pick_dynamic_target()
 	_ensure_move()
@@ -208,11 +209,21 @@ func _filled_cells() -> Array[int]:
 func _random_value() -> int:
 	if dynamic:
 		return _rng.randi_range(MIN_VALUE, MAX_VALUE)
+	return _pairable_value()
+
+
+## A value that has a partner within 1-9 for the current target.
+func _pairable_value() -> int:
 	return _rng.randi_range(maxi(MIN_VALUE, target - MAX_VALUE), mini(MAX_VALUE, target - MIN_VALUE))
 
 
-func _refill(count: int) -> void:
+## New numbers go to empty cells other than the ones just cleared, so a
+## joined number never seems to come straight back.
+func _refill(count: int, avoid: Array[int] = []) -> void:
 	var empty := _empty_cells()
+	if empty.size() - avoid.size() >= count:
+		for cell in avoid:
+			empty.erase(cell)
 	for i in mini(count, empty.size()):
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
 		grid[cell] = _random_value()
@@ -238,12 +249,14 @@ func _ensure_move() -> void:
 		var filled := _filled_cells()
 		var cell: int = filled[_rng.randi_range(0, filled.size() - 1)]
 		grid[cell] = _random_value()
+	if has_move():
+		return
 	var visible := _visible_pairs()
 	if visible.is_empty():
 		_force_visible_pair()
 		visible = _visible_pairs()
 	var pair: Vector2i = visible[_rng.randi_range(0, visible.size() - 1)]
-	var a := _rng.randi_range(maxi(MIN_VALUE, target - MAX_VALUE), mini(MAX_VALUE, target - MIN_VALUE))
+	var a := _pairable_value()
 	grid[pair.x] = a
 	grid[pair.y] = target - a
 

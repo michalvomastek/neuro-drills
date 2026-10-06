@@ -60,6 +60,8 @@ func test_pair_completes_and_refills() -> void:
 		if v != 0:
 			filled += 1
 	assert_eq(filled, 3, "two numbers came back somewhere")
+	assert_eq(logic.value_at(0), 0, "not into the cleared cells")
+	assert_eq(logic.value_at(3), 0, "not into the cleared cells")
 	assert_true(logic.has_move())
 	assert_true(logic.selection.is_empty())
 

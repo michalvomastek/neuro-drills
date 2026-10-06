@@ -43,7 +43,7 @@ const TABLE: Dictionary = {
 	"flanker": [{"metric": "interference_ms", "lower": true, "elite": 15.0, "advanced": 80.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"task_switching": [{"metric": "switch_cost_ms", "lower": true, "elite": 60.0, "advanced": 220.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"arithmetic": [{"metric": "ms_per_answer", "lower": true, "elite": 900.0, "advanced": 3000.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.3, "unit": "s"}],
-	"sum_pairs": [{"config": {"size": 5, "dynamic": false}, "metric": "ms_per_pair", "lower": true, "elite": 1200.0, "advanced": 3000.0, "gate": "invalid_rate", "elite_gate": 0.02, "beginner_gate": 0.2, "unit": "s"}],
+	"sum_pairs": [{"config": {"size": 5, "dynamic": false, "chains": false}, "metric": "ms_per_pair", "lower": true, "elite": 1200.0, "advanced": 3000.0, "gate": "invalid_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "s"}],
 	"anti_saccade": [{"metric": "median_rt_ms", "lower": true, "elite": 240.0, "advanced": 400.0, "gate": "error_rate", "elite_gate": 0.04, "beginner_gate": 0.25, "unit": "ms"}],
 	"simon_effect": [{"metric": "interference_ms", "lower": true, "elite": 15.0, "advanced": 75.0, "gate": "error_rate", "elite_gate": 0.05, "beginner_gate": 0.2, "unit": "ms"}],
 	"mental_rotation": [{"metric": "median_rt_ms", "lower": true, "elite": 650.0, "advanced": 1800.0, "gate": "accuracy", "elite_gate": 1.0, "beginner_gate": 0.8, "gate_higher": true, "unit": "ms"}],

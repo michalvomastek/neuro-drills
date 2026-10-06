@@ -36,6 +36,8 @@ var _accepting: bool = false
 var _fading_path: Array[int] = []
 var _fade: float = 0.0
 var _fade_tween: Tween
+var _shown_tenths: int = -1
+var _shown_completed: int = -1
 
 
 func _uses_trial_count() -> bool:
@@ -52,15 +54,16 @@ func _build_extras(parent: VBoxContainer) -> void:
 	_chains_check = CheckBox.new()
 	_chains_check.text = tr("SUMPAIRS_OPT_CHAINS")
 	parent.add_child(_chains_check)
+	_dynamic_check.toggled.connect(func(on: bool) -> void: _target_option.disabled = on)
 
 
 func _apply_extra_config(config: Dictionary) -> void:
 	var duration: int = config.get("duration_s", DEFAULT_DURATION)
 	if DURATIONS.has(duration):
 		_duration = duration
-	var size: int = config.get("size", DEFAULT_SIZE)
-	if SIZES.has(size):
-		_size = size
+	var grid_size: int = config.get("size", DEFAULT_SIZE)
+	if SIZES.has(grid_size):
+		_size = grid_size
 	var target: int = config.get("target", DEFAULT_TARGET)
 	if TARGETS.has(target):
 		_target = target
@@ -71,14 +74,20 @@ func _apply_extra_config(config: Dictionary) -> void:
 	_target_option.select(_target_option.get_item_index(_target))
 	_dynamic_check.button_pressed = _dynamic
 	_chains_check.button_pressed = _chains
+	_target_option.disabled = _dynamic
 
 
+## With a changing target the setup's target is only the seed of the first
+## one, so it stays out of the config (and of the variant key).
 func _collect_extra_config() -> Dictionary:
-	return {"duration_s": _duration, "size": _size, "target": _target, "dynamic": _dynamic, "chains": _chains}
+	var config := {"duration_s": _duration, "size": _size, "dynamic": _dynamic, "chains": _chains}
+	if not _dynamic:
+		config["target"] = _target
+	return config
 
 
 func _preview_extra_config() -> Dictionary:
-	return {"size": _size_option.get_selected_id(), "dynamic": _dynamic_check.button_pressed}
+	return {"size": _size_option.get_selected_id(), "dynamic": _dynamic_check.button_pressed, "chains": _chains_check.button_pressed}
 
 
 func _on_start_pressed() -> void:
@@ -134,8 +143,10 @@ func _build_cells() -> void:
 func _reset_play_state() -> void:
 	_accepting = false
 	_fading_path.clear()
+	_fade = 0.0
 	if _fade_tween != null:
 		_fade_tween.kill()
+		_fade_tween = null
 	for cell in _cells:
 		_clear_pad_flash(cell)
 	if _lines != null:
@@ -143,9 +154,14 @@ func _reset_play_state() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _accepting:
-		var remaining := maxi(0, _ends_at_ms - Time.get_ticks_msec())
-		_set_progress_text("%s   %d" % [Format.seconds_short(remaining), _logic.completed])
+	if not _accepting:
+		return
+	# One decimal is shown, so the label only changes ten times a second.
+	var tenths := maxi(0, _ends_at_ms - Time.get_ticks_msec()) / 100
+	if tenths != _shown_tenths or _logic.completed != _shown_completed:
+		_shown_tenths = tenths
+		_shown_completed = _logic.completed
+		_set_progress_text("%s   %d" % [Format.seconds_short(tenths * 100), _logic.completed])
 
 
 func _run_trials() -> void:
@@ -168,7 +184,8 @@ func _render() -> void:
 		var value := _logic.value_at(i)
 		var cell := _cells[i]
 		cell.text = str(value) if value > 0 else ""
-		cell.disabled = value == 0
+		# An empty cell stays a live button (a tap on it is ignored by the
+		# logic) so the completion flash can still colour it.
 		cell.modulate.a = 1.0 if value > 0 else 0.0
 		if _logic.is_selected(i):
 			_set_pad_color(cell, get_theme_color("primary", "App"))
@@ -186,34 +203,33 @@ func _on_cell_pressed(index: int) -> void:
 		SumPairsLogic.Outcome.COMPLETED:
 			selected_before.append(index)
 			_show_completed(selected_before)
-			Sfx.play("correct")
 		SumPairsLogic.Outcome.BLOCKED, SumPairsLogic.Outcome.WRONG_SUM:
 			selected_before.append(index)
 			_render()
 			for cell in selected_before:
 				_flash_pad(_cells[cell], get_theme_color("wrong", "Pad"), 0.35)
-			Sfx.play("wrong")
 		SumPairsLogic.Outcome.IGNORED:
 			return
 		_:
 			_render()
 
 
-## Flashes the removed cells green and lets the connecting line fade.
+## Shows the refilled board at once (the new numbers sit elsewhere) and lets
+## the removed cells flash green under a fading line; the tween, which
+## _reset_play_state() kills, hides them again at the end.
 func _show_completed(path: Array[int]) -> void:
+	_render()
 	_fading_path = path
 	_fade = 1.0
 	if _fade_tween != null:
 		_fade_tween.kill()
 	_fade_tween = create_tween()
 	_fade_tween.tween_method(_set_fade, 1.0, 0.0, LINE_FADE_SECONDS)
+	_fade_tween.tween_callback(_render)
 	for cell in path:
 		var pad := _cells[cell]
 		pad.modulate.a = 1.0
-		pad.text = ""
 		_flash_pad(pad, get_theme_color("correct", "Pad"), LINE_FADE_SECONDS)
-	# The new numbers (and a changed target) appear once the flash is over.
-	get_tree().create_timer(LINE_FADE_SECONDS).timeout.connect(_render)
 
 
 func _set_fade(value: float) -> void:
