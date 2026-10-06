@@ -35,7 +35,7 @@ func test_every_drill_has_a_primary_metric() -> void:
 		ids.append(StringName(drill_id))
 	for drill_id in ids:
 		assert_false(MetricCatalog.primary_of(drill_id).is_empty(), String(drill_id))
-	assert_eq(MetricCatalog.PRIMARY.size(), 43)
+	assert_eq(MetricCatalog.PRIMARY.size(), 44)
 
 
 func test_fatigue_and_variability() -> void:

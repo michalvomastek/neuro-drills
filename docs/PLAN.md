@@ -1,6 +1,6 @@
 # Neuro drills – plán projektu
 
-Stav: **fáze 1, 3 a 4 hotové** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6). Aplikace má 43 drillů v devíti kategoriích včetně 3D, senzorových a dvojitých úloh; další je fáze 2 (historie výsledků a přehled pokroku) a fáze 5 (export).
+Stav: **fáze 1, 3 a 4 hotové** (3. 10. 2026). Otázky z kapitoly 7 jsou rozhodnuté: platí výchozí předpoklady, jen téma je tmavé (otázka 6). Aplikace má 44 drillů v devíti kategoriích včetně 3D, senzorových a dvojitých úloh; další je fáze 2 (historie výsledků a přehled pokroku) a fáze 5 (export).
 
 ## 1. Vize
 

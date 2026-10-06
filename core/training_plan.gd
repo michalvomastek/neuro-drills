@@ -11,7 +11,7 @@ const DURATION_S: Dictionary = {
 	"stroop": 50, "flanker": 50, "n_back": 70, "corsi_blocks": 60, "digit_span": 60,
 	"memory_matrix": 60, "simon": 60, "trail_making": 40, "visual_search": 40, "sart": 80,
 	"task_switching": 60, "rsvp_reading": 60, "number_pyramid": 50, "flash_number": 50,
-	"arithmetic": 65, "anti_saccade": 45, "simon_effect": 50, "posner_cueing": 50,
+	"arithmetic": 65, "sum_pairs": 75, "anti_saccade": 45, "simon_effect": 50, "posner_cueing": 50,
 	"peripheral_burst": 60, "visual_masking": 70, "temporal_order": 60, "object_tracking": 70,
 	"anticipation": 40, "compensatory_tracking": 35, "pursuit_tracking": 35, "dynamic_acuity": 50,
 	"rhythm_tapping": 40, "mental_rotation": 50, "spotlight_search": 60, "contrast_sensitivity": 60,

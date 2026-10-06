@@ -1,6 +1,6 @@
 # Neuro drills – přehled her, variant a nastavení
 
-43 her v devíti kategoriích. Všechny hry kromě Schulteho tabulky mají společný panel nastavení s odpočtem před startem (zap/vyp) a u her s pevným počtem pokusů volbu počtu pokusů. Každá hra končí výsledkovou obrazovkou s tlačítky Znovu (stejné nastavení), Nastavení a Menu. Ovládání: myš i dotyk, většinou i klávesnice (mezerník, šipky, číslice, Enter), Escape = zpět.
+44 her v devíti kategoriích. Všechny hry kromě Schulteho tabulky mají společný panel nastavení s odpočtem před startem (zap/vyp) a u her s pevným počtem pokusů volbu počtu pokusů. Každá hra končí výsledkovou obrazovkou s tlačítky Znovu (stejné nastavení), Nastavení a Menu. Ovládání: myš i dotyk, většinou i klávesnice (mezerník, šipky, číslice, Enter), Escape = zpět.
 
 ## Pozornost a vyhledávání
 
@@ -69,6 +69,12 @@
 **Počítání** – sčítání, odčítání a násobení proti času, odpověď klávesnicí nebo numerickou klávesnicí na obrazovce.
 - Délka 30/60/90 s.
 - Výsledek: správné odpovědi, chybné, čas na odpověď.
+
+**Součtové dvojice** – na částečně zaplněné mřížce spoj dvě čísla, která dávají cílový součet; mezi nimi musí být volná přímka (řádek, sloupec, úhlopříčka 45°), spojená čísla zmizí a nová přibudou jinde. Ťuk na první, ťuk na druhé; druhý ťuk na totéž číslo výběr zruší.
+- Délka 30/60/90 s; mřížka 4×4 / 5×5 / 6×6 (zaplněno 60 % polí: 10 / 15 / 22 čísel); cílový součet 8 / 10 / 12 (čísla se generují tak, aby šla do dvojice).
+- Volby: měnící se součet (po každé dvojici nový cíl 6–14, pro který dvojice existuje); řetězce (lze navázat více čísel, dokud součet nedosáhne cíle, překročení je neplatný pokus).
+- Po každé dvojici se zaručuje aspoň jedna platná dvojice; neplatný pokus = blokovaná dráha nebo špatný součet.
+- Výsledek: spojených dvojic, čas na dvojici, neplatné pokusy (počet a %), průměrná délka spojení v polích, u řetězců jejich počet.
 
 **Anti-sakáda** – kolečko blikne na jedné straně (150 ms), stiskni opačnou stranu.
 - Pokusy 10/20/30.

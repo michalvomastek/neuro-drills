@@ -21,6 +21,7 @@ const PRIMARY: Dictionary = {
 	"flanker": {"metric": "interference_ms", "lower": true, "unit": "ms"},
 	"task_switching": {"metric": "switch_cost_ms", "lower": true, "unit": "ms"},
 	"arithmetic": {"metric": "ms_per_answer", "lower": true, "unit": "s"},
+	"sum_pairs": {"metric": "ms_per_pair", "lower": true, "unit": "s"},
 	"anti_saccade": {"metric": "median_rt_ms", "lower": true, "unit": "ms"},
 	"simon_effect": {"metric": "interference_ms", "lower": true, "unit": "ms"},
 	"mental_rotation": {"metric": "median_rt_ms", "lower": true, "unit": "ms"},
@@ -72,7 +73,7 @@ const MIN_FATIGUE_SAMPLES := 9
 ## Metrics that are only meaningful above zero: a staircase that found no
 ## threshold reports -1, and a reaction drill without a single valid response
 ## reports 0 ms. Signed differences (interference, switch cost) may be negative.
-const POSITIVE_METRICS: Array[String] = ["median_rt_ms", "mean_rt_ms", "jump_rt_ms", "ms_per_target", "ms_per_answer", "threshold_ms", "total_ms"]
+const POSITIVE_METRICS: Array[String] = ["median_rt_ms", "mean_rt_ms", "jump_rt_ms", "ms_per_target", "ms_per_answer", "ms_per_pair", "threshold_ms", "total_ms"]
 
 
 static func primary_of(drill_id: StringName) -> Dictionary:
@@ -128,6 +129,7 @@ const OPTION_LABELS: Dictionary = {
 	"shuffle_after_click": "VARIANT_SHUFFLE", "test_mode": "VARIANT_TEST_MODE",
 	"backward": "VARIANT_BACKWARD", "adaptive": "VARIANT_ADAPTIVE", "part_b": "TRAIL_OPT_PART_B",
 	"moving": "TRAIL_OPT_MOVING", "auditory": "VARIANT_AUDITORY", "touch": "VARIANT_TOUCH",
+	"target": "VARIANT_TARGET", "dynamic": "VARIANT_DYNAMIC", "chains": "VARIANT_CHAINS",
 }
 ## Translation key per enumerated value, keyed by "option=value".
 const VALUE_LABELS: Dictionary = {

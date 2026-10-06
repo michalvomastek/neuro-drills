@@ -26,6 +26,7 @@ Pravidla:
 | Flanker | interference | 80 ms | 15 ms | chyby ≤ 5 % / > 20 % |
 | Přepínání úloh | cena přepnutí | 220 ms | 60 ms | chyby ≤ 5 % / > 20 % |
 | Počítání | čas na správnou odpověď | 3,0 s | 0,9 s | chyby ≤ 5 % / > 30 % |
+| Součtové dvojice 5×5, pevný součet | čas na dvojici | 3,0 s | 1,2 s | neplatné pokusy ≤ 2 % / > 20 % |
 | Anti-sakáda | medián | 400 ms | 240 ms | chyby ≤ 4 % / > 25 % |
 | Simonův efekt | interference | 75 ms | 15 ms | chyby ≤ 5 % / > 20 % |
 | Mentální rotace 2D | medián | 1800 ms | 650 ms | úspěšnost 100 % / < 80 % |

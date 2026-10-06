@@ -57,6 +57,8 @@ func _init() -> void:
 		"res://drills/flash_number/flash_number.tscn", "CATEGORY_VISION"))
 	register(DrillDefinition.new(&"arithmetic", "ARITH_TITLE", "ARITH_DESCRIPTION",
 		"res://drills/arithmetic/arithmetic.tscn", "CATEGORY_EXECUTIVE"))
+	register(DrillDefinition.new(&"sum_pairs", "SUMPAIRS_TITLE", "SUMPAIRS_DESCRIPTION",
+		"res://drills/sum_pairs/sum_pairs.tscn", "CATEGORY_EXECUTIVE"))
 	register(DrillDefinition.new(&"anti_saccade", "ANTI_TITLE", "ANTI_DESCRIPTION",
 		"res://drills/anti_saccade/anti_saccade.tscn", "CATEGORY_EXECUTIVE"))
 	register(DrillDefinition.new(&"simon_effect", "SIMONEFFECT_TITLE", "SIMONEFFECT_DESCRIPTION",
