@@ -110,6 +110,12 @@ func clear() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(HISTORY_PATH))
 
 
+## Forgets the runs of one variant only (the progress screen's selection).
+func clear_variant(variant: String) -> void:
+	if history.remove_variant(variant) > 0:
+		_save_all()
+
+
 ## Stores a feedback note with the app environment merged into [param context].
 func add_note(text: String, context: Dictionary = {}) -> Dictionary:
 	var full := FeedbackLog.environment()

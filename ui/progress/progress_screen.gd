@@ -44,9 +44,9 @@ func _ready() -> void:
 	_import_button.pressed.connect(_on_import_pressed)
 	_import_dialog.file_selected.connect(_on_import_file_selected)
 	_build_range_buttons()
-	_clear_button.pressed.connect(_clear_dialog.popup_centered)
+	_clear_button.pressed.connect(_on_clear_pressed)
 	_clear_dialog.confirmed.connect(_on_clear_confirmed)
-	_clear_dialog.ok_button_text = tr("PROGRESS_CLEAR")
+	_clear_dialog.ok_button_text = tr("PROGRESS_CLEAR_VARIANT")
 	_clear_dialog.cancel_button_text = tr("COMMON_BACK")
 	Layout.watch(self, _relayout)
 	_populate()
@@ -167,9 +167,20 @@ func _on_range_pressed(runs: int) -> void:
 		_select(_variant)
 
 
+## Deleting here is per variant: the whole history goes only from Settings.
+func _on_clear_pressed() -> void:
+	if _variant.is_empty():
+		return
+	_clear_dialog.dialog_text = tr("PROGRESS_CLEAR_VARIANT_CONFIRM") % _variant_title(_variant)
+	_clear_dialog.popup_centered()
+
+
 func _on_clear_confirmed() -> void:
-	StatsStore.clear()
-	SceneRouter.show_progress()
+	if _variant.is_empty():
+		return
+	StatsStore.clear_variant(_variant)
+	_variant = ""
+	_populate()
 
 
 func _add_variant_button(variant: String) -> void:

@@ -186,3 +186,14 @@ func test_stable_best_merge_and_chart_range() -> void:
 	assert_eq(Benchmarks.bounds_for(&"visual_masking", {"trials": 30}, "threshold_ms"), {"elite": 20.0, "advanced": 85.0, "lower": true})
 	assert_eq(Benchmarks.bounds_for(&"visual_masking", {"trials": 30}, "other"), {})
 	assert_eq(Benchmarks.bounds_for(&"n_back", {}, "accuracy"), {})
+
+
+func test_remove_variant_keeps_the_others() -> void:
+	var history := StatsHistory.new()
+	for i in 3:
+		history.add({"id": "a%d" % i, "drill_id": "reaction_time", "variant": "reaction_time|trials=20", "at": 1000 + i, "total_ms": 1000, "value": 250.0, "unit": "ms", "lower": true})
+	history.add({"id": "b", "drill_id": "sart", "variant": "sart|trials=30", "at": 2000, "total_ms": 1000, "value": 300.0, "unit": "ms", "lower": true})
+	assert_eq(history.remove_variant("reaction_time|trials=20"), 3)
+	assert_eq(history.records.size(), 1)
+	assert_eq(history.variants(), ["sart|trials=30"])
+	assert_eq(history.remove_variant("missing"), 0)

@@ -1,6 +1,6 @@
-## Main scene: a fixed top bar (screen title, streak and daily goal, feedback,
-## quit), the host of the current screen and a fixed bottom bar with the five
-## main destinations. The bars show on the top-level screens only; a drill,
+## Main scene: a fixed top bar (level, streak, goal and badges, quit on the
+## desktop, the screen title), the host of the current screen and a fixed
+## bottom bar with the five main destinations. The bars show on the top-level screens only; a drill,
 ## the results, a training brief or the onboarding take the whole window.
 extends Control
 
@@ -31,7 +31,6 @@ const TITLES: Dictionary = {
 @onready var _back_button: Button = %BackButton
 @onready var _title_label: Label = %TitleLabel
 @onready var _top_stats: HBoxContainer = %TopStats
-@onready var _feedback_button: Button = %FeedbackButton
 @onready var _quit_button: Button = %QuitButton
 @onready var _nav_buttons: HBoxContainer = %NavButtons
 
@@ -61,8 +60,6 @@ func _ready() -> void:
 func _build_bars() -> void:
 	_back_button.icon = _icon("nav_back")
 	_back_button.pressed.connect(SceneRouter.show_menu)
-	_feedback_button.icon = _icon("nav_feedback")
-	_feedback_button.pressed.connect(SceneRouter.show_feedback)
 	_quit_button.icon = _icon("nav_quit")
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")

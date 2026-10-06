@@ -180,7 +180,8 @@ text = "PROGRESS_IMPORT"
 [node name="ClearButton" type="Button" parent="Scroll/Margin/Panel/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "PROGRESS_CLEAR"
+theme_type_variation = &"DangerButton"
+text = "PROGRESS_CLEAR_VARIANT"
 
 [node name="StatusLabel" type="Label" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
@@ -200,5 +201,4 @@ use_native_dialog = true
 
 [node name="ClearDialog" type="ConfirmationDialog" parent="."]
 unique_name_in_owner = true
-title = "PROGRESS_CLEAR"
-dialog_text = "PROGRESS_CLEAR_CONFIRM"
+title = "PROGRESS_CLEAR_VARIANT"
