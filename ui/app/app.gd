@@ -126,6 +126,11 @@ func _refresh_stats() -> void:
 
 ## Max width of the bottom bar's tabs on a wide screen, in design units.
 const NAV_MAX_WIDTH := 640.0
+## The bottom bar takes only part of the home-indicator inset as padding:
+## the indicator is drawn over content anyway and the full 34 pt left the
+## tabs floating far above the edge on an iPhone (maintainer, 2026-10-06).
+const BOTTOM_INSET_SHARE := 0.4
+const BOTTOM_INSET_MAX := 16.0
 
 
 func _apply_scale() -> void:
@@ -150,7 +155,7 @@ func _apply_insets() -> void:
 	offset_top = 0.0 if chrome else _insets.x
 	offset_bottom = 0.0 if chrome else -_insets.y
 	_pad_bar(_top_bar, &"TopBar", SIDE_TOP, _insets.x)
-	_pad_bar(_bottom_bar, &"BottomBar", SIDE_BOTTOM, _insets.y)
+	_pad_bar(_bottom_bar, &"BottomBar", SIDE_BOTTOM, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
 
 
 func _pad_bar(bar: PanelContainer, variation: StringName, side: Side, extra: float) -> void:
