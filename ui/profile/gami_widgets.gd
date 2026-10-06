@@ -74,13 +74,11 @@ static func add_stat_row(parent: Control, symbol: Control, title: String, detail
 	row.add_child(column)
 	var title_label := Label.new()
 	title_label.text = title
-	title_label.theme_type_variation = &"HeadingLabel"
-	title_label.add_theme_font_size_override("font_size", 20)
+	title_label.theme_type_variation = &"ItemLabel"
 	column.add_child(title_label)
 	var detail_label := Label.new()
 	detail_label.text = detail
-	detail_label.theme_type_variation = &"DimLabel"
-	detail_label.add_theme_font_size_override("font_size", 16)
+	detail_label.theme_type_variation = &"NoteLabel"
 	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(detail_label)
 

@@ -50,13 +50,13 @@ func _add_badge(id: String, earned: bool) -> void:
 	row.add_child(box)
 	var name := Label.new()
 	name.text = tr("BADGE_%s" % id.to_upper())
-	name.theme_type_variation = &"HeadingLabel" if earned else &"DimLabel"
-	name.add_theme_font_size_override("font_size", 20)
+	name.theme_type_variation = &"ItemLabel"
+	if not earned:
+		name.add_theme_color_override("font_color", get_theme_color("dim", "App"))
 	box.add_child(name)
 	var description := Label.new()
 	description.text = tr("BADGE_%s_DESC" % id.to_upper())
-	description.theme_type_variation = &"DimLabel"
-	description.add_theme_font_size_override("font_size", 16)
+	description.theme_type_variation = &"NoteLabel"
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(description)
 	var state := Label.new()

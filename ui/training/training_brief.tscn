@@ -59,8 +59,7 @@ autowrap_mode = 3
 [node name="HelpLabel" type="Label" parent="Scroll/Center/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"DimLabel"
-theme_override_font_sizes/font_size = 16
+theme_type_variation = &"NoteLabel"
 autowrap_mode = 3
 
 [node name="Buttons" type="HFlowContainer" parent="Scroll/Center/Panel/VBox"]

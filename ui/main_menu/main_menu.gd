@@ -75,8 +75,7 @@ func _add_tab_page(title: String) -> VBoxContainer:
 func _add_category_section(column: VBoxContainer, category_key: String, definitions: Array[DrillDefinition]) -> Button:
 	var heading := Label.new()
 	heading.text = tr(category_key)
-	heading.theme_type_variation = &"DimLabel"
-	heading.add_theme_font_size_override("font_size", 22)
+	heading.theme_type_variation = &"HeadingLabel"
 	column.add_child(heading)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -173,14 +172,12 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	card.add_child(column)
 	var title := Label.new()
 	title.text = tr(definition.title_key)
-	title.theme_type_variation = &"HeadingLabel"
-	title.add_theme_font_size_override("font_size", 20)
+	title.theme_type_variation = &"ItemLabel"
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(title)
 	var description := Label.new()
 	description.text = Drill.describe(definition.description_key)
-	description.theme_type_variation = &"DimLabel"
-	description.add_theme_font_size_override("font_size", 16)
+	description.theme_type_variation = &"NoteLabel"
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(description)
