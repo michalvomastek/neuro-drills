@@ -420,8 +420,10 @@ func _build(p: Dictionary) -> Theme:
 	t.set_font_size("font_size", "BadgeOffLabel", 15)
 	t.set_color("font_color", "BadgeOffLabel", _c(p, "muted"))
 	t.set_type_variation("XpBar", "ProgressBar")
-	t.set_stylebox("background", "XpBar", _box(_c(p, "sunken"), PILL, Vector4(0, 5, 0, 5)))
-	t.set_stylebox("fill", "XpBar", _box(_c(p, "accent"), PILL, Vector4(0, 5, 0, 5)))
+	# The bar sits inside the accent-coloured XP pill, so its track is a dark
+	# translucent groove and the fill is white, like the pill's text.
+	t.set_stylebox("background", "XpBar", _box(Color(0, 0, 0, 0.28), PILL, Vector4(0, 5, 0, 5)))
+	t.set_stylebox("fill", "XpBar", _box(Color(1, 1, 1, 0.92), PILL, Vector4(0, 5, 0, 5)))
 	t.set_type_variation("PlainPanel", "PanelContainer")
 	t.set_stylebox("panel", "PlainPanel", empty)
 	t.set_type_variation("Board", "Panel")
