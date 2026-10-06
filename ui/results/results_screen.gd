@@ -223,7 +223,6 @@ func _add_badge_row(id: String) -> void:
 	var name := Label.new()
 	name.text = tr("BADGE_%s" % id.to_upper())
 	name.theme_type_variation = &"PillLabel"
-	name.add_theme_font_size_override("font_size", 18)
 	name.add_theme_color_override("font_color", get_theme_color("yellow", "App"))
 	value.add_child(name)
 	_rows.add_child(value)

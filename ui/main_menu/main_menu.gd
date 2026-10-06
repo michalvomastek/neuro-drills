@@ -1,4 +1,5 @@
-## Lists the registered drills in one tab per category; the player's numbers
+## Lists the registered drills filtered by a strip of category pills (first
+## "All", then one page per category); the player's numbers
 ## sit in the app's top bar and the other destinations in the bottom bar.
 extends Control
 
@@ -18,6 +19,9 @@ var _tab_margins: Array[MarginContainer] = []
 
 
 func _ready() -> void:
+	# The category filter is the strip of pills on every screen size; the
+	# tab bar itself stays hidden (its arrows were the only way to page).
+	_tabs.tabs_visible = false
 	_add_all_tab()
 	for category in DrillRegistry.CATEGORY_ORDER:
 		var definitions := DrillRegistry.get_by_category(category)
@@ -34,10 +38,9 @@ func _ready() -> void:
 ## One column and slim margins on a phone, two columns and wide margins otherwise.
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
-	Layout.set_screen_margins(_margin)
 	# The outer side margin moves inside the scrolling lists.
-	var side := _margin.get_theme_constant("margin_left")
-	Layout.set_margins(_margin, 0, _margin.get_theme_constant("margin_top"))
+	var side := Layout.side_margin(_margin)
+	Layout.set_margins(_margin, 0, Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE)
 	var inner := maxi(0, side - roundi(get_theme_stylebox("panel", "Screen").get_margin(SIDE_LEFT)))
 	for tab_margin in _tab_margins:
 		tab_margin.add_theme_constant_override("margin_left", inner)
@@ -46,11 +49,6 @@ func _relayout() -> void:
 	_strip_margin.add_theme_constant_override("margin_right", inner)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
-	# The category filter is the strip of pills on every screen size; the
-	# tab bar itself stays hidden (its arrows were the only way to page).
-	_tabs.tabs_visible = false
-	_tab_strip.visible = true
-	_tabs.clip_tabs = narrow
 
 
 ## A scrollable tab page: the margin that keeps the screen's side margin

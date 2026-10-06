@@ -1,25 +1,11 @@
-## Pills for the gamification numbers, shared by the menu and the profile.
+## The gamification numbers as the top bar's ring and discs (brief chips in
+## the bar, written-out rows in the profile) and the badge medallions.
 class_name GamiWidgets
 extends RefCounted
 
 
-## One rounded pill with a label; returns the pill (its HBox takes more controls).
-static func add_pill(parent: Control, variation: StringName, text: String, bright: bool) -> PanelContainer:
-	var pill := PanelContainer.new()
-	pill.theme_type_variation = variation
-	pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var box := HBoxContainer.new()
-	box.add_theme_constant_override("separation", 10)
-	pill.add_child(box)
-	var label := Label.new()
-	label.text = text
-	label.theme_type_variation = &"PillLabel" if bright else &"DimLabel"
-	box.add_child(label)
-	parent.add_child(pill)
-	return pill
-
-
 const ICON_DIR := "res://assets/icons/"
+
 ## Discs the size of the level ring, so the row reads as one set.
 const STAT_ICON_SIZE := 20.0
 const STAT_DISC_SIZE := XpRing.DIAMETER
@@ -35,8 +21,8 @@ static func days_text(days: int) -> String:
 	return TranslationServer.translate(key) % days
 
 
-## A disc like the top bar's, on its own (for the profile rows).
-static func make_stat_disc(parent: Control, color: Color, icon_name: String, icon_color: Color = Color.WHITE) -> PanelContainer:
+## A disc like the top bar's, not yet in the tree; the caller places it.
+static func make_stat_disc(color: Color, icon_name: String, icon_color: Color = Color.WHITE) -> PanelContainer:
 	var disc := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -55,7 +41,6 @@ static func make_stat_disc(parent: Control, color: Color, icon_name: String, ico
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.modulate = icon_color
 	disc.add_child(icon)
-	parent.add_child(disc)
 	return disc
 
 
@@ -65,8 +50,6 @@ static func add_stat_row(parent: Control, symbol: Control, title: String, detail
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	parent.add_child(row)
-	if symbol.get_parent() != null:
-		symbol.get_parent().remove_child(symbol)
 	row.add_child(symbol)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -98,17 +81,17 @@ static func add_profile_stats(parent: Control) -> void:
 	var streak_title: String = TranslationServer.translate("GAMI_STREAK_NONE")
 	if streak > 0:
 		streak_title = "%s: %s" % [TranslationServer.translate("PROFILE_STREAK_TITLE"), days_text(streak)]
-	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak"), streak_title, TranslationServer.translate("PROFILE_STREAK_DETAIL"))
+	add_stat_row(parent, make_stat_disc(parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak"), streak_title, TranslationServer.translate("PROFILE_STREAK_DETAIL"))
 	var minutes := StatsStore.minutes_today()
 	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
 	var goal_detail: String = TranslationServer.translate("PROFILE_GOAL_DETAIL") % [minutes, goal]
 	if done:
 		goal_detail = TranslationServer.translate("PROFILE_GOAL_DONE_DETAIL") % minutes
-	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("green" if done else "primary", "App"), "stat_today"), TranslationServer.translate("PROFILE_GOAL_TITLE"), goal_detail)
+	add_stat_row(parent, make_stat_disc(parent.get_theme_color("green" if done else "primary", "App"), "stat_today"), TranslationServer.translate("PROFILE_GOAL_TITLE"), goal_detail)
 	var earned := StatsStore.earned_badges().size()
 	var total := Gamification.BADGE_ORDER.size()
-	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("yellow", "App"), "stat_badges", parent.get_theme_color("on_yellow", "App")), TranslationServer.translate("PROFILE_BADGES_TITLE"), TranslationServer.translate("PROFILE_BADGES_DETAIL") % [earned, total])
+	add_stat_row(parent, make_stat_disc(parent.get_theme_color("yellow", "App"), "stat_badges", parent.get_theme_color("on_yellow", "App")), TranslationServer.translate("PROFILE_BADGES_TITLE"), TranslationServer.translate("PROFILE_BADGES_DETAIL") % [earned, total])
 
 
 ## A coloured disc with an icon (white, or [param icon_color]) and a plain
@@ -119,8 +102,9 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 	chip.add_theme_constant_override("separation", 7)
 	chip.tooltip_text = tooltip
 	chip.mouse_filter = Control.MOUSE_FILTER_PASS
-	var disc := make_stat_disc(chip, color, icon_name, icon_color)
+	var disc := make_stat_disc(color, icon_name, icon_color)
 	disc.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_child(disc)
 	var label := Label.new()
 	label.text = text
 	label.theme_type_variation = &"PillLabel"
@@ -158,10 +142,8 @@ static func add_brief_stats(parent: Control, on_badges: Callable = Callable()) -
 	ring.set_level(level, into, span)
 	var streak := StatsStore.current_streak()
 	var streak_tip := TranslationServer.translate("GAMI_STREAK_NONE")
-	if streak == 1:
-		streak_tip = TranslationServer.translate("GAMI_STREAK_ONE")
-	elif streak > 1:
-		streak_tip = TranslationServer.translate("GAMI_STREAK") % streak
+	if streak > 0:
+		streak_tip = "%s: %s" % [TranslationServer.translate("PROFILE_STREAK_TITLE"), days_text(streak)]
 	add_stat_chip(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak", days_text(streak), streak_tip)
 	var minutes := StatsStore.minutes_today()
 	var goal := Gamification.DAILY_GOAL_MINUTES

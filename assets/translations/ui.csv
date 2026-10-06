@@ -528,15 +528,12 @@ TRAINING_HARDER,↑ těžší,↑ harder
 PROGRESS_WEEK,Posledních 7 dní: %d kol · %d min · %d her · %d zlepšení,Last 7 days: %d runs · %d min · %d drills · %d improved
 MENU_THEME_LIGHT,Světlý motiv,Light theme
 MENU_THEME_DARK,Tmavý motiv,Dark theme
-GAMI_STREAK,Série: %d dní,Streak: %d days
-GAMI_STREAK_ONE,Série: 1 den,Streak: 1 day
 GAMI_STREAK_NONE,Začni sérii dnes,Start a streak today
 GAMI_LEVEL,Úroveň %d,Level %d
 GAMI_XP,%d / %d XP,%d / %d XP
 GAMI_TODAY,Dnes %d / %d min,Today %d / %d min
 GAMI_TODAY_DONE,Dnes %d / %d min ✓,Today %d / %d min ✓
 GAMI_TODAY_SHORT,%d/%d min,%d/%d min
-GAMI_STREAK_SHORT,Série %d,Streak %d
 GAMI_DAYS_ONE,%d den,%d day
 GAMI_DAYS_FEW,%d dny,%d days
 GAMI_DAYS_MANY,%d dní,%d days
@@ -644,7 +641,6 @@ METRIC_VALIDITY_EFFECT_MS,efekt nápovědy,cue validity effect
 METRIC_WPM,slov za minutu,words per minute
 MENU_PROFILE_BADGES,Profil · odznaky %d / %d,Profile · badges %d / %d
 PROFILE_TITLE,Profil,Profile
-PROFILE_SUBTITLE,Série · úroveň · denní cíl · odznaky,Streak · level · daily goal · badges
 PROFILE_WEEK_EMPTY,Posledních 7 dní: zatím žádné kolo,Last 7 days: no run yet
 PROFILE_BADGE_EARNED,Získáno,Earned
 PROFILE_BADGE_LOCKED,Zatím ne,Not yet

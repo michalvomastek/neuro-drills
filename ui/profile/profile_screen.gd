@@ -61,8 +61,7 @@ func _add_badge(id: String, earned: bool) -> void:
 	box.add_child(description)
 	var state := Label.new()
 	state.text = tr("PROFILE_BADGE_EARNED" if earned else "PROFILE_BADGE_LOCKED")
-	state.theme_type_variation = &"PillLabel" if earned else &"DimLabel"
+	state.theme_type_variation = &"PillLabel"
 	state.add_theme_color_override("font_color", get_theme_color("green" if earned else "dim", "App"))
-	state.add_theme_font_size_override("font_size", 15)
 	box.add_child(state)
 	_badges.add_child(card)
