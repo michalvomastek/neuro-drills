@@ -126,11 +126,12 @@ func _refresh_stats() -> void:
 
 ## Max width of the bottom bar's tabs on a wide screen, in design units.
 const NAV_MAX_WIDTH := 640.0
-## The bottom bar takes only part of the home-indicator inset as padding:
-## the indicator is drawn over content anyway and the full 34 pt left the
-## tabs floating far above the edge on an iPhone (maintainer, 2026-10-06).
-const BOTTOM_INSET_SHARE := 0.2
-const BOTTOM_INSET_MAX := 8.0
+## Share of the home-indicator inset the bottom bar adds under its tabs.
+## Zero on the maintainer's wish (2026-10-06): on the iPhone the page ends
+## above the indicator anyway. Raise it (e.g. 0.3) if the tabs ever collide
+## with the indicator once the canvas reaches the very bottom.
+const BOTTOM_INSET_SHARE := 0.0
+const BOTTOM_INSET_MAX := 12.0
 
 
 func _apply_scale() -> void:
