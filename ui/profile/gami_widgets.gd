@@ -61,57 +61,68 @@ static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -
 
 
 const ICON_DIR := "res://assets/icons/"
-const STAT_ICON_SIZE := 16.0
-const STAT_XP_BAR_WIDTH := 56.0
+const STAT_ICON_SIZE := 14.0
+const STAT_DISC_SIZE := 24.0
 
 
-## A pill with a small white icon in front of its text.
-static func add_icon_pill(parent: Control, variation: StringName, icon_name: String, text: String, bright: bool, tooltip: String) -> PanelContainer:
-	var pill := add_pill(parent, variation, text, bright)
-	pill.tooltip_text = tooltip
-	var box := pill.get_child(0) as BoxContainer
-	box.add_theme_constant_override("separation", 5)
+## A coloured disc with a white icon and a plain number next to it.
+static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String) -> HBoxContainer:
+	var chip := HBoxContainer.new()
+	chip.add_theme_constant_override("separation", 7)
+	chip.tooltip_text = tooltip
+	chip.mouse_filter = Control.MOUSE_FILTER_PASS
+	var disc := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.set_corner_radius_all(roundi(STAT_DISC_SIZE / 2.0))
+	disc.add_theme_stylebox_override("panel", style)
+	disc.custom_minimum_size = Vector2(STAT_DISC_SIZE, STAT_DISC_SIZE)
+	disc.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var icon := TextureRect.new()
 	icon.texture = load(ICON_DIR + icon_name + ".svg") as Texture2D
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.custom_minimum_size = Vector2(STAT_ICON_SIZE, STAT_ICON_SIZE)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	if not bright:
-		icon.modulate = parent.get_theme_color("dim", "App")
-	box.add_child(icon)
-	box.move_child(icon, 0)
-	return pill
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	disc.add_child(icon)
+	chip.add_child(disc)
+	var label := Label.new()
+	label.text = text
+	label.theme_type_variation = &"PillLabel"
+	label.add_theme_color_override("font_color", parent.get_theme_color("text", "App"))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chip.add_child(label)
+	parent.add_child(chip)
+	return chip
 
 
-## Level, streak and today's minutes as three icon pills for the top bar:
-## star + level with a short XP bar, flame + days, clock + minutes / goal.
+## Level, streak and today's minutes for the top bar: the level inside an
+## XP ring, then a flame disc with the days and a clock disc with
+## minutes / goal (green once the goal is reached).
 static func add_brief_stats(parent: Control) -> void:
 	var info := StatsStore.level_info()
 	var level: int = info["level"]
 	var into: int = info["into"]
 	var span: int = info["span"]
-	var level_pill := add_icon_pill(parent, &"XpPill", "stat_level", str(level), true, "%s · %s" % [TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("GAMI_XP") % [into, span]])
-	var bar := ProgressBar.new()
-	bar.theme_type_variation = &"XpBar"
-	bar.show_percentage = false
-	bar.max_value = span
-	bar.value = into
-	bar.custom_minimum_size = Vector2(STAT_XP_BAR_WIDTH, 0)
-	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	(level_pill.get_child(0) as BoxContainer).add_child(bar)
+	var ring := XpRing.new()
+	ring.tooltip_text = "%s · %s" % [TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("GAMI_XP") % [into, span]]
+	ring.mouse_filter = Control.MOUSE_FILTER_PASS
+	parent.add_child(ring)
+	ring.set_level(level, into, span)
 	var streak := StatsStore.current_streak()
 	var streak_tip := TranslationServer.translate("GAMI_STREAK_NONE")
 	if streak == 1:
 		streak_tip = TranslationServer.translate("GAMI_STREAK_ONE")
 	elif streak > 1:
 		streak_tip = TranslationServer.translate("GAMI_STREAK") % streak
-	add_icon_pill(parent, &"StreakPill" if streak > 0 else &"Pill", "stat_streak", str(streak), streak > 0, streak_tip)
+	add_stat_chip(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak", str(streak), streak_tip)
 	var minutes := StatsStore.minutes_today()
 	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
-	add_icon_pill(parent, &"GoalDonePill" if done else &"GoalPill", "stat_today", TranslationServer.translate("GAMI_TODAY_SHORT") % [minutes, goal], true, TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal])
+	add_stat_chip(parent, parent.get_theme_color("green" if done else "primary", "App"), "stat_today", TranslationServer.translate("GAMI_TODAY_SHORT") % [minutes, goal], TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal])
 
 
 const BADGE_DIR := "res://assets/badges/"
