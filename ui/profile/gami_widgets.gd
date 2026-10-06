@@ -61,13 +61,14 @@ static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -
 
 
 const ICON_DIR := "res://assets/icons/"
-const STAT_ICON_SIZE := 14.0
-const STAT_DISC_SIZE := 24.0
+## Discs the size of the level ring, so the row reads as one set.
+const STAT_ICON_SIZE := 20.0
+const STAT_DISC_SIZE := XpRing.DIAMETER
 
 
-## A coloured disc with a white icon and a plain number next to it; with
-## [param on_pressed] a tap on the chip calls it.
-static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable()) -> HBoxContainer:
+## A coloured disc with an icon (white, or [param icon_color]) and a plain
+## number next to it; with [param on_pressed] a tap on the chip calls it.
+static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable(), icon_color: Color = Color.WHITE) -> HBoxContainer:
 	var chip := HBoxContainer.new()
 	chip.add_theme_constant_override("separation", 7)
 	chip.tooltip_text = tooltip
@@ -95,6 +96,7 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.modulate = icon_color
 	disc.add_child(icon)
 	chip.add_child(disc)
 	var label := Label.new()
@@ -134,7 +136,8 @@ static func add_brief_stats(parent: Control, on_badges: Callable = Callable()) -
 	add_stat_chip(parent, parent.get_theme_color("green" if done else "primary", "App"), "stat_today", TranslationServer.translate("GAMI_TODAY_SHORT") % [minutes, goal], TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal])
 	var earned := StatsStore.earned_badges().size()
 	var total := Gamification.BADGE_ORDER.size()
-	add_stat_chip(parent, parent.get_theme_color("yellow", "App"), "stat_badges", "%d/%d" % [earned, total], TranslationServer.translate("GAMI_BADGES") % [earned, total], on_badges)
+	# White is lost on the bright yellow of the dark theme; the badge text colour is dark there.
+	add_stat_chip(parent, parent.get_theme_color("yellow", "App"), "stat_badges", "%d/%d" % [earned, total], TranslationServer.translate("GAMI_BADGES") % [earned, total], on_badges, parent.get_theme_color("on_yellow", "App"))
 
 
 const BADGE_DIR := "res://assets/badges/"

@@ -214,6 +214,7 @@ func _build(p: Dictionary) -> Theme:
 	t.set_color("orange", "App", _c(p, "orange"))
 	t.set_color("red", "App", _c(p, "red"))
 	t.set_color("yellow", "App", _c(p, "yellow"))
+	t.set_color("on_yellow", "App", _c(p, "badge_text"))
 	t.set_color("line", "App", _c(p, "line"))
 	t.set_color("sunken", "App", _c(p, "sunken"))
 	t.set_color("level_none", "App", _c(p, "level_none"))
