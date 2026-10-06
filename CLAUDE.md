@@ -1,7 +1,7 @@
 # Neuro drills – notes for Claude
 
 Godot 4.7 project: a collection of short cognitive-training mini games ("drills").
-Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it first and keep it current.
+Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it first and keep it current. `docs/DRILLS.md` lists every drill with its settings, `docs/OVERVIEW.md` is the maintainer-facing table (how it works, what it trains, why); add a row for every new drill.
 
 ## Working with the maintainer
 
