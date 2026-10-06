@@ -276,6 +276,18 @@ func _build(p: Dictionary) -> Theme:
 
 	# Compact buttons for toggles inside a panel (chart range, RPE).
 	var small := Vector4(12, 4, 12, 4)
+	# A destructive action (clear history): the primary button in red.
+	t.set_type_variation("DangerButton", "Button")
+	var red_shadow := _c(p, "red").darkened(0.35)
+	t.set_stylebox("normal", "DangerButton", _box(_c(p, "red"), RADIUS, margins, LIFT, red_shadow))
+	t.set_stylebox("hover", "DangerButton", _box(_c(p, "red").lightened(0.08), RADIUS, margins, LIFT, red_shadow))
+	t.set_stylebox("pressed", "DangerButton", _box_pressed(_c(p, "red").lightened(0.08), RADIUS, margins))
+	t.set_stylebox("hover_pressed", "DangerButton", _box_pressed(_c(p, "red").lightened(0.08), RADIUS, margins))
+	t.set_stylebox("disabled", "DangerButton", _box(_c(p, "sunken"), RADIUS, margins, LIFT, _c(p, "sunken")))
+	t.set_stylebox("focus", "DangerButton", _outline(_c(p, "focus"), RADIUS))
+	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		t.set_color(state, "DangerButton", Color.WHITE)
+	t.set_color("font_disabled_color", "DangerButton", _c(p, "muted"))
 	t.set_type_variation("SmallButton", "Button")
 	t.set_stylebox("normal", "SmallButton", _box(_c(p, "card"), 12, small, 3, _c(p, "card_shadow")))
 	t.set_stylebox("hover", "SmallButton", _box(_c(p, "card_hover"), 12, small, 3, _c(p, "card_shadow")))

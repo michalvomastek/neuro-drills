@@ -55,10 +55,9 @@ theme_type_variation = &"DimLabel"
 text = "SETTINGS_DATA_HINT"
 autowrap_mode = 3
 
-[node name="DataButtons" type="HFlowContainer" parent="Scroll/Margin/Panel/VBox"]
+[node name="DataButtons" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox"]
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 8
+theme_override_constants/separation = 10
 
 [node name="FeedbackButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
@@ -70,9 +69,14 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "SETTINGS_SHOW_INTRO"
 
+[node name="DangerSpacer" type="Control" parent="Scroll/Margin/Panel/VBox/DataButtons"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 8)
+
 [node name="ClearButton" type="Button" parent="Scroll/Margin/Panel/VBox/DataButtons"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"DangerButton"
 text = "PROGRESS_CLEAR"
 
 [node name="ClearDialog" type="ConfirmationDialog" parent="."]
