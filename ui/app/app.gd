@@ -115,13 +115,13 @@ func _on_screen_changed(screen: StringName) -> void:
 	_refresh_stats()
 
 
-## Streak and today's minutes, refreshed on every screen change (a finished
-## run changes them) and on resize (the phone gets the short wording).
+## Level, streak and today's minutes, refreshed on every screen change (a
+## finished run changes them).
 func _refresh_stats() -> void:
 	for child in _top_stats.get_children():
 		_top_stats.remove_child(child)
 		child.queue_free()
-	GamiWidgets.add_brief_stats(_top_stats, Layout.is_narrow(self))
+	GamiWidgets.add_brief_stats(_top_stats)
 
 
 ## Max width of the bottom bar's tabs on a wide screen, in design units.

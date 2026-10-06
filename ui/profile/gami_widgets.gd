@@ -60,25 +60,48 @@ static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -
 	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal], true)
 
 
-## Streak and today's minutes only, for the top bar; [param short] uses the
-## compact wording that fits next to the title on a phone.
-static func add_brief_stats(parent: Control, short: bool) -> void:
+const ICON_DIR := "res://assets/icons/"
+const STAT_ICON_SIZE := 16.0
+
+
+## A pill with a small white icon in front of its text.
+static func add_icon_pill(parent: Control, variation: StringName, icon_name: String, text: String, bright: bool, tooltip: String) -> PanelContainer:
+	var pill := add_pill(parent, variation, text, bright)
+	pill.tooltip_text = tooltip
+	var box := pill.get_child(0) as BoxContainer
+	box.add_theme_constant_override("separation", 5)
+	var icon := TextureRect.new()
+	icon.texture = load(ICON_DIR + icon_name + ".svg") as Texture2D
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = Vector2(STAT_ICON_SIZE, STAT_ICON_SIZE)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if not bright:
+		icon.modulate = parent.get_theme_color("dim", "App")
+	box.add_child(icon)
+	box.move_child(icon, 0)
+	return pill
+
+
+## Level, streak and today's minutes as three icon pills for the top bar:
+## star + level, flame + days, clock + minutes / goal.
+static func add_brief_stats(parent: Control) -> void:
+	var info := StatsStore.level_info()
+	var level: int = info["level"]
+	var into: int = info["into"]
+	var span: int = info["span"]
+	add_icon_pill(parent, &"XpPill", "stat_level", str(level), true, "%s · %s" % [TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("GAMI_XP") % [into, span]])
 	var streak := StatsStore.current_streak()
-	var streak_text: String
-	if short:
-		streak_text = TranslationServer.translate("GAMI_STREAK_SHORT") % streak
-	elif streak == 1:
-		streak_text = TranslationServer.translate("GAMI_STREAK_ONE")
+	var streak_tip := TranslationServer.translate("GAMI_STREAK_NONE")
+	if streak == 1:
+		streak_tip = TranslationServer.translate("GAMI_STREAK_ONE")
 	elif streak > 1:
-		streak_text = TranslationServer.translate("GAMI_STREAK") % streak
-	else:
-		streak_text = TranslationServer.translate("GAMI_STREAK_NONE")
-	add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
+		streak_tip = TranslationServer.translate("GAMI_STREAK") % streak
+	add_icon_pill(parent, &"StreakPill" if streak > 0 else &"Pill", "stat_streak", str(streak), streak > 0, streak_tip)
 	var minutes := StatsStore.minutes_today()
 	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
-	var key := "GAMI_TODAY_SHORT" if short else ("GAMI_TODAY_DONE" if done else "GAMI_TODAY")
-	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate(key) % [minutes, goal], true)
+	add_icon_pill(parent, &"GoalDonePill" if done else &"GoalPill", "stat_today", TranslationServer.translate("GAMI_TODAY_SHORT") % [minutes, goal], true, TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal])
 
 
 const BADGE_DIR := "res://assets/badges/"
