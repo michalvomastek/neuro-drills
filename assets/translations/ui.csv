@@ -537,6 +537,18 @@ GAMI_TODAY,Dnes %d / %d min,Today %d / %d min
 GAMI_TODAY_DONE,Dnes %d / %d min ✓,Today %d / %d min ✓
 GAMI_TODAY_SHORT,%d/%d min,%d/%d min
 GAMI_STREAK_SHORT,Série %d,Streak %d
+GAMI_DAYS_ONE,%d den,%d day
+GAMI_DAYS_FEW,%d dny,%d days
+GAMI_DAYS_MANY,%d dní,%d days
+MENU_ALL_DRILLS,Vše,All
+PROFILE_LEVEL_DETAIL,%d / %d XP · do další úrovně zbývá %d,%d / %d XP · %d to the next level
+PROFILE_STREAK_TITLE,Série,Streak
+PROFILE_STREAK_DETAIL,Hraj každý den; série vydrží do konce dne po posledním kole.,Play every day; a streak survives until the end of the day after the last run.
+PROFILE_GOAL_TITLE,Denní cíl,Daily goal
+PROFILE_GOAL_DETAIL,%d z %d minut dnes,%d of %d minutes today
+PROFILE_GOAL_DONE_DETAIL,Dnes splněno (%d min),Done for today (%d min)
+PROFILE_BADGES_TITLE,Odznaky,Badges
+PROFILE_BADGES_DETAIL,%d z %d získáno,%d of %d earned
 NAV_DRILLS,Hry,Drills
 GAMI_BADGES,Odznaky %d / %d,Badges %d / %d
 RESULT_XP,Body,Points

@@ -17,7 +17,6 @@ extends Control
 @onready var _margin: MarginContainer = %Margin
 @onready var _body: BoxContainer = %Body
 @onready var _list_scroll: ScrollContainer = %ListScroll
-@onready var _footer_spacer: Control = %FooterSpacer
 @onready var _variant_option: ListPickButton = %VariantOption
 @onready var _week_label: Label = %WeekLabel
 @onready var _chart_label: Label = %ChartLabel
@@ -94,7 +93,6 @@ func _relayout() -> void:
 	_variant_option.visible = narrow
 	_detail.custom_minimum_size = Vector2(0, 0) if narrow else Vector2(320, 0)
 	_detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_footer_spacer.visible = not narrow
 
 
 func _on_export_pressed() -> void:

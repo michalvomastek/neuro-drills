@@ -6,14 +6,14 @@ extends Control
 const BADGE_ICON_SIZE := 56.0
 
 @onready var _margin: MarginContainer = %Margin
-@onready var _stats: HFlowContainer = %Stats
+@onready var _stats: VBoxContainer = %Stats
 @onready var _week_label: Label = %WeekLabel
 @onready var _badges_title: Label = %BadgesTitle
 @onready var _badges: GridContainer = %Badges
 
 
 func _ready() -> void:
-	GamiWidgets.add_stats(_stats, false)
+	GamiWidgets.add_profile_stats(_stats)
 	var week := StatsStore.history.week_summary(int(Time.get_unix_time_from_system()))
 	var week_runs: int = week["runs"]
 	_week_label.text = tr("PROGRESS_WEEK") % [week_runs, week["minutes"], week["drills"], week["improved"]] if week_runs > 0 else tr("PROFILE_WEEK_EMPTY")

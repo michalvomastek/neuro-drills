@@ -18,6 +18,7 @@ var _tab_margins: Array[MarginContainer] = []
 
 
 func _ready() -> void:
+	_add_all_tab()
 	for category in DrillRegistry.CATEGORY_ORDER:
 		var definitions := DrillRegistry.get_by_category(category)
 		if definitions.is_empty():
@@ -45,18 +46,18 @@ func _relayout() -> void:
 	_strip_margin.add_theme_constant_override("margin_right", inner)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
-	# The tab bar can only be paged with its small arrows; a phone gets a
-	# strip of pills that scrolls by dragging instead.
-	_tabs.tabs_visible = not narrow
-	_tab_strip.visible = narrow
+	# The category filter is the strip of pills on every screen size; the
+	# tab bar itself stays hidden (its arrows were the only way to page).
+	_tabs.tabs_visible = false
+	_tab_strip.visible = true
 	_tabs.clip_tabs = narrow
 
 
-## One tab per category: a scrollable two-column grid with a short tab title
-## and the full category name as a heading inside.
-func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]) -> void:
+## A scrollable tab page: the margin that keeps the screen's side margin
+## inside the edge-to-edge list, and the column the sections go into.
+func _add_tab_page(title: String) -> VBoxContainer:
 	var scroll := ScrollContainer.new()
-	scroll.name = tr(category_key + "_SHORT")
+	scroll.name = title
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_tabs.add_child(scroll)
 	var tab_margin := MarginContainer.new()
@@ -67,6 +68,11 @@ func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 12)
 	tab_margin.add_child(column)
+	return column
+
+
+## One section: the full category name as a heading and the grid of cards.
+func _add_category_section(column: VBoxContainer, category_key: String, definitions: Array[DrillDefinition]) -> Button:
 	var heading := Label.new()
 	heading.text = tr(category_key)
 	heading.theme_type_variation = &"DimLabel"
@@ -84,7 +90,27 @@ func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]
 		var button := _add_drill_entry(grid, definition)
 		if first == null:
 			first = button
+	return first
+
+
+## The first filter shows every category in one page.
+func _add_all_tab() -> void:
+	var column := _add_tab_page(tr("MENU_ALL_DRILLS"))
+	var first: Button = null
+	for category in DrillRegistry.CATEGORY_ORDER:
+		var definitions := DrillRegistry.get_by_category(category)
+		if definitions.is_empty():
+			continue
+		var button := _add_category_section(column, category, definitions)
+		if first == null:
+			first = button
 	_first_buttons.append(first)
+
+
+## One tab per category with a short pill title.
+func _add_category_tab(category_key: String, definitions: Array[DrillDefinition]) -> void:
+	var column := _add_tab_page(tr(category_key + "_SHORT"))
+	_first_buttons.append(_add_category_section(column, category_key, definitions))
 
 
 func _on_tab_changed(tab: int) -> void:
@@ -112,7 +138,7 @@ func _update_tab_strip() -> void:
 	for i in _strip_buttons.size():
 		var selected := i == _tabs.current_tab
 		_strip_buttons[i].button_pressed = selected
-		_strip_buttons[i].theme_type_variation = &"SmallPrimaryButton" if selected else &"SmallButton"
+		_strip_buttons[i].theme_type_variation = &"PrimaryButton" if selected else &"Button"
 	if _tabs.current_tab >= 0 and _tabs.current_tab < _strip_buttons.size():
 		_tab_strip.ensure_control_visible(_strip_buttons[_tabs.current_tab])
 

@@ -19,68 +19,31 @@ static func add_pill(parent: Control, variation: StringName, text: String, brigh
 	return pill
 
 
-## Streak, level with its XP bar and today's minutes against the daily goal.
-## [param compact] drops the XP numbers (the bar keeps them as a tooltip);
-## [param with_daily] false leaves out the streak and the goal, which the
-## app's top bar already shows above the menu.
-static func add_stats(parent: Control, compact: bool, with_daily: bool = true) -> void:
-	var streak := StatsStore.current_streak()
-	var streak_text := TranslationServer.translate("GAMI_STREAK_NONE")
-	if streak == 1:
-		streak_text = TranslationServer.translate("GAMI_STREAK_ONE")
-	elif streak > 1:
-		streak_text = TranslationServer.translate("GAMI_STREAK") % streak
-	if with_daily:
-		add_pill(parent, &"StreakPill" if streak > 0 else &"Pill", streak_text, streak > 0)
-	var info := StatsStore.level_info()
-	var level: int = info["level"]
-	var into: int = info["into"]
-	var span: int = info["span"]
-	var xp_pill := add_pill(parent, &"XpPill", TranslationServer.translate("GAMI_LEVEL") % level, true)
-	var xp_box := xp_pill.get_child(0) as BoxContainer
-	var bar := ProgressBar.new()
-	bar.theme_type_variation = &"XpBar"
-	bar.show_percentage = false
-	bar.max_value = span
-	bar.value = into
-	bar.custom_minimum_size = Vector2(90, 0)
-	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bar.tooltip_text = TranslationServer.translate("GAMI_XP") % [into, span]
-	xp_box.add_child(bar)
-	if not compact:
-		var xp_label := Label.new()
-		xp_label.text = TranslationServer.translate("GAMI_XP") % [into, span]
-		xp_label.theme_type_variation = &"PillLabel"
-		xp_box.add_child(xp_label)
-	if not with_daily:
-		return
-	var minutes := StatsStore.minutes_today()
-	var goal := Gamification.DAILY_GOAL_MINUTES
-	var done := minutes >= goal
-	add_pill(parent, &"GoalDonePill" if done else &"GoalPill", TranslationServer.translate("GAMI_TODAY_DONE" if done else "GAMI_TODAY") % [minutes, goal], true)
-
-
 const ICON_DIR := "res://assets/icons/"
 ## Discs the size of the level ring, so the row reads as one set.
 const STAT_ICON_SIZE := 20.0
 const STAT_DISC_SIZE := XpRing.DIAMETER
 
 
-## A coloured disc with an icon (white, or [param icon_color]) and a plain
-## number next to it. With [param on_pressed] the chip sits inside a flat
-## Button, so it activates on release, takes keyboard focus and shows it.
-static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable(), icon_color: Color = Color.WHITE) -> HBoxContainer:
-	var chip := HBoxContainer.new()
-	chip.add_theme_constant_override("separation", 7)
-	chip.tooltip_text = tooltip
-	chip.mouse_filter = Control.MOUSE_FILTER_PASS
+## "%d den / dny / dní" with the Czech plural forms (English keeps day / days).
+static func days_text(days: int) -> String:
+	var key := "GAMI_DAYS_MANY"
+	if days == 1:
+		key = "GAMI_DAYS_ONE"
+	elif days >= 2 and days <= 4:
+		key = "GAMI_DAYS_FEW"
+	return TranslationServer.translate(key) % days
+
+
+## A disc like the top bar's, on its own (for the profile rows).
+static func make_stat_disc(parent: Control, color: Color, icon_name: String, icon_color: Color = Color.WHITE) -> PanelContainer:
 	var disc := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.set_corner_radius_all(roundi(STAT_DISC_SIZE / 2.0))
 	disc.add_theme_stylebox_override("panel", style)
 	disc.custom_minimum_size = Vector2(STAT_DISC_SIZE, STAT_DISC_SIZE)
-	disc.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	disc.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var icon := TextureRect.new()
 	icon.texture = load(ICON_DIR + icon_name + ".svg") as Texture2D
@@ -92,7 +55,74 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.modulate = icon_color
 	disc.add_child(icon)
-	chip.add_child(disc)
+	parent.add_child(disc)
+	return disc
+
+
+## One profile row: the symbol from the top bar on the left, a title and a
+## longer explanation on the right.
+static func add_stat_row(parent: Control, symbol: Control, title: String, detail: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	parent.add_child(row)
+	if symbol.get_parent() != null:
+		symbol.get_parent().remove_child(symbol)
+	row.add_child(symbol)
+	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_theme_constant_override("separation", 2)
+	row.add_child(column)
+	var title_label := Label.new()
+	title_label.text = title
+	title_label.theme_type_variation = &"HeadingLabel"
+	title_label.add_theme_font_size_override("font_size", 20)
+	column.add_child(title_label)
+	var detail_label := Label.new()
+	detail_label.text = detail
+	detail_label.theme_type_variation = &"DimLabel"
+	detail_label.add_theme_font_size_override("font_size", 16)
+	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(detail_label)
+
+
+## The four numbers of the top bar written out for the profile: level with
+## the XP to go, streak, daily goal and badges.
+static func add_profile_stats(parent: Control) -> void:
+	var info := StatsStore.level_info()
+	var level: int = info["level"]
+	var into: int = info["into"]
+	var span: int = info["span"]
+	var ring := XpRing.new()
+	ring.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	add_stat_row(parent, ring, TranslationServer.translate("GAMI_LEVEL") % level, TranslationServer.translate("PROFILE_LEVEL_DETAIL") % [into, span, span - into])
+	ring.set_level(level, into, span)
+	var streak := StatsStore.current_streak()
+	var streak_title: String = TranslationServer.translate("GAMI_STREAK_NONE")
+	if streak > 0:
+		streak_title = "%s: %s" % [TranslationServer.translate("PROFILE_STREAK_TITLE"), days_text(streak)]
+	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak"), streak_title, TranslationServer.translate("PROFILE_STREAK_DETAIL"))
+	var minutes := StatsStore.minutes_today()
+	var goal := Gamification.DAILY_GOAL_MINUTES
+	var done := minutes >= goal
+	var goal_detail: String = TranslationServer.translate("PROFILE_GOAL_DETAIL") % [minutes, goal]
+	if done:
+		goal_detail = TranslationServer.translate("PROFILE_GOAL_DONE_DETAIL") % minutes
+	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("green" if done else "primary", "App"), "stat_today"), TranslationServer.translate("PROFILE_GOAL_TITLE"), goal_detail)
+	var earned := StatsStore.earned_badges().size()
+	var total := Gamification.BADGE_ORDER.size()
+	add_stat_row(parent, make_stat_disc(parent, parent.get_theme_color("yellow", "App"), "stat_badges", parent.get_theme_color("on_yellow", "App")), TranslationServer.translate("PROFILE_BADGES_TITLE"), TranslationServer.translate("PROFILE_BADGES_DETAIL") % [earned, total])
+
+
+## A coloured disc with an icon (white, or [param icon_color]) and a plain
+## number next to it. With [param on_pressed] the chip sits inside a flat
+## Button, so it activates on release, takes keyboard focus and shows it.
+static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable(), icon_color: Color = Color.WHITE) -> HBoxContainer:
+	var chip := HBoxContainer.new()
+	chip.add_theme_constant_override("separation", 7)
+	chip.tooltip_text = tooltip
+	chip.mouse_filter = Control.MOUSE_FILTER_PASS
+	var disc := make_stat_disc(chip, color, icon_name, icon_color)
+	disc.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var label := Label.new()
 	label.text = text
 	label.theme_type_variation = &"PillLabel"
@@ -134,7 +164,7 @@ static func add_brief_stats(parent: Control, on_badges: Callable = Callable()) -
 		streak_tip = TranslationServer.translate("GAMI_STREAK_ONE")
 	elif streak > 1:
 		streak_tip = TranslationServer.translate("GAMI_STREAK") % streak
-	add_stat_chip(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak", str(streak), streak_tip)
+	add_stat_chip(parent, parent.get_theme_color("orange" if streak > 0 else "dim", "App"), "stat_streak", days_text(streak), streak_tip)
 	var minutes := StatsStore.minutes_today()
 	var goal := Gamification.DAILY_GOAL_MINUTES
 	var done := minutes >= goal
