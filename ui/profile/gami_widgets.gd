@@ -67,19 +67,13 @@ const STAT_DISC_SIZE := XpRing.DIAMETER
 
 
 ## A coloured disc with an icon (white, or [param icon_color]) and a plain
-## number next to it; with [param on_pressed] a tap on the chip calls it.
+## number next to it. With [param on_pressed] the chip sits inside a flat
+## Button, so it activates on release, takes keyboard focus and shows it.
 static func add_stat_chip(parent: Control, color: Color, icon_name: String, text: String, tooltip: String, on_pressed: Callable = Callable(), icon_color: Color = Color.WHITE) -> HBoxContainer:
 	var chip := HBoxContainer.new()
 	chip.add_theme_constant_override("separation", 7)
 	chip.tooltip_text = tooltip
 	chip.mouse_filter = Control.MOUSE_FILTER_PASS
-	if on_pressed.is_valid():
-		chip.mouse_filter = Control.MOUSE_FILTER_STOP
-		chip.gui_input.connect(func(event: InputEvent) -> void:
-			var button := event as InputEventMouseButton
-			if button != null and button.pressed and button.button_index == MOUSE_BUTTON_LEFT:
-				chip.accept_event()
-				on_pressed.call())
 	var disc := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -105,7 +99,18 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 	label.add_theme_color_override("font_color", parent.get_theme_color("text", "App"))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.add_child(label)
-	parent.add_child(chip)
+	if on_pressed.is_valid():
+		var button := Button.new()
+		button.flat = true
+		button.tooltip_text = tooltip
+		button.pressed.connect(on_pressed)
+		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		chip.set_anchors_preset(Control.PRESET_FULL_RECT)
+		button.add_child(chip)
+		button.custom_minimum_size = chip.get_combined_minimum_size()
+		parent.add_child(button)
+	else:
+		parent.add_child(chip)
 	return chip
 
 

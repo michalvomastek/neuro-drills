@@ -111,8 +111,13 @@ func clear() -> void:
 
 
 ## Forgets the runs of one variant only (the progress screen's selection).
+## When nothing is left it is a full clear, so the badges start over too.
 func clear_variant(variant: String) -> void:
-	if history.remove_variant(variant) > 0:
+	if history.remove_variant(variant) == 0:
+		return
+	if history.records.is_empty():
+		clear()
+	else:
 		_save_all()
 
 

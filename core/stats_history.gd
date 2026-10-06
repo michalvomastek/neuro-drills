@@ -57,8 +57,6 @@ func set_rpe(id: String, rpe: int) -> bool:
 	return true
 
 
-## Runs of one variant with a usable primary value, oldest first.
-## Runs of one variant, oldest first.
 ## Removes every run of [param variant]; returns how many went.
 func remove_variant(variant: String) -> int:
 	var kept: Array[Dictionary] = []
@@ -70,6 +68,7 @@ func remove_variant(variant: String) -> int:
 	return removed
 
 
+## Runs of one variant with a usable primary value, oldest first.
 func for_variant(variant: String) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for record in records:

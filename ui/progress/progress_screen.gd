@@ -179,8 +179,8 @@ func _on_clear_confirmed() -> void:
 	if _variant.is_empty():
 		return
 	StatsStore.clear_variant(_variant)
-	_variant = ""
-	_populate()
+	# A fresh screen also refreshes the top bar's numbers through screen_changed.
+	SceneRouter.show_progress()
 
 
 func _add_variant_button(variant: String) -> void:
