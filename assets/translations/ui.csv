@@ -608,6 +608,8 @@ REACTION_LISTEN,Poslouchej…,Listen…
 GONOGO_OPT_AUDITORY,Sluchová varianta: vysoký tón = klikni · hluboký tón = nic,Auditory variant: high tone = click · low tone = nothing
 VARIANT_AUDITORY,sluchově,auditory
 VARIANT_CHAINS,řetězce,chains
+VARIANT_TARGET,součet %s,sum %s
+VARIANT_DYNAMIC,měnící se součet,changing sum
 SETTINGS_SOUND,Zvuky správně / špatně / hotovo,Sounds for correct / wrong / done
 MENU_SETTINGS,Nastavení,Settings
 SETTINGS_TITLE,Nastavení,Settings

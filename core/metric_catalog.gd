@@ -130,6 +130,8 @@ const OPTION_LABELS: Dictionary = {
 	"backward": "VARIANT_BACKWARD", "adaptive": "VARIANT_ADAPTIVE", "part_b": "TRAIL_OPT_PART_B",
 	"moving": "TRAIL_OPT_MOVING", "auditory": "VARIANT_AUDITORY", "touch": "VARIANT_TOUCH",
 	"chains": "VARIANT_CHAINS",
+	# Legacy sum-pairs options (fixed / changing target, removed 2026-10-07): runs saved before keep their labels.
+	"target": "VARIANT_TARGET", "dynamic": "VARIANT_DYNAMIC",
 }
 ## Translation key per enumerated value, keyed by "option=value".
 const VALUE_LABELS: Dictionary = {

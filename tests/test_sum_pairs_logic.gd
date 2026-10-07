@@ -141,6 +141,42 @@ func test_target_changes_and_always_has_pairs() -> void:
 
 
 ## Many random boards and moves: the two-pair floor holds on every one.
+## The picker prefers a sum with two pairs over sums with one, never keeps
+## the current target when another sum is on offer, and draws a fresh one
+## when the board offers nothing.
+func test_next_target_preferences() -> void:
+	var logic := SumPairsLogic.new(4, false, _rng(12))
+	for attempt in 10:
+		_blank(logic)
+		# Rows 0 and 2 give 10 twice (3 7 / 3 7 in different columns); row 3
+		# gives 6 once and its cells see 3 and 7 above them: 7 and 9 once each.
+		logic.grid[0] = 3
+		logic.grid[1] = 7
+		logic.grid[10] = 3
+		logic.grid[11] = 7
+		logic.grid[12] = 4
+		logic.grid[13] = 2
+		logic.target = 7
+		logic._next_target()
+		assert_eq(logic.target, 10, "attempt %d: the sum with two pairs wins" % attempt)
+	_blank(logic)
+	logic.grid[0] = 3
+	logic.grid[1] = 7
+	logic.grid[12] = 4
+	logic.grid[13] = 2
+	logic.target = 10
+	logic._next_target()
+	assert_true([6, 7, 9].has(logic.target), "another offered sum is picked, not the current one: %d" % logic.target)
+	_blank(logic)
+	logic.grid[0] = 1
+	logic.grid[1] = 1
+	logic.target = 10
+	logic._next_target()
+	assert_ne(logic.target, 10, "nothing on offer: a fresh target is drawn")
+	assert_true(logic.target >= SumPairsLogic.TARGET_MIN and logic.target <= SumPairsLogic.TARGET_MAX)
+	assert_true(logic.valid_pairs().size() >= 1, "and the top-up makes it playable")
+
+
 func test_two_pairs_floor_holds_on_random_boards() -> void:
 	for seed_value in 40:
 		for size: int in [4, 5, 6]:

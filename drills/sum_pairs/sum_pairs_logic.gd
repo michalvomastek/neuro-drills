@@ -23,7 +23,7 @@ const ENSURE_ATTEMPTS := 40
 const MIN_PAIRS := 2
 
 var size: int
-var target: int = 0
+var target: int
 var chains: bool
 var grid: Array[int] = []
 var selection: Array[int] = []
@@ -34,6 +34,9 @@ var chain_count: int = 0
 ## Time between consecutive completions (or from the start to the first).
 var times_ms: Array[int] = []
 var distances: Array[int] = []
+## Cells the last refill wrote; the top-up re-rolls these first, so numbers
+## the player has already seen change as rarely as possible.
+var _last_refilled: Array[int] = []
 var _last_success_ms: int = 0
 var _rng: RandomNumberGenerator
 
@@ -45,6 +48,7 @@ func _init(p_size: int, p_chains: bool, rng: RandomNumberGenerator) -> void:
 	grid.resize(size * size)
 	grid.fill(0)
 	_refill(number_count())
+	target = _rng.randi_range(TARGET_MIN, TARGET_MAX)
 	_next_target()
 
 
@@ -233,10 +237,6 @@ func _filled_cells() -> Array[int]:
 	return cells
 
 
-func _random_value() -> int:
-	return _rng.randi_range(MIN_VALUE, MAX_VALUE)
-
-
 ## A value that has a partner within 1-9 for the current target.
 func _pairable_value() -> int:
 	return _rng.randi_range(maxi(MIN_VALUE, target - MAX_VALUE), mini(MAX_VALUE, target - MIN_VALUE))
@@ -249,9 +249,11 @@ func _refill(count: int, avoid: Array[int] = []) -> void:
 	if empty.size() - avoid.size() >= count:
 		for cell in avoid:
 			empty.erase(cell)
+	_last_refilled.clear()
 	for i in mini(count, empty.size()):
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
-		grid[cell] = _random_value()
+		grid[cell] = _rng.randi_range(MIN_VALUE, MAX_VALUE)
+		_last_refilled.append(cell)
 
 
 ## Every pair of numbers that see each other, each pair once.
@@ -285,7 +287,9 @@ func _ensure_move() -> void:
 			_force_visible_pair()
 			continue
 		if candidates.is_empty() or _attempt < ENSURE_ATTEMPTS / 2:
-			grid[free[_rng.randi_range(0, free.size() - 1)]] = _random_value()
+			var fresh := free.filter(func(cell: int) -> bool: return _last_refilled.has(cell))
+			var pool: Array[int] = fresh if not fresh.is_empty() else free
+			grid[pool[_rng.randi_range(0, pool.size() - 1)]] = _rng.randi_range(MIN_VALUE, MAX_VALUE)
 		else:
 			var pair: Vector2i = candidates[_rng.randi_range(0, candidates.size() - 1)]
 			var value := _pairable_value()
@@ -321,7 +325,9 @@ func _neighbours(cell: int) -> Array[int]:
 
 ## The next target: a sum between TARGET_MIN and TARGET_MAX that the visible
 ## pairs already offer, preferring one with MIN_PAIRS pairs and one different
-## from the current target; then the board is topped up to MIN_PAIRS pairs.
+## from the current target; when the board offers nothing new, a random
+## target is drawn and the top-up makes it playable. Then the board is
+## topped up to MIN_PAIRS pairs.
 func _next_target() -> void:
 	var counts: Dictionary = {}
 	for pair in _visible_pairs():
@@ -340,7 +346,8 @@ func _next_target() -> void:
 			rich.append(sum)
 	var pool := rich if not rich.is_empty() else any
 	if pool.is_empty():
-		if target == 0:
+		var previous := target
+		while target == previous:
 			target = _rng.randi_range(TARGET_MIN, TARGET_MAX)
 	else:
 		target = pool[_rng.randi_range(0, pool.size() - 1)]
