@@ -1,5 +1,5 @@
-## Sum pairs: tap two numbers that add up to the target and see each other
-## along a clear row, column or diagonal; they vanish and new numbers appear
+## Sum pairs: tap two numbers that add up to the target and sit in one row
+## or column with nothing between them; they vanish and new numbers appear
 ## elsewhere. Timed run; options: grid size, target, a target that changes
 ## after every pair, and chains of several numbers.
 extends TrialDrill

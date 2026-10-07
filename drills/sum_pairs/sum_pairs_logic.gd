@@ -1,7 +1,8 @@
 ## Sum pairs: numbers 1-9 sit on a partly filled grid; two (or, with chains,
 ## more) numbers whose sum is the target are removed when they are joined
-## along a row or a column with no other number in between. Removed numbers are replaced elsewhere, so the board
-## keeps its density and the run is timed. Pure logic: the scene only taps.
+## along a row or a column with no other number in between. Removed numbers
+## are replaced elsewhere, so the board keeps its density and the run is
+## timed. Pure logic: the scene only taps.
 class_name SumPairsLogic
 extends RefCounted
 
@@ -155,8 +156,20 @@ func has_move() -> bool:
 	return not valid_pairs().is_empty()
 
 
-func _enough_moves() -> bool:
-	return valid_pairs().size() >= MIN_PAIRS
+## Numbered cells that take part in none of [param pairs]; re-rolling them
+## cannot break a pair the player may already be looking at.
+func unpaired_cells(pairs: Array[Vector2i]) -> Array[int]:
+	var paired: Array[int] = []
+	for pair in pairs:
+		if not paired.has(pair.x):
+			paired.append(pair.x)
+		if not paired.has(pair.y):
+			paired.append(pair.y)
+	var cells: Array[int] = []
+	for cell in _filled_cells():
+		if not paired.has(cell):
+			cells.append(cell)
+	return cells
 
 
 func build_result(drill_id: StringName, config: Dictionary, duration_ms: int) -> DrillResult:
@@ -253,23 +266,44 @@ func _refill(count: int, avoid: Array[int] = []) -> void:
 	var placing := mini(count, empty.size())
 	var smart_last := not dynamic and not _filled_cells().is_empty()
 	last_refilled.clear()
-	for i in placing:
+	for i in placing - 1:
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
-		grid[cell] = _playable_value(cell) if smart_last and i == placing - 1 else _random_value()
+		grid[cell] = _random_value()
 		last_refilled.append(cell)
+	if placing == 0:
+		return
+	if not smart_last:
+		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
+		grid[cell] = _random_value()
+		last_refilled.append(cell)
+		return
+	# The last number goes to a free cell that sees a usable partner; the
+	# cells are tried in random order (seeded) so the board stays unpredictable.
+	for i in range(empty.size() - 1, 0, -1):
+		var j := _rng.randi_range(0, i)
+		var swap: int = empty[i]
+		empty[i] = empty[j]
+		empty[j] = swap
+	for cell in empty:
+		var values := _playable_values(cell)
+		if not values.is_empty():
+			grid[cell] = values[_rng.randi_range(0, values.size() - 1)]
+			last_refilled.append(cell)
+			return
+	var fallback: int = empty[0]
+	grid[fallback] = _pairable_value()
+	last_refilled.append(fallback)
 
 
-## A value for [param cell] that has a partner for the target among the
-## numbers the cell sees; a random pairable value when it sees none.
-func _playable_value(cell: int) -> int:
+## Values for [param cell] that have a partner for the target among the
+## numbers the cell sees.
+func _playable_values(cell: int) -> Array[int]:
 	var values: Array[int] = []
 	for other in _filled_cells():
 		var needed: int = target - grid[other]
 		if needed >= MIN_VALUE and needed <= MAX_VALUE and not values.has(needed) and line_clear(cell, other):
 			values.append(needed)
-	if values.is_empty():
-		return _pairable_value()
-	return values[_rng.randi_range(0, values.size() - 1)]
+	return values
 
 
 ## Every pair of numbers that see each other, each pair once.
@@ -283,51 +317,33 @@ func _visible_pairs() -> Array[Vector2i]:
 	return pairs
 
 
-## Makes sure at least MIN_PAIRS valid pairs exist: re-rolls values that are
-## not part of a valid pair, then as a last resort rewrites visible pairs to
-## add up to the target.
+## Keeps MIN_PAIRS valid pairs on the board whenever the numbers allow it:
+## re-rolls numbers that are in no valid pair, then rewrites visible pairs
+## made of such numbers, so an existing pair (the refilled partner included)
+## is never broken. Bounded: a board too small or too full to hold two
+## pairs keeps what it has.
 func _ensure_move() -> void:
 	for _attempt in ENSURE_ATTEMPTS:
-		if _enough_moves():
+		var pairs := valid_pairs()
+		if pairs.size() >= MIN_PAIRS:
 			return
-		var free := _unpaired_cells()
+		var free := unpaired_cells(pairs)
 		if free.is_empty():
-			break
-		var cell: int = free[_rng.randi_range(0, free.size() - 1)]
-		grid[cell] = _random_value()
-	while not _enough_moves():
-		var visible := _visible_pairs()
-		if visible.is_empty():
-			_force_visible_pair()
-			visible = _visible_pairs()
-		if visible.is_empty():
 			return
-		var pair: Vector2i = visible[_rng.randi_range(0, visible.size() - 1)]
-		if grid[pair.x] + grid[pair.y] == target:
-			# Rewriting a pair that already counts would not add one.
-			var others := visible.filter(func(p: Vector2i) -> bool: return grid[p.x] + grid[p.y] != target)
-			if others.is_empty():
-				return
-			pair = others[_rng.randi_range(0, others.size() - 1)]
-		var a := _pairable_value()
-		grid[pair.x] = a
-		grid[pair.y] = target - a
-
-
-## Numbered cells that take part in no valid pair; re-rolling them cannot
-## break a pair the player may already be looking at.
-func _unpaired_cells() -> Array[int]:
-	var paired: Array[int] = []
-	for pair in valid_pairs():
-		if not paired.has(pair.x):
-			paired.append(pair.x)
-		if not paired.has(pair.y):
-			paired.append(pair.y)
-	var cells: Array[int] = []
-	for cell in _filled_cells():
-		if not paired.has(cell):
-			cells.append(cell)
-	return cells
+		var candidates: Array[Vector2i] = []
+		for pair in _visible_pairs():
+			if free.has(pair.x) and free.has(pair.y):
+				candidates.append(pair)
+		if candidates.is_empty() and pairs.is_empty():
+			_force_visible_pair()
+			continue
+		if candidates.is_empty() or _attempt < ENSURE_ATTEMPTS / 2:
+			grid[free[_rng.randi_range(0, free.size() - 1)]] = _random_value()
+		else:
+			var pair: Vector2i = candidates[_rng.randi_range(0, candidates.size() - 1)]
+			var value := _pairable_value()
+			grid[pair.x] = value
+			grid[pair.y] = target - value
 
 
 ## No two numbers see each other (tiny boards): move one number next to another.

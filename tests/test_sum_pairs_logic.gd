@@ -22,6 +22,13 @@ func test_board_density_and_move_exists() -> void:
 				assert_true(v >= 1 and v <= 9)
 		assert_eq(filled, logic.number_count())
 		assert_true(logic.valid_pairs().size() >= SumPairsLogic.MIN_PAIRS, "size %d starts with %d pairs" % [size, SumPairsLogic.MIN_PAIRS])
+	# A forced pair on a board where nothing sees anything.
+	var tiny := SumPairsLogic.new(4, 10, false, false, _rng(11))
+	tiny.grid.fill(0)
+	tiny.grid[0] = 3
+	tiny.grid[15] = 3
+	tiny._ensure_move()
+	assert_true(tiny.has_move(), "the forced pair makes a move")
 
 
 func test_line_of_sight() -> void:
@@ -171,6 +178,26 @@ func test_fixed_target_values_stay_pairable() -> void:
 			var pair: Vector2i = logic.valid_pairs()[0]
 			logic.tap(pair.x, round * 100)
 			assert_eq(logic.tap(pair.y, round * 100 + 50), SumPairsLogic.Outcome.COMPLETED)
+
+
+## Many random boards and moves: the two-pair floor holds and the refilled
+## partner survives the top-up on every one of them.
+func test_two_pairs_floor_holds_on_random_boards() -> void:
+	for seed_value in 40:
+		for size: int in [4, 5, 6]:
+			var logic := SumPairsLogic.new(size, 10, false, false, _rng(seed_value))
+			for round in 15:
+				var pairs := logic.valid_pairs()
+				assert_true(pairs.size() >= SumPairsLogic.MIN_PAIRS, "seed %d size %d round %d: %d pairs" % [seed_value, size, round, pairs.size()])
+				var pair: Vector2i = pairs[seed_value % pairs.size()]
+				logic.tap(pair.x, round * 100)
+				assert_eq(logic.tap(pair.y, round * 100 + 50), SumPairsLogic.Outcome.COMPLETED)
+				var smart: int = logic.last_refilled[logic.last_refilled.size() - 1]
+				var joins := false
+				for p in logic.valid_pairs():
+					if p.x == smart or p.y == smart:
+						joins = true
+				assert_true(joins, "seed %d size %d round %d: refilled partner kept" % [seed_value, size, round])
 
 
 func test_build_result_metrics() -> void:
