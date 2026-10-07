@@ -21,7 +21,7 @@ func test_board_density_and_move_exists() -> void:
 				filled += 1
 				assert_true(v >= 1 and v <= 9)
 		assert_eq(filled, logic.number_count())
-		assert_true(logic.has_move(), "size %d has a move" % size)
+		assert_true(logic.valid_pairs().size() >= SumPairsLogic.MIN_PAIRS, "size %d starts with %d pairs" % [size, SumPairsLogic.MIN_PAIRS])
 
 
 func test_line_of_sight() -> void:
@@ -32,19 +32,17 @@ func test_line_of_sight() -> void:
 	logic.grid[15] = 7
 	logic.grid[12] = 1
 	assert_true(logic.line_clear(0, 3), "row clear")
-	assert_true(logic.line_clear(0, 15), "diagonal clear")
+	assert_false(logic.line_clear(0, 15), "diagonal is not a line")
 	assert_true(logic.line_clear(0, 12), "column clear")
-	assert_true(logic.line_clear(3, 12), "anti-diagonal through empty cells")
+	assert_false(logic.line_clear(3, 12), "anti-diagonal is not a line")
+	assert_eq(logic.cells_between(0, 3), [1, 2] as Array[int])
+	assert_eq(logic.cells_between(12, 0), [4, 8] as Array[int])
+	assert_eq(logic.cells_between(0, 5), [] as Array[int], "no shared row or column")
 	logic.grid[1] = 5
 	assert_false(logic.line_clear(0, 3), "row blocked by 1")
-	assert_eq(logic.cells_between(0, 6), [1, 5] as Array[int], "knight move crosses two cells")
-	assert_false(logic.line_clear(0, 6), "knight move blocked by 1")
-	logic.grid[1] = 0
-	logic.grid[6] = 2
-	assert_true(logic.line_clear(0, 6), "knight move through empty cells")
-	assert_eq(logic.cells_between(0, 15), [5, 10] as Array[int], "long diagonal only touches corners of the off-diagonal cells")
-	assert_eq(logic.cells_between(0, 14), [4, 5, 9, 10] as Array[int], "a 2:3 line crosses four cells")
-	assert_true(logic.line_clear(12, 3) == logic.line_clear(3, 12), "symmetric")
+	assert_false(logic.line_clear(0, 6), "knight move is no line")
+	assert_true(logic.line_clear(1, 13), "column through empty cells")
+	assert_true(logic.line_clear(12, 0) == logic.line_clear(0, 12), "symmetric")
 
 
 func test_pair_completes_and_refills() -> void:
@@ -103,7 +101,7 @@ func test_chains_sum_up_to_target() -> void:
 	assert_eq(logic.tap(3, 250), SumPairsLogic.Outcome.WRONG_SUM, "over the target")
 	assert_eq(logic.tap(0, 300), SumPairsLogic.Outcome.SELECTED)
 	assert_eq(logic.tap(2, 400), SumPairsLogic.Outcome.SELECTED)
-	assert_eq(logic.tap(10, 500), SumPairsLogic.Outcome.COMPLETED)
+	assert_eq(logic.tap(10, 500), SumPairsLogic.Outcome.COMPLETED, "2 -> 3 along the row, 3 -> 5 down the column")
 	assert_eq(logic.chain_count, 1)
 	assert_eq(logic.cleared_count, 3)
 	assert_eq(logic.distances, [2, 2] as Array[int])
@@ -159,6 +157,7 @@ func test_dynamic_target_always_has_a_pair() -> void:
 		var pair: Vector2i = pairs[0]
 		assert_eq(logic.tap(pair.x, round * 1000), SumPairsLogic.Outcome.SELECTED)
 		assert_eq(logic.tap(pair.y, round * 1000 + 500), SumPairsLogic.Outcome.COMPLETED)
+		assert_true(logic.valid_pairs().size() >= SumPairsLogic.MIN_PAIRS, "round %d keeps %d pairs" % [round, SumPairsLogic.MIN_PAIRS])
 	assert_eq(logic.completed, 30)
 
 

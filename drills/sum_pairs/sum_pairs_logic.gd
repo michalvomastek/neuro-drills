@@ -1,8 +1,6 @@
 ## Sum pairs: numbers 1-9 sit on a partly filled grid; two (or, with chains,
-## more) numbers whose sum is the target are removed when they are joined by
-## clear straight lines: the segment between the two cell centres must not
-## cross the inside of any other numbered cell (any angle, not only rows,
-## columns and diagonals). Removed numbers are replaced elsewhere, so the board
+## more) numbers whose sum is the target are removed when they are joined
+## along a row or a column with no other number in between. Removed numbers are replaced elsewhere, so the board
 ## keeps its density and the run is timed. Pure logic: the scene only taps.
 class_name SumPairsLogic
 extends RefCounted
@@ -17,10 +15,9 @@ const DENSITY := 0.6
 const DYNAMIC_MIN := 6
 const DYNAMIC_MAX := 14
 const ENSURE_ATTEMPTS := 40
-## Samples per cell along a segment when looking for numbers in the way.
-const LINE_SAMPLES_PER_CELL := 16
-## A sample this close to a grid line sits on the boundary, not inside a cell.
-const LINE_EPSILON := 0.001
+## Valid pairs the board keeps at least after every move: a single one is
+## too easy to miss under time pressure.
+const MIN_PAIRS := 2
 
 var size: int
 var target: int
@@ -104,11 +101,11 @@ func tap(cell: int, elapsed_ms: int) -> Outcome:
 	return Outcome.WRONG_SUM
 
 
-## True when the straight segment between the centres of the two cells
-## crosses no other numbered cell. The segment is sampled; a sample on a
-## grid line (a 45-degree diagonal touches corners) belongs to no cell.
+## True when the two cells share a row or a column and no number lies
+## between them (the maintainer tried diagonals and free angles: a tap-tap
+## game on a phone reads best with straight rows and columns).
 func line_clear(a: int, b: int) -> bool:
-	if a == b:
+	if a == b or not aligned(a, b):
 		return false
 	for cell in cells_between(a, b):
 		if grid[cell] != 0:
@@ -116,23 +113,29 @@ func line_clear(a: int, b: int) -> bool:
 	return true
 
 
-## The cells whose inside the segment from the centre of [param a] to the
-## centre of [param b] passes through, the two ends left out.
+## The cells strictly between [param a] and [param b] along their shared row
+## or column; empty when the two cells share neither.
 func cells_between(a: int, b: int) -> Array[int]:
-	var from := Vector2(a % size + 0.5, a / size + 0.5)
-	var to := Vector2(b % size + 0.5, b / size + 0.5)
-	var steps := maxi(1, ceili(from.distance_to(to) * LINE_SAMPLES_PER_CELL))
 	var cells: Array[int] = []
-	for i in range(1, steps):
-		var point := from.lerp(to, float(i) / steps)
-		var fx := point.x - floorf(point.x)
-		var fy := point.y - floorf(point.y)
-		if fx < LINE_EPSILON or fx > 1.0 - LINE_EPSILON or fy < LINE_EPSILON or fy > 1.0 - LINE_EPSILON:
-			continue
-		var cell := floori(point.y) * size + floori(point.x)
-		if cell != a and cell != b and not cells.has(cell):
-			cells.append(cell)
+	var ax := a % size
+	var ay := a / size
+	var bx := b % size
+	var by := b / size
+	if ax != bx and ay != by:
+		return cells
+	var step := 1 if ay == by else size
+	var low := mini(a, b)
+	var high := maxi(a, b)
+	var cell := low + step
+	while cell < high:
+		cells.append(cell)
+		cell += step
 	return cells
+
+
+## True when the two cells lie in one row or one column.
+func aligned(a: int, b: int) -> bool:
+	return a % size == b % size or a / size == b / size
 
 
 func distance(a: int, b: int) -> int:
@@ -150,6 +153,10 @@ func valid_pairs() -> Array[Vector2i]:
 
 func has_move() -> bool:
 	return not valid_pairs().is_empty()
+
+
+func _enough_moves() -> bool:
+	return valid_pairs().size() >= MIN_PAIRS
 
 
 func build_result(drill_id: StringName, config: Dictionary, duration_ms: int) -> DrillResult:
@@ -276,25 +283,51 @@ func _visible_pairs() -> Array[Vector2i]:
 	return pairs
 
 
-## Makes sure at least one valid pair exists: re-rolls values, then as a last
-## resort rewrites one visible pair to add up to the target.
+## Makes sure at least MIN_PAIRS valid pairs exist: re-rolls values that are
+## not part of a valid pair, then as a last resort rewrites visible pairs to
+## add up to the target.
 func _ensure_move() -> void:
 	for _attempt in ENSURE_ATTEMPTS:
-		if has_move():
+		if _enough_moves():
 			return
-		var filled := _filled_cells()
-		var cell: int = filled[_rng.randi_range(0, filled.size() - 1)]
+		var free := _unpaired_cells()
+		if free.is_empty():
+			break
+		var cell: int = free[_rng.randi_range(0, free.size() - 1)]
 		grid[cell] = _random_value()
-	if has_move():
-		return
-	var visible := _visible_pairs()
-	if visible.is_empty():
-		_force_visible_pair()
-		visible = _visible_pairs()
-	var pair: Vector2i = visible[_rng.randi_range(0, visible.size() - 1)]
-	var a := _pairable_value()
-	grid[pair.x] = a
-	grid[pair.y] = target - a
+	while not _enough_moves():
+		var visible := _visible_pairs()
+		if visible.is_empty():
+			_force_visible_pair()
+			visible = _visible_pairs()
+		if visible.is_empty():
+			return
+		var pair: Vector2i = visible[_rng.randi_range(0, visible.size() - 1)]
+		if grid[pair.x] + grid[pair.y] == target:
+			# Rewriting a pair that already counts would not add one.
+			var others := visible.filter(func(p: Vector2i) -> bool: return grid[p.x] + grid[p.y] != target)
+			if others.is_empty():
+				return
+			pair = others[_rng.randi_range(0, others.size() - 1)]
+		var a := _pairable_value()
+		grid[pair.x] = a
+		grid[pair.y] = target - a
+
+
+## Numbered cells that take part in no valid pair; re-rolling them cannot
+## break a pair the player may already be looking at.
+func _unpaired_cells() -> Array[int]:
+	var paired: Array[int] = []
+	for pair in valid_pairs():
+		if not paired.has(pair.x):
+			paired.append(pair.x)
+		if not paired.has(pair.y):
+			paired.append(pair.y)
+	var cells: Array[int] = []
+	for cell in _filled_cells():
+		if not paired.has(cell):
+			cells.append(cell)
+	return cells
 
 
 ## No two numbers see each other (tiny boards): move one number next to another.
@@ -315,12 +348,11 @@ func _neighbours(cell: int) -> Array[int]:
 	var cells: Array[int] = []
 	var cx := cell % size
 	var cy := cell / size
-	for dy in range(-1, 2):
-		for dx in range(-1, 2):
-			var x := cx + dx
-			var y := cy + dy
-			if (dx != 0 or dy != 0) and x >= 0 and x < size and y >= 0 and y < size:
-				cells.append(y * size + x)
+	for offset: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+		var x := cx + offset.x
+		var y := cy + offset.y
+		if x >= 0 and x < size and y >= 0 and y < size:
+			cells.append(y * size + x)
 	return cells
 
 
