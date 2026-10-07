@@ -38,6 +38,13 @@ var _screen: StringName = &""
 var _tabs: Dictionary = {}
 ## Top and bottom safe-area insets of the device in design units.
 var _insets: Vector2 = Vector2.ZERO
+## Window width at which a non-zero top inset was last measured: while iOS
+## shows a share or file sheet the page reports no safe area, and the
+## resize that follows the sheet is the last one, so a drop to zero in the
+## same orientation is not believed (the notch does not move).
+var _inset_width: int = 0
+## Re-measures some time after a resize (the sheet may still be up).
+const INSET_RECHECK_SECONDS: Array[float] = [0.5, 2.0]
 
 
 func _ready() -> void:
@@ -133,13 +140,34 @@ const BOTTOM_INSET_MAX := 12.0
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
-	_insets = Layout.safe_insets(get_tree().root)
-	_apply_insets()
+	_measure_insets()
+	for delay in INSET_RECHECK_SECONDS:
+		get_tree().create_timer(delay).timeout.connect(_measure_insets)
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
 	var padding := bar_style.get_content_margin(SIDE_LEFT) + bar_style.get_content_margin(SIDE_RIGHT)
 	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
+
+
+## Reads the safe-area insets and applies them when they changed. A zero top
+## inset at the width where a notch was measured before is a transient
+## reading (a system sheet is up) and keeps the previous value.
+func _measure_insets() -> void:
+	var window := get_tree().root
+	var measured := Layout.safe_insets(window)
+	if measured.x > 0.0:
+		_inset_width = window.size.x
+	elif _inset_width == window.size.x and _insets.x > 0.0:
+		measured.x = _insets.x
+	if measured != _insets:
+		_insets = measured
+		_apply_insets()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		_measure_insets()
 
 
 ## With the bars shown they reach the edges of the screen and grow their
