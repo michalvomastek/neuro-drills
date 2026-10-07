@@ -16,8 +16,9 @@ var _grids: Array[GridContainer] = []
 ## the bottom bar (so the scroll indicator sits at the window edge like on
 ## every other screen), and the content keeps the screen margin inside.
 var _tab_margins: Array[MarginContainer] = []
-## Room under the pinned filter strip (the TabContainer's own top padding
-## is zeroed in _ready, so this is the whole gap).
+## Room above and under the pinned filter strip (the TabContainer's own top
+## padding is zeroed in _ready, so this is the whole gap); the same on both
+## sides, so the strip sits evenly between the top bar and the list.
 const STRIP_GAP := 12
 
 
@@ -47,9 +48,8 @@ func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	var screen := get_theme_stylebox("panel", "Screen")
 	var side := Layout.side_margin(self) + roundi(screen.get_margin(SIDE_LEFT))
-	var top := (Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE) + roundi(screen.get_margin(SIDE_TOP))
 	var bottom := (Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE) + roundi(screen.get_margin(SIDE_BOTTOM))
-	Layout.set_margins_each(_strip_frame, 0, top, STRIP_GAP)
+	Layout.set_margins_each(_strip_frame, 0, STRIP_GAP, STRIP_GAP)
 	Layout.set_margins_each(_strip_margin, side, 0, 0)
 	for tab_margin in _tab_margins:
 		Layout.set_margins_each(tab_margin, side, 0, bottom)
