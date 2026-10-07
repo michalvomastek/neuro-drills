@@ -100,10 +100,14 @@ static func wrap_check_boxes(root: Control) -> void:
 
 
 static func set_margins(margin: MarginContainer, horizontal: int, vertical: int) -> void:
+	set_margins_each(margin, horizontal, vertical, vertical)
+
+
+static func set_margins_each(margin: MarginContainer, horizontal: int, top: int, bottom: int) -> void:
 	margin.add_theme_constant_override("margin_left", horizontal)
 	margin.add_theme_constant_override("margin_right", horizontal)
-	margin.add_theme_constant_override("margin_top", vertical)
-	margin.add_theme_constant_override("margin_bottom", vertical)
+	margin.add_theme_constant_override("margin_top", top)
+	margin.add_theme_constant_override("margin_bottom", bottom)
 
 
 ## Width of the content of a centred PanelContainer: the design width on a

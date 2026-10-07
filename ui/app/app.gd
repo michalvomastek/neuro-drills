@@ -38,13 +38,16 @@ var _screen: StringName = &""
 var _tabs: Dictionary = {}
 ## Top and bottom safe-area insets of the device in design units.
 var _insets: Vector2 = Vector2.ZERO
-## Window width at which a non-zero top inset was last measured: while iOS
-## shows a share or file sheet the page reports no safe area, and the
-## resize that follows the sheet is the last one, so a drop to zero in the
-## same orientation is not believed (the notch does not move).
-var _inset_width: int = 0
-## Re-measures some time after a resize (the sheet may still be up).
+## While iOS shows a share or file sheet the page reports no safe area, and
+## the resize that follows the sheet is often the last one. A reading that
+## drops an inset to zero is therefore held back until a later re-check
+## confirms it; the last re-check is trusted as it is, so a real change
+## (another device state, multitasking) still gets through.
 const INSET_RECHECK_SECONDS: Array[float] = [0.5, 2.0]
+## Window size the current re-check sequence was started for; a new
+## sequence supersedes the pending timers of the old one.
+var _inset_sequence: int = 0
+var _inset_window_size: Vector2i = Vector2i.ZERO
 
 
 func _ready() -> void:
@@ -140,9 +143,11 @@ const BOTTOM_INSET_MAX := 12.0
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
-	_measure_insets()
-	for delay in INSET_RECHECK_SECONDS:
-		get_tree().create_timer(delay).timeout.connect(_measure_insets)
+	# App.resized also lands here (every inset change moves the App), so a
+	# new re-check sequence starts only when the window itself changed.
+	if get_tree().root.size != _inset_window_size:
+		_inset_window_size = get_tree().root.size
+		_schedule_inset_checks()
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
@@ -150,24 +155,39 @@ func _apply_scale() -> void:
 	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
 
 
-## Reads the safe-area insets and applies them when they changed. A zero top
-## inset at the width where a notch was measured before is a transient
-## reading (a system sheet is up) and keeps the previous value.
-func _measure_insets() -> void:
-	var window := get_tree().root
-	var measured := Layout.safe_insets(window)
-	if measured.x > 0.0:
-		_inset_width = window.size.x
-	elif _inset_width == window.size.x and _insets.x > 0.0:
-		measured.x = _insets.x
+## Measures now (holding back drops to zero) and again after each delay in
+## INSET_RECHECK_SECONDS, the last time trusting the reading; timers of an
+## older sequence do nothing.
+func _schedule_inset_checks() -> void:
+	_inset_sequence += 1
+	var sequence := _inset_sequence
+	_measure_insets(false)
+	for i in INSET_RECHECK_SECONDS.size():
+		var trusted := i == INSET_RECHECK_SECONDS.size() - 1
+		get_tree().create_timer(INSET_RECHECK_SECONDS[i]).timeout.connect(func() -> void:
+			if sequence == _inset_sequence:
+				_measure_insets(trusted))
+
+
+## Reads the safe-area insets and applies them when they changed. Unless
+## [param trusted], an inset that fell to zero keeps its previous value
+## (a system sheet is probably up); a non-zero reading is always taken.
+func _measure_insets(trusted: bool) -> void:
+	var measured := Layout.safe_insets(get_tree().root)
+	if not trusted:
+		if measured.x == 0.0:
+			measured.x = _insets.x
+		if measured.y == 0.0:
+			measured.y = _insets.y
 	if measured != _insets:
 		_insets = measured
 		_apply_insets()
 
 
+## Focus coming back (a sheet closed) starts a re-check sequence too.
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
-		_measure_insets()
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_schedule_inset_checks()
 
 
 ## With the bars shown they reach the edges of the screen and grow their

@@ -16,7 +16,8 @@ var _grids: Array[GridContainer] = []
 ## the bottom bar (so the scroll indicator sits at the window edge like on
 ## every other screen), and the content keeps the screen margin inside.
 var _tab_margins: Array[MarginContainer] = []
-## Room under the pinned filter strip.
+## Room under the pinned filter strip (the TabContainer's own top padding
+## is zeroed in _ready, so this is the whole gap).
 const STRIP_GAP := 12
 
 
@@ -24,6 +25,7 @@ func _ready() -> void:
 	# The category filter is the strip of pills on every screen size; the
 	# tab bar itself stays hidden (its arrows were the only way to page).
 	_tabs.tabs_visible = false
+	_tabs.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	_add_all_tab()
 	for category in DrillRegistry.CATEGORY_ORDER:
 		var definitions := DrillRegistry.get_by_category(category)
@@ -39,19 +41,18 @@ func _ready() -> void:
 
 ## One column and slim margins on a phone, two columns and wide margins
 ## otherwise. The filter strip is pinned under the top bar; the screen
-## margins sit inside the strip and inside the scrolling lists.
+## margins (plus the Screen panel's padding the other screens get from
+## their PanelContainer) sit inside the strip and inside the scrolling lists.
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
-	var side := Layout.side_margin(self)
-	var vertical := Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE
-	_strip_frame.add_theme_constant_override("margin_top", vertical)
-	_strip_frame.add_theme_constant_override("margin_bottom", STRIP_GAP)
-	_strip_margin.add_theme_constant_override("margin_left", side)
-	_strip_margin.add_theme_constant_override("margin_right", side)
+	var screen := get_theme_stylebox("panel", "Screen")
+	var side := Layout.side_margin(self) + roundi(screen.get_margin(SIDE_LEFT))
+	var top := (Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE) + roundi(screen.get_margin(SIDE_TOP))
+	var bottom := (Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE) + roundi(screen.get_margin(SIDE_BOTTOM))
+	Layout.set_margins_each(_strip_frame, 0, top, STRIP_GAP)
+	Layout.set_margins_each(_strip_margin, side, 0, 0)
 	for tab_margin in _tab_margins:
-		tab_margin.add_theme_constant_override("margin_left", side)
-		tab_margin.add_theme_constant_override("margin_right", side)
-		tab_margin.add_theme_constant_override("margin_bottom", vertical)
+		Layout.set_margins_each(tab_margin, side, 0, bottom)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
 
