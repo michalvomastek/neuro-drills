@@ -35,6 +35,8 @@ var chain_count: int = 0
 ## Time between consecutive completions (or from the start to the first).
 var times_ms: Array[int] = []
 var distances: Array[int] = []
+## Cells filled by the last refill, the one with a guaranteed partner last.
+var last_refilled: Array[int] = []
 var _last_success_ms: int = 0
 var _rng: RandomNumberGenerator
 
@@ -232,17 +234,22 @@ func _pairable_value() -> int:
 
 
 ## New numbers go to empty cells other than the ones just cleared, so a
-## joined number never seems to come straight back. The first new number
-## is chosen so that it can be joined with a number it sees (fixed target),
-## which keeps the board playable at any pace; the others are random.
+## joined number never seems to come straight back. With a fixed target the
+## last new number is chosen, once the others sit on the board, so that it
+## can be joined with a number it sees; that keeps the board playable at
+## any pace. The initial fill and a changing target use random values.
 func _refill(count: int, avoid: Array[int] = []) -> void:
 	var empty := _empty_cells()
 	if empty.size() - avoid.size() >= count:
 		for cell in avoid:
 			empty.erase(cell)
-	for i in mini(count, empty.size()):
+	var placing := mini(count, empty.size())
+	var smart_last := not dynamic and not _filled_cells().is_empty()
+	last_refilled.clear()
+	for i in placing:
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
-		grid[cell] = _playable_value(cell) if i == 0 and not dynamic else _random_value()
+		grid[cell] = _playable_value(cell) if smart_last and i == placing - 1 else _random_value()
+		last_refilled.append(cell)
 
 
 ## A value for [param cell] that has a partner for the target among the

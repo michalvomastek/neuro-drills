@@ -73,7 +73,7 @@
 **Součtové dvojice** – na částečně zaplněné mřížce spoj dvě čísla, která dávají cílový součet; přímka mezi jejich středy nesmí procházet žádným jiným číslem (libovolný úhel, ne jen řádek, sloupec a úhlopříčka), spojená čísla zmizí a nová přibudou jinde. Ťuk na první, ťuk na druhé; druhý ťuk na totéž číslo výběr zruší.
 - Délka 30/60/90 s; mřížka 4×4 / 5×5 / 6×6 (zaplněno 60 % polí: 10 / 15 / 22 čísel); cílový součet 8 / 10 / 12 (čísla se generují tak, aby šla do dvojice).
 - Volby: měnící se součet (po každé dvojici nový cíl 6–14, pro který dvojice existuje); řetězce (lze navázat více čísel, dokud součet nedosáhne cíle, překročení je neplatný pokus).
-- Po každé dvojici se zaručuje aspoň jedna platná dvojice a první doplněné číslo se volí tak, aby mělo mezi viditelnými čísly partnera pro aktuální součet (u pevného součtu); neplatný pokus = blokovaná dráha nebo špatný součet.
+- Po každé dvojici se zaručuje aspoň jedna platná dvojice a u pevného součtu se poslední doplněné číslo volí tak, aby mělo mezi viditelnými čísly partnera; neplatný pokus = blokovaná dráha nebo špatný součet.
 - Výsledek: spojených dvojic, čas na dvojici, neplatné pokusy (počet a %), průměrná délka spojení v polích, u řetězců jejich počet.
 
 **Anti-sakáda** – kolečko blikne na jedné straně (150 ms), stiskni opačnou stranu.

@@ -117,25 +117,37 @@ func test_chains_sum_up_to_target() -> void:
 	assert_eq(plain.tap(2, 200), SumPairsLogic.Outcome.WRONG_SUM)
 
 
+## After a pair is joined, the last refilled number must take part in a
+## valid pair on the board as it is after the whole refill.
 func test_refill_adds_a_playable_number() -> void:
-	for round in 20:
-		var trial := SumPairsLogic.new(4, 10, false, false, _rng(100 + round))
-		_blank(trial)
-		trial.grid[0] = 7
-		trial.grid[15] = 1
-		trial.grid[5] = 5
-		trial._refill(1, [])
-		var pairs := trial.valid_pairs()
-		assert_false(pairs.is_empty(), "round %d: the new number pairs with a visible one" % round)
-	# A board where the first refill completes a pair even though the only
-	# empty cells see just one number.
+	for round in 30:
+		var trial := SumPairsLogic.new(5, 10, false, false, _rng(100 + round))
+		var pair: Vector2i = trial.valid_pairs()[0]
+		trial.tap(pair.x, 100)
+		assert_eq(trial.tap(pair.y, 200), SumPairsLogic.Outcome.COMPLETED)
+		assert_eq(trial.last_refilled.size(), 2)
+		var smart: int = trial.last_refilled[1]
+		var joins := false
+		for p in trial.valid_pairs():
+			if p.x == smart or p.y == smart:
+				joins = true
+		assert_true(joins, "round %d: the last new number pairs with a visible one" % round)
+	# Only the cleared cells are free, every other number is a 9: the refill
+	# must still put a 1 next to them.
 	var fixed := SumPairsLogic.new(4, 10, false, false, _rng(9))
 	_blank(fixed)
-	for i in range(1, 16):
+	for i in range(2, 16):
 		fixed.grid[i] = 9
-	fixed._refill(1, [])
-	assert_eq(fixed.value_at(0), 1, "9 needs a 1")
-	assert_true(fixed.has_move())
+	fixed.grid[0] = 1
+	fixed.grid[1] = 9
+	fixed.tap(0, 100)
+	assert_eq(fixed.tap(1, 200), SumPairsLogic.Outcome.COMPLETED)
+	var smart_cell: int = fixed.last_refilled[1]
+	var in_pair := false
+	for p in fixed.valid_pairs():
+		if p.x == smart_cell or p.y == smart_cell:
+			in_pair = true
+	assert_true(in_pair, "the last number pairs with a 9 or with the other new number")
 
 
 func test_dynamic_target_always_has_a_pair() -> void:
