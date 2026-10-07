@@ -79,31 +79,16 @@ custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="PlansRow" type="BoxContainer" parent="Scroll/Margin/Panel/VBox"]
+[node name="PlanHeading" type="Label" parent="Scroll/Margin/Panel/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "TRAINING_PLAN_HEADING"
+
+[node name="PlanNameLabel" type="Label" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="PlansTitle" type="Label" parent="Scroll/Margin/Panel/VBox/PlansRow"]
-layout_mode = 2
-theme_type_variation = &"DimLabel"
-text = "TRAINING_SAVED_PLANS"
-
-[node name="PlansOption" type="Button" parent="Scroll/Margin/Panel/VBox/PlansRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("9_pick")
-
-[node name="LoadButton" type="Button" parent="Scroll/Margin/Panel/VBox/PlansRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "TRAINING_LOAD"
-
-[node name="DeleteButton" type="Button" parent="Scroll/Margin/Panel/VBox/PlansRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "TRAINING_DELETE"
+theme_type_variation = &"NoteLabel"
+autowrap_mode = 3
 
 [node name="StepsScroll" type="ScrollContainer" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
@@ -169,3 +154,44 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "TRAINING_START"
+
+[node name="PlansCard" type="PanelContainer" parent="Scroll/Margin/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Sunken"
+
+[node name="PlansBox" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox/PlansCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlansTitle" type="Label" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox"]
+layout_mode = 2
+theme_type_variation = &"ItemLabel"
+text = "TRAINING_SAVED_PLANS"
+
+[node name="PlansRow" type="BoxContainer" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlansOption" type="Button" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox/PlansRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("9_pick")
+
+[node name="PlanButtons" type="HBoxContainer" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox/PlansRow"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LoadButton" type="Button" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox/PlansRow/PlanButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TRAINING_LOAD"
+
+[node name="DeleteButton" type="Button" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox/PlansRow/PlanButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TRAINING_DELETE"

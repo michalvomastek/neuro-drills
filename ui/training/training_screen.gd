@@ -6,7 +6,9 @@ extends Control
 @onready var _margin: MarginContainer = %Margin
 @onready var _minutes_slider: HSlider = %MinutesSlider
 @onready var _minutes_label: Label = %MinutesLabel
+@onready var _plans_card: PanelContainer = %PlansCard
 @onready var _plans_row: BoxContainer = %PlansRow
+@onready var _plan_name_label: Label = %PlanNameLabel
 @onready var _plans_option: ListPickButton = %PlansOption
 @onready var _load_button: Button = %LoadButton
 @onready var _delete_button: Button = %DeleteButton
@@ -66,13 +68,12 @@ func _relayout() -> void:
 	_footer.columns = 2 if narrow else 4
 	for button: Button in [_suggest_button, _save_button, _start_button]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_FILL
-	# A phone: short button texts so two fit side by side, and the step list
-	# grows with its content while the whole screen scrolls.
+	# A phone: short button texts so two fit side by side. The step list
+	# grows with its content on every screen size; the whole screen scrolls.
 	_suggest_button.text = tr("TRAINING_SUGGEST_SHORT" if narrow else "TRAINING_SUGGEST")
 	_save_button.text = tr("TRAINING_SAVE_SHORT" if narrow else "TRAINING_SAVE")
-	var wide_mode := ScrollContainer.SCROLL_MODE_SHOW_NEVER if DragScroll.touch_ui() else ScrollContainer.SCROLL_MODE_AUTO
-	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if narrow else wide_mode
-	_steps_scroll.size_flags_vertical = Control.SIZE_FILL if narrow else Control.SIZE_EXPAND_FILL
+	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_steps_scroll.size_flags_vertical = Control.SIZE_FILL
 	if not _steps.is_empty():
 		_rebuild_steps()
 
@@ -110,6 +111,7 @@ func _rebuild_steps() -> void:
 	for child in _step_list.get_children():
 		child.queue_free()
 	_empty_label.visible = _steps.is_empty()
+	_plan_name_label.text = _plan_name if not _plan_name.is_empty() else tr("TRAINING_PLAN_SUGGESTED" if not _custom else "TRAINING_PLAN_EDITED")
 	for i in _steps.size():
 		_step_list.add_child(_make_step_row(i))
 	var seconds := TrainingPlan.total_seconds(_steps)
@@ -260,7 +262,7 @@ func _refresh_plans() -> void:
 		var plan_name: String = plan["name"]
 		_plans_option.add_item(plan_name)
 	var has_plans := _plans_option.item_count > 0
-	_plans_row.visible = has_plans
+	_plans_card.visible = has_plans
 	_load_button.disabled = not has_plans
 	_delete_button.disabled = not has_plans
 
