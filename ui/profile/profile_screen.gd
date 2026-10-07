@@ -43,7 +43,6 @@ func _add_badge(id: String, earned: bool) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	card.add_child(row)
-	row.add_child(GamiWidgets.make_badge_icon(id, BADGE_ICON_SIZE, earned))
 	var box := VBoxContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_theme_constant_override("separation", 4)
@@ -54,6 +53,8 @@ func _add_badge(id: String, earned: bool) -> void:
 	if not earned:
 		name.add_theme_color_override("font_color", get_theme_color("dim", "App"))
 	box.add_child(name)
+	row.add_child(GamiWidgets.align_to_caps(GamiWidgets.make_badge_icon(id, BADGE_ICON_SIZE, earned), name))
+	row.move_child(box, 1)
 	var description := Label.new()
 	description.text = tr("BADGE_%s_DESC" % id.to_upper())
 	description.theme_type_variation = &"NoteLabel"

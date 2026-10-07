@@ -44,13 +44,32 @@ static func make_stat_disc(color: Color, icon_name: String, icon_color: Color = 
 	return disc
 
 
+## Share of the font size above which capitals start, for Baloo 2 and
+## Nunito; the label box itself begins higher (ascent plus line spacing).
+const CAP_HEIGHT_RATIO := 0.72
+
+
+## Places [param symbol] on the row so that its top meets the top of the
+## capitals of [param title_label], not the top of the label box, which
+## has empty line spacing above the glyphs. Returns the wrapper to add.
+static func align_to_caps(symbol: Control, title_label: Label) -> MarginContainer:
+	var font := title_label.get_theme_font("font")
+	var font_size := title_label.get_theme_font_size("font_size")
+	var pad := maxi(0, roundi(font.get_ascent(font_size) - font_size * CAP_HEIGHT_RATIO))
+	var holder := MarginContainer.new()
+	holder.add_theme_constant_override("margin_top", pad)
+	holder.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	symbol.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	holder.add_child(symbol)
+	return holder
+
+
 ## One profile row: the symbol from the top bar on the left, a title and a
 ## longer explanation on the right.
 static func add_stat_row(parent: Control, symbol: Control, title: String, detail: String) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	parent.add_child(row)
-	row.add_child(symbol)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 2)
@@ -59,6 +78,8 @@ static func add_stat_row(parent: Control, symbol: Control, title: String, detail
 	title_label.text = title
 	title_label.theme_type_variation = &"ItemLabel"
 	column.add_child(title_label)
+	row.add_child(align_to_caps(symbol, title_label))
+	row.move_child(column, 1)
 	var detail_label := Label.new()
 	detail_label.text = detail
 	detail_label.theme_type_variation = &"NoteLabel"
