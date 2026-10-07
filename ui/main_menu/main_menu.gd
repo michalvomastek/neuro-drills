@@ -3,7 +3,7 @@
 ## sit in the app's top bar and the other destinations in the bottom bar.
 extends Control
 
-@onready var _margin: MarginContainer = %Center
+@onready var _strip_frame: MarginContainer = %StripFrame
 @onready var _tabs: TabContainer = %Tabs
 @onready var _tab_strip: ScrollContainer = %TabStrip
 @onready var _tab_buttons: HBoxContainer = %TabButtons
@@ -12,10 +12,12 @@ extends Control
 var _first_buttons: Array[Button] = []
 var _strip_buttons: Array[Button] = []
 var _grids: Array[GridContainer] = []
-## Side margins of the tab contents: the lists scroll edge to edge (so the
-## scroll indicator sits at the window edge like on every other screen) and
-## the content keeps the screen margin inside.
+## Margins of the tab contents: the lists scroll edge to edge, right up to
+## the bottom bar (so the scroll indicator sits at the window edge like on
+## every other screen), and the content keeps the screen margin inside.
 var _tab_margins: Array[MarginContainer] = []
+## Room under the pinned filter strip.
+const STRIP_GAP := 12
 
 
 func _ready() -> void:
@@ -35,18 +37,21 @@ func _ready() -> void:
 	_focus_current_tab()
 
 
-## One column and slim margins on a phone, two columns and wide margins otherwise.
+## One column and slim margins on a phone, two columns and wide margins
+## otherwise. The filter strip is pinned under the top bar; the screen
+## margins sit inside the strip and inside the scrolling lists.
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
-	# The outer side margin moves inside the scrolling lists.
-	var side := Layout.side_margin(_margin)
-	Layout.set_margins(_margin, 0, Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE)
-	var inner := maxi(0, side - roundi(get_theme_stylebox("panel", "Screen").get_margin(SIDE_LEFT)))
+	var side := Layout.side_margin(self)
+	var vertical := Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE
+	_strip_frame.add_theme_constant_override("margin_top", vertical)
+	_strip_frame.add_theme_constant_override("margin_bottom", STRIP_GAP)
+	_strip_margin.add_theme_constant_override("margin_left", side)
+	_strip_margin.add_theme_constant_override("margin_right", side)
 	for tab_margin in _tab_margins:
-		tab_margin.add_theme_constant_override("margin_left", inner)
-		tab_margin.add_theme_constant_override("margin_right", inner)
-	_strip_margin.add_theme_constant_override("margin_left", inner)
-	_strip_margin.add_theme_constant_override("margin_right", inner)
+		tab_margin.add_theme_constant_override("margin_left", side)
+		tab_margin.add_theme_constant_override("margin_right", side)
+		tab_margin.add_theme_constant_override("margin_bottom", vertical)
 	for grid in _grids:
 		grid.columns = 1 if narrow else 2
 
