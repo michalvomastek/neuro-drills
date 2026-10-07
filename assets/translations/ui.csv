@@ -268,8 +268,8 @@ ARITH_DURATION,Délka (sekundy),Duration (seconds)
 ARITH_CORRECT,Správné odpovědi,Correct answers
 ARITH_PER_ANSWER,Čas na odpověď,Time per answer
 SUMPAIRS_TITLE,Součtové dvojice,Sum pairs
-SUMPAIRS_DESCRIPTION,"Spoj dvě čísla, která dávají cílový součet: klikni na první a pak na druhé. Mezi nimi musí být volná přímka (řádek, sloupec nebo úhlopříčka). Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: click the first, then the second. A clear straight line (row, column or diagonal) must run between them. Joined numbers vanish and new ones appear elsewhere."
-SUMPAIRS_DESCRIPTION_TOUCH,"Spoj dvě čísla, která dávají cílový součet: ťukni na první a pak na druhé. Mezi nimi musí být volná přímka (řádek, sloupec nebo úhlopříčka). Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: tap the first, then the second. A clear straight line (row, column or diagonal) must run between them. Joined numbers vanish and new ones appear elsewhere."
+SUMPAIRS_DESCRIPTION,"Spoj dvě čísla, která dávají cílový součet: klikni na první a pak na druhé. Přímka mezi nimi nesmí procházet žádným jiným číslem. Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: click the first, then the second. The straight line between them must not cross any other number. Joined numbers vanish and new ones appear elsewhere."
+SUMPAIRS_DESCRIPTION_TOUCH,"Spoj dvě čísla, která dávají cílový součet: ťukni na první a pak na druhé. Přímka mezi nimi nesmí procházet žádným jiným číslem. Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: tap the first, then the second. The straight line between them must not cross any other number. Joined numbers vanish and new ones appear elsewhere."
 SUMPAIRS_DURATION,Délka (sekundy),Duration (seconds)
 SUMPAIRS_GRID,Mřížka,Grid
 SUMPAIRS_TARGET,Cílový součet,Target sum

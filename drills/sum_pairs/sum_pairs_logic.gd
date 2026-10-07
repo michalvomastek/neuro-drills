@@ -1,7 +1,8 @@
 ## Sum pairs: numbers 1-9 sit on a partly filled grid; two (or, with chains,
 ## more) numbers whose sum is the target are removed when they are joined by
-## clear straight lines (row, column or 45-degree diagonal with no other
-## number in between). Removed numbers are replaced elsewhere, so the board
+## clear straight lines: the segment between the two cell centres must not
+## cross the inside of any other numbered cell (any angle, not only rows,
+## columns and diagonals). Removed numbers are replaced elsewhere, so the board
 ## keeps its density and the run is timed. Pure logic: the scene only taps.
 class_name SumPairsLogic
 extends RefCounted
@@ -16,6 +17,10 @@ const DENSITY := 0.6
 const DYNAMIC_MIN := 6
 const DYNAMIC_MAX := 14
 const ENSURE_ATTEMPTS := 40
+## Samples per cell along a segment when looking for numbers in the way.
+const LINE_SAMPLES_PER_CELL := 16
+## A sample this close to a grid line sits on the boundary, not inside a cell.
+const LINE_EPSILON := 0.001
 
 var size: int
 var target: int
@@ -97,26 +102,35 @@ func tap(cell: int, elapsed_ms: int) -> Outcome:
 	return Outcome.WRONG_SUM
 
 
-## True when the two cells share a row, column or diagonal and no number
-## lies strictly between them.
+## True when the straight segment between the centres of the two cells
+## crosses no other numbered cell. The segment is sampled; a sample on a
+## grid line (a 45-degree diagonal touches corners) belongs to no cell.
 func line_clear(a: int, b: int) -> bool:
-	var ax := a % size
-	var ay := a / size
-	var bx := b % size
-	var by := b / size
-	var dx := bx - ax
-	var dy := by - ay
-	if dx == 0 and dy == 0:
+	if a == b:
 		return false
-	if dx != 0 and dy != 0 and absi(dx) != absi(dy):
-		return false
-	var steps := maxi(absi(dx), absi(dy))
-	var sx := signi(dx)
-	var sy := signi(dy)
-	for i in range(1, steps):
-		if grid[(ay + sy * i) * size + ax + sx * i] != 0:
+	for cell in cells_between(a, b):
+		if grid[cell] != 0:
 			return false
 	return true
+
+
+## The cells whose inside the segment from the centre of [param a] to the
+## centre of [param b] passes through, the two ends left out.
+func cells_between(a: int, b: int) -> Array[int]:
+	var from := Vector2(a % size + 0.5, a / size + 0.5)
+	var to := Vector2(b % size + 0.5, b / size + 0.5)
+	var steps := maxi(1, ceili(from.distance_to(to) * LINE_SAMPLES_PER_CELL))
+	var cells: Array[int] = []
+	for i in range(1, steps):
+		var point := from.lerp(to, float(i) / steps)
+		var fx := point.x - floorf(point.x)
+		var fy := point.y - floorf(point.y)
+		if fx < LINE_EPSILON or fx > 1.0 - LINE_EPSILON or fy < LINE_EPSILON or fy > 1.0 - LINE_EPSILON:
+			continue
+		var cell := floori(point.y) * size + floori(point.x)
+		if cell != a and cell != b and not cells.has(cell):
+			cells.append(cell)
+	return cells
 
 
 func distance(a: int, b: int) -> int:

@@ -70,7 +70,7 @@
 - Délka 30/60/90 s.
 - Výsledek: správné odpovědi, chybné, čas na odpověď.
 
-**Součtové dvojice** – na částečně zaplněné mřížce spoj dvě čísla, která dávají cílový součet; mezi nimi musí být volná přímka (řádek, sloupec, úhlopříčka 45°), spojená čísla zmizí a nová přibudou jinde. Ťuk na první, ťuk na druhé; druhý ťuk na totéž číslo výběr zruší.
+**Součtové dvojice** – na částečně zaplněné mřížce spoj dvě čísla, která dávají cílový součet; přímka mezi jejich středy nesmí procházet žádným jiným číslem (libovolný úhel, ne jen řádek, sloupec a úhlopříčka), spojená čísla zmizí a nová přibudou jinde. Ťuk na první, ťuk na druhé; druhý ťuk na totéž číslo výběr zruší.
 - Délka 30/60/90 s; mřížka 4×4 / 5×5 / 6×6 (zaplněno 60 % polí: 10 / 15 / 22 čísel); cílový součet 8 / 10 / 12 (čísla se generují tak, aby šla do dvojice).
 - Volby: měnící se součet (po každé dvojici nový cíl 6–14, pro který dvojice existuje); řetězce (lze navázat více čísel, dokud součet nedosáhne cíle, překročení je neplatný pokus).
 - Po každé dvojici se zaručuje aspoň jedna platná dvojice; neplatný pokus = blokovaná dráha nebo špatný součet.

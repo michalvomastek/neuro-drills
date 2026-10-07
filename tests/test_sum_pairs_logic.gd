@@ -37,7 +37,14 @@ func test_line_of_sight() -> void:
 	assert_true(logic.line_clear(3, 12), "anti-diagonal through empty cells")
 	logic.grid[1] = 5
 	assert_false(logic.line_clear(0, 3), "row blocked by 1")
-	assert_false(logic.line_clear(0, 6), "knight move is no line")
+	assert_eq(logic.cells_between(0, 6), [1, 5] as Array[int], "knight move crosses two cells")
+	assert_false(logic.line_clear(0, 6), "knight move blocked by 1")
+	logic.grid[1] = 0
+	logic.grid[6] = 2
+	assert_true(logic.line_clear(0, 6), "knight move through empty cells")
+	assert_eq(logic.cells_between(0, 15), [5, 10] as Array[int], "long diagonal only touches corners of the off-diagonal cells")
+	assert_eq(logic.cells_between(0, 14), [4, 5, 9, 10] as Array[int], "a 2:3 line crosses four cells")
+	assert_true(logic.line_clear(12, 3) == logic.line_clear(3, 12), "symmetric")
 
 
 func test_pair_completes_and_refills() -> void:
