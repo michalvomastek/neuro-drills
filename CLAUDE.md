@@ -8,6 +8,7 @@ Plan, architecture, roadmap and open decisions live in `docs/PLAN.md`. Read it f
 - The maintainer writes in Czech. Reply in Czech. Code, identifiers, comments, commit messages and this file are in English.
 - UI strings: Czech and English, keys in `assets/translations/ui.csv`, Czech is the default locale. Every user-facing text goes through a key (scene `text` properties auto-translate; code uses `tr()`).
 - Work on the assigned `claude/*` branch. Do not open pull requests unless asked.
+- **Never push to `main` unless the maintainer's current message explicitly asks for it** ("pushni na main" / "přesuň na main"); an earlier approval does not carry over to the next change. Every push to `main` deploys to Pages and burns GitHub Actions minutes (maintainer's request, 2026-10-07, after two unasked pushes).
 - Commit messages carry no attribution trailers: no `Co-Authored-By`, no `Claude-Session` lines (maintainer's request, 2026-10-03).
 - Instructions that name a mouse, the space bar or arrow keys have a `<KEY>_TOUCH` twin in `ui.csv`; `Drill.describe(key)` picks it on a touchscreen (menu, setup panel, training brief). Add the twin whenever a new text mentions a peripheral.
 - Headless Godot cannot judge UX. Render changed scenes with `tools/godot.sh screenshot` and look at the PNG before claiming a UI change works; the maintainer does the final check in the editor.
