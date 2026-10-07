@@ -325,6 +325,14 @@ func _build(p: Dictionary) -> Theme:
 	bottom_bar.border_width_top = 1
 	t.set_type_variation("BottomBar", "NavBar")
 	t.set_stylebox("panel", "BottomBar", bottom_bar)
+	# The pinned filter strip of the menu: the bar colour continues under
+	# the top bar and a line closes it, so the list below reads as the only
+	# scrolling part.
+	var filter_bar := _box(_c(p, "panel"), 0, Vector4(0, 0, 0, 0))
+	filter_bar.border_color = _c(p, "line")
+	filter_bar.border_width_bottom = 1
+	t.set_type_variation("FilterBar", "NavBar")
+	t.set_stylebox("panel", "FilterBar", filter_bar)
 	# A tab of the bottom bar: icon above a short label, no box, the active
 	# one in the primary colour.
 	t.set_type_variation("NavButton", "Button")

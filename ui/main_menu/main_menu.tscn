@@ -20,24 +20,28 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="StripFrame" type="MarginContainer" parent="VBox"]
+[node name="FilterBar" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_type_variation = &"FilterBar"
+
+[node name="StripFrame" type="MarginContainer" parent="VBox/FilterBar"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_top = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="TabStrip" type="ScrollContainer" parent="VBox/StripFrame"]
+[node name="TabStrip" type="ScrollContainer" parent="VBox/FilterBar/StripFrame"]
 unique_name_in_owner = true
 layout_mode = 2
 vertical_scroll_mode = 0
 horizontal_scroll_mode = 3
 metadata/no_scroll_indicator = true
 
-[node name="StripMargin" type="MarginContainer" parent="VBox/StripFrame/TabStrip"]
+[node name="StripMargin" type="MarginContainer" parent="VBox/FilterBar/StripFrame/TabStrip"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TabButtons" type="HBoxContainer" parent="VBox/StripFrame/TabStrip/StripMargin"]
+[node name="TabButtons" type="HBoxContainer" parent="VBox/FilterBar/StripFrame/TabStrip/StripMargin"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8
