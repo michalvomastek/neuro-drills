@@ -18,9 +18,11 @@ func _ready() -> void:
 	var week_runs: int = week["runs"]
 	_week_label.text = tr("PROGRESS_WEEK") % [week_runs, week["minutes"], week["drills"], week["improved"]] if week_runs > 0 else tr("PROFILE_WEEK_EMPTY")
 	var earned := StatsStore.earned_badges()
+	var times := StatsStore.badge_times()
 	_badges_title.text = tr("GAMI_BADGES") % [earned.size(), Gamification.BADGE_ORDER.size()]
 	for id in Gamification.BADGE_ORDER:
-		_add_badge(id, earned.has(id))
+		var at: int = times.get(id, 0)
+		_add_badge(id, earned.has(id), at)
 	Layout.watch(self, _relayout)
 
 
@@ -36,7 +38,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _add_badge(id: String, earned: bool) -> void:
+func _add_badge(id: String, earned: bool, earned_at: int) -> void:
 	var card := PanelContainer.new()
 	card.theme_type_variation = &"Card" if earned else &"Sunken"
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -61,7 +63,9 @@ func _add_badge(id: String, earned: bool) -> void:
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(description)
 	var state := Label.new()
-	state.text = tr("PROFILE_BADGE_EARNED" if earned else "PROFILE_BADGE_LOCKED")
+	state.text = tr("PROFILE_BADGE_LOCKED")
+	if earned:
+		state.text = tr("PROFILE_BADGE_EARNED_ON") % Format.date(earned_at) if earned_at > 0 else tr("PROFILE_BADGE_EARNED")
 	state.theme_type_variation = &"PillLabel"
 	state.add_theme_color_override("font_color", get_theme_color("green" if earned else "dim", "App"))
 	box.add_child(state)

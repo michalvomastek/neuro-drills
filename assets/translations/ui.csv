@@ -659,6 +659,7 @@ MENU_PROFILE_BADGES,Profil · odznaky %d / %d,Profile · badges %d / %d
 PROFILE_TITLE,Profil,Profile
 PROFILE_WEEK_EMPTY,Posledních 7 dní: zatím žádné kolo,Last 7 days: no run yet
 PROFILE_BADGE_EARNED,Získáno,Earned
+PROFILE_BADGE_EARNED_ON,Získáno %s,Earned %s
 PROFILE_BADGE_LOCKED,Zatím ne,Not yet
 SETTINGS_SHOW_INTRO,Zobrazit úvod,Show the introduction
 ONBOARDING_STEP,Úvod %d / %d,Introduction %d / %d

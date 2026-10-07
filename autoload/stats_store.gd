@@ -207,6 +207,16 @@ func earned_badges(now_unix: int = int(Time.get_unix_time_from_system())) -> Arr
 
 
 ## Earned badges not announced yet; marks them as seen.
+## Badge id -> unix time of the run that earned it, for the profile.
+func badge_times(now_unix: int = int(Time.get_unix_time_from_system())) -> Dictionary:
+	var categories: Dictionary = {}
+	var category_keys: Dictionary = {}
+	for definition in DrillRegistry.get_all():
+		categories[String(definition.id)] = definition.category_key
+		category_keys[definition.category_key] = true
+	return Gamification.badge_times(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, category_keys.size())
+
+
 func take_new_badges() -> Array[String]:
 	var fresh: Array[String] = []
 	for id in earned_badges():

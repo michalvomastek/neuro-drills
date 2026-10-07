@@ -175,6 +175,32 @@ static func badges(records: Array[Dictionary], now_unix: int, tz_bias_min: int, 
 	return earned
 
 
+## When each earned badge was earned: the time of the run after which it
+## first counted, keyed by badge id (records are replayed in time order).
+static func badge_times(records: Array[Dictionary], now_unix: int, tz_bias_min: int, goal_minutes: int, categories: Dictionary, category_count: int) -> Dictionary:
+	var ordered: Array[Dictionary] = records.duplicate()
+	ordered.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var at_a: int = a["at"]
+		var at_b: int = b["at"]
+		return at_a < at_b)
+	var times: Dictionary = {}
+	var prefix: Array[Dictionary] = []
+	for record in ordered:
+		prefix.append(record)
+		var at: int = record["at"]
+		for id in badges(prefix, at, tz_bias_min, goal_minutes, categories, category_count):
+			if not times.has(id):
+				times[id] = at
+		if times.size() == BADGE_ORDER.size():
+			break
+	# A window badge (a full week) can lapse and come back: the final set decides.
+	var final := badges(records, now_unix, tz_bias_min, goal_minutes, categories, category_count)
+	for id: String in times.keys():
+		if not final.has(id):
+			times.erase(id)
+	return times
+
+
 static func _days_in_window(records: Array[Dictionary], now_unix: int, tz_bias_min: int, window: int) -> int:
 	var today := day_of(now_unix, tz_bias_min)
 	var count := 0
