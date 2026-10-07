@@ -1,8 +1,10 @@
 ## Sum pairs: numbers 1-9 sit on a partly filled grid; two (or, with chains,
 ## more) numbers whose sum is the target are removed when they are joined
 ## along a row or a column with no other number in between. Removed numbers
-## are replaced elsewhere, so the board keeps its density and the run is
-## timed. Pure logic: the scene only taps.
+## are replaced elsewhere, so the board keeps its density, and the target
+## changes after every join to a sum the board already offers (the
+## maintainer's play test: a fixed target played worse and generated
+## worse). Timed run. Pure logic: the scene only taps.
 class_name SumPairsLogic
 extends RefCounted
 
@@ -13,16 +15,15 @@ const MAX_VALUE := 9
 ## Share of the cells that hold a number; the empty cells are what makes a
 ## line of sight matter.
 const DENSITY := 0.6
-const DYNAMIC_MIN := 6
-const DYNAMIC_MAX := 14
+const TARGET_MIN := 6
+const TARGET_MAX := 14
 const ENSURE_ATTEMPTS := 40
 ## Valid pairs the board keeps at least after every move: a single one is
 ## too easy to miss under time pressure.
 const MIN_PAIRS := 2
 
 var size: int
-var target: int
-var dynamic: bool
+var target: int = 0
 var chains: bool
 var grid: Array[int] = []
 var selection: Array[int] = []
@@ -33,24 +34,18 @@ var chain_count: int = 0
 ## Time between consecutive completions (or from the start to the first).
 var times_ms: Array[int] = []
 var distances: Array[int] = []
-## Cells filled by the last refill, the one with a guaranteed partner last.
-var last_refilled: Array[int] = []
 var _last_success_ms: int = 0
 var _rng: RandomNumberGenerator
 
 
-func _init(p_size: int, p_target: int, p_dynamic: bool, p_chains: bool, rng: RandomNumberGenerator) -> void:
+func _init(p_size: int, p_chains: bool, rng: RandomNumberGenerator) -> void:
 	size = p_size
-	target = p_target
-	dynamic = p_dynamic
 	chains = p_chains
 	_rng = rng
 	grid.resize(size * size)
 	grid.fill(0)
 	_refill(number_count())
-	if dynamic:
-		_pick_dynamic_target()
-	_ensure_move()
+	_next_target()
 
 
 func number_count() -> int:
@@ -219,9 +214,7 @@ func _complete(elapsed_ms: int) -> void:
 	var cleared := selection.duplicate()
 	selection.clear()
 	_refill(removed, cleared)
-	if dynamic:
-		_pick_dynamic_target()
-	_ensure_move()
+	_next_target()
 
 
 func _empty_cells() -> Array[int]:
@@ -240,12 +233,8 @@ func _filled_cells() -> Array[int]:
 	return cells
 
 
-## Values that can take part in a pair for a fixed target; any value with a
-## dynamic target.
 func _random_value() -> int:
-	if dynamic:
-		return _rng.randi_range(MIN_VALUE, MAX_VALUE)
-	return _pairable_value()
+	return _rng.randi_range(MIN_VALUE, MAX_VALUE)
 
 
 ## A value that has a partner within 1-9 for the current target.
@@ -254,56 +243,15 @@ func _pairable_value() -> int:
 
 
 ## New numbers go to empty cells other than the ones just cleared, so a
-## joined number never seems to come straight back. With a fixed target the
-## last new number is chosen, once the others sit on the board, so that it
-## can be joined with a number it sees; that keeps the board playable at
-## any pace. The initial fill and a changing target use random values.
+## joined number never seems to come straight back.
 func _refill(count: int, avoid: Array[int] = []) -> void:
 	var empty := _empty_cells()
 	if empty.size() - avoid.size() >= count:
 		for cell in avoid:
 			empty.erase(cell)
-	var placing := mini(count, empty.size())
-	var smart_last := not dynamic and not _filled_cells().is_empty()
-	last_refilled.clear()
-	for i in placing - 1:
+	for i in mini(count, empty.size()):
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
 		grid[cell] = _random_value()
-		last_refilled.append(cell)
-	if placing == 0:
-		return
-	if not smart_last:
-		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
-		grid[cell] = _random_value()
-		last_refilled.append(cell)
-		return
-	# The last number goes to a free cell that sees a usable partner; the
-	# cells are tried in random order (seeded) so the board stays unpredictable.
-	for i in range(empty.size() - 1, 0, -1):
-		var j := _rng.randi_range(0, i)
-		var swap: int = empty[i]
-		empty[i] = empty[j]
-		empty[j] = swap
-	for cell in empty:
-		var values := _playable_values(cell)
-		if not values.is_empty():
-			grid[cell] = values[_rng.randi_range(0, values.size() - 1)]
-			last_refilled.append(cell)
-			return
-	var fallback: int = empty[0]
-	grid[fallback] = _pairable_value()
-	last_refilled.append(fallback)
-
-
-## Values for [param cell] that have a partner for the target among the
-## numbers the cell sees.
-func _playable_values(cell: int) -> Array[int]:
-	var values: Array[int] = []
-	for other in _filled_cells():
-		var needed: int = target - grid[other]
-		if needed >= MIN_VALUE and needed <= MAX_VALUE and not values.has(needed) and line_clear(cell, other):
-			values.append(needed)
-	return values
 
 
 ## Every pair of numbers that see each other, each pair once.
@@ -317,11 +265,10 @@ func _visible_pairs() -> Array[Vector2i]:
 	return pairs
 
 
-## Keeps MIN_PAIRS valid pairs on the board whenever the numbers allow it:
-## re-rolls numbers that are in no valid pair, then rewrites visible pairs
-## made of such numbers, so an existing pair (the refilled partner included)
-## is never broken. Bounded: a board too small or too full to hold two
-## pairs keeps what it has.
+## Keeps MIN_PAIRS valid pairs for the current target whenever the numbers
+## allow it: re-rolls numbers that are in no valid pair, then rewrites
+## visible pairs made of such numbers, so an existing pair is never broken.
+## Bounded: a board too small or too full to hold two pairs keeps what it has.
 func _ensure_move() -> void:
 	for _attempt in ENSURE_ATTEMPTS:
 		var pairs := valid_pairs()
@@ -372,14 +319,29 @@ func _neighbours(cell: int) -> Array[int]:
 	return cells
 
 
-## A new target that some visible pair already satisfies, different from the
-## current one when possible.
-func _pick_dynamic_target() -> void:
-	var sums: Array[int] = []
+## The next target: a sum between TARGET_MIN and TARGET_MAX that the visible
+## pairs already offer, preferring one with MIN_PAIRS pairs and one different
+## from the current target; then the board is topped up to MIN_PAIRS pairs.
+func _next_target() -> void:
+	var counts: Dictionary = {}
 	for pair in _visible_pairs():
 		var total: int = grid[pair.x] + grid[pair.y]
-		if total >= DYNAMIC_MIN and total <= DYNAMIC_MAX and total != target and not sums.has(total):
-			sums.append(total)
-	if sums.is_empty():
-		return
-	target = sums[_rng.randi_range(0, sums.size() - 1)]
+		if total >= TARGET_MIN and total <= TARGET_MAX:
+			var seen: int = counts.get(total, 0)
+			counts[total] = seen + 1
+	var rich: Array[int] = []
+	var any: Array[int] = []
+	for sum: int in counts:
+		if sum == target:
+			continue
+		any.append(sum)
+		var count: int = counts[sum]
+		if count >= MIN_PAIRS:
+			rich.append(sum)
+	var pool := rich if not rich.is_empty() else any
+	if pool.is_empty():
+		if target == 0:
+			target = _rng.randi_range(TARGET_MIN, TARGET_MAX)
+	else:
+		target = pool[_rng.randi_range(0, pool.size() - 1)]
+	_ensure_move()

@@ -64,7 +64,7 @@ Run `import`, `check`, `test` and `smoke` before every commit, `playthrough` aft
 
 ## Decision log
 
-- 2026-10-06: Sum pairs (maintainer's idea): timed grid game with a line-of-sight rule (same row or column, nothing in between; diagonals and free angles were tried and dropped on 2026-10-07), fixed or changing target, optional chains; the board is 60 % full and refills so at least two valid pairs always exist (with a fixed target the last refilled number is given a visible partner). 44 drills.
+- 2026-10-06: Sum pairs (maintainer's idea): timed grid game with a line-of-sight rule (same row or column, nothing in between; diagonals and free angles were tried and dropped on 2026-10-07), the target changes after every join to a sum the board offers (a fixed target was tried and dropped on 2026-10-07), optional chains; the board is 60 % full and refills so at least two valid pairs always exist. 44 drills.
 - 2026-10-03: project created in Godot 4.7 (GL Compatibility). Plan, conventions, headless tooling and strict GDScript warnings added.
 - 2026-10-03: maintainer accepted all defaults from PLAN.md chapter 7 except the theme, which is dark. Phase 1 delivered: app shell (menu, drill, results), Schulte table v1, CZ/EN localization, test runner, CI.
 - 2026-10-03: maintainer asked for all listed drills. Batch 1 (reaction family on `TrialDrill`) delivered; menu became a scrollable two-column grid.

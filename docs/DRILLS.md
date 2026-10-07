@@ -71,9 +71,10 @@
 - Výsledek: správné odpovědi, chybné, čas na odpověď.
 
 **Součtové dvojice** – na částečně zaplněné mřížce spoj dvě čísla, která dávají cílový součet; musí ležet ve stejném řádku nebo sloupci bez jiného čísla mezi nimi (úhlopříčky a šikmé přímky maintainer vyzkoušel a zavrhl), spojená čísla zmizí a nová přibudou jinde. Ťuk na první, ťuk na druhé; druhý ťuk na totéž číslo výběr zruší.
-- Délka 30/60/90 s; mřížka 4×4 / 5×5 / 6×6 (zaplněno 60 % polí: 10 / 15 / 22 čísel); cílový součet 8 / 10 / 12 (čísla se generují tak, aby šla do dvojice).
-- Volby: měnící se součet (po každé dvojici nový cíl 6–14, pro který dvojice existuje); řetězce (lze navázat více čísel, dokud součet nedosáhne cíle, překročení je neplatný pokus).
-- Po každé dvojici deska drží aspoň dvě platné dvojice (dorovnává se jen přepisem čísel, která v žádné dvojici nejsou) a u pevného součtu se poslední doplněné číslo volí tak, aby mělo mezi viditelnými čísly partnera; neplatný pokus = blokovaná dráha nebo špatný součet.
+- Délka 30/60/90 s; mřížka 4×4 / 5×5 / 6×6 (zaplněno 60 % polí: 10 / 15 / 22 čísel); čísla 1–9.
+- Cílový součet (6–14) se po každém spojení změní na součet, který deska právě nabízí, přednostně takový, pro který existují aspoň dvě dvojice (pevný součet maintainer vyzkoušel a zavrhl: hrál se hůř a hůř se generoval).
+- Volba: řetězce (lze navázat více čísel, dokud součet nedosáhne cíle, překročení je neplatný pokus).
+- Po každé dvojici deska drží aspoň dvě platné dvojice (dorovnává se jen přepisem čísel, která v žádné dvojici nejsou); neplatný pokus = blokovaná dráha nebo špatný součet.
 - Výsledek: spojených dvojic, čas na dvojici, neplatné pokusy (počet a %), průměrná délka spojení v polích, u řetězců jejich počet.
 
 **Anti-sakáda** – kolečko blikne na jedné straně (150 ms), stiskni opačnou stranu.

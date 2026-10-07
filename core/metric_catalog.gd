@@ -129,7 +129,7 @@ const OPTION_LABELS: Dictionary = {
 	"shuffle_after_click": "VARIANT_SHUFFLE", "test_mode": "VARIANT_TEST_MODE",
 	"backward": "VARIANT_BACKWARD", "adaptive": "VARIANT_ADAPTIVE", "part_b": "TRAIL_OPT_PART_B",
 	"moving": "TRAIL_OPT_MOVING", "auditory": "VARIANT_AUDITORY", "touch": "VARIANT_TOUCH",
-	"target": "VARIANT_TARGET", "dynamic": "VARIANT_DYNAMIC", "chains": "VARIANT_CHAINS",
+	"chains": "VARIANT_CHAINS",
 }
 ## Translation key per enumerated value, keyed by "option=value".
 const VALUE_LABELS: Dictionary = {

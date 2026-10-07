@@ -268,12 +268,10 @@ ARITH_DURATION,Délka (sekundy),Duration (seconds)
 ARITH_CORRECT,Správné odpovědi,Correct answers
 ARITH_PER_ANSWER,Čas na odpověď,Time per answer
 SUMPAIRS_TITLE,Součtové dvojice,Sum pairs
-SUMPAIRS_DESCRIPTION,"Spoj dvě čísla, která dávají cílový součet: klikni na první a pak na druhé. Musí ležet ve stejném řádku nebo sloupci a mezi nimi nesmí být jiné číslo. Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: click the first, then the second. They must share a row or a column with no other number between them. Joined numbers vanish and new ones appear elsewhere."
-SUMPAIRS_DESCRIPTION_TOUCH,"Spoj dvě čísla, která dávají cílový součet: ťukni na první a pak na druhé. Musí ležet ve stejném řádku nebo sloupci a mezi nimi nesmí být jiné číslo. Spojená čísla zmizí a nová přibudou jinde.","Join two numbers that add up to the target: tap the first, then the second. They must share a row or a column with no other number between them. Joined numbers vanish and new ones appear elsewhere."
+SUMPAIRS_DESCRIPTION,"Spoj dvě čísla, která dávají cílový součet: klikni na první a pak na druhé. Musí ležet ve stejném řádku nebo sloupci a mezi nimi nesmí být jiné číslo. Spojená čísla zmizí, nová přibudou jinde a cílový součet se změní.","Join two numbers that add up to the target: click the first, then the second. They must share a row or a column with no other number between them. Joined numbers vanish, new ones appear elsewhere and the target changes."
+SUMPAIRS_DESCRIPTION_TOUCH,"Spoj dvě čísla, která dávají cílový součet: ťukni na první a pak na druhé. Musí ležet ve stejném řádku nebo sloupci a mezi nimi nesmí být jiné číslo. Spojená čísla zmizí, nová přibudou jinde a cílový součet se změní.","Join two numbers that add up to the target: tap the first, then the second. They must share a row or a column with no other number between them. Joined numbers vanish, new ones appear elsewhere and the target changes."
 SUMPAIRS_DURATION,Délka (sekundy),Duration (seconds)
 SUMPAIRS_GRID,Mřížka,Grid
-SUMPAIRS_TARGET,Cílový součet,Target sum
-SUMPAIRS_OPT_DYNAMIC,Součet se po každé dvojici mění,Target changes after every pair
 SUMPAIRS_OPT_CHAINS,Řetězce: lze spojit i více čísel za sebou,"Chains: several numbers in a row may be joined"
 SUMPAIRS_TARGET_LABEL,Součet %d,Sum %d
 SUMPAIRS_PAIRS,Spojených dvojic,Pairs joined
@@ -609,8 +607,6 @@ REACTION_OPT_AUDITORY,Sluchová varianta: reaguj na tón místo na barvu,Auditor
 REACTION_LISTEN,Poslouchej…,Listen…
 GONOGO_OPT_AUDITORY,Sluchová varianta: vysoký tón = klikni · hluboký tón = nic,Auditory variant: high tone = click · low tone = nothing
 VARIANT_AUDITORY,sluchově,auditory
-VARIANT_TARGET,součet %s,sum %s
-VARIANT_DYNAMIC,měnící se součet,changing sum
 VARIANT_CHAINS,řetězce,chains
 SETTINGS_SOUND,Zvuky správně / špatně / hotovo,Sounds for correct / wrong / done
 MENU_SETTINGS,Nastavení,Settings

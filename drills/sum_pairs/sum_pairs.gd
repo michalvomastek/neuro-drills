@@ -1,27 +1,21 @@
 ## Sum pairs: tap two numbers that add up to the target and sit in one row
-## or column with nothing between them; they vanish and new numbers appear
-## elsewhere. Timed run; options: grid size, target, a target that changes
-## after every pair, and chains of several numbers.
+## or column with nothing between them; they vanish, new numbers appear
+## elsewhere and the target changes. Timed run; options: duration, grid
+## size and chains of several numbers.
 extends TrialDrill
 
 const DURATIONS: Array[int] = [30, 60, 90]
 const DEFAULT_DURATION := 60
 const SIZES: Array[int] = [4, 5, 6]
 const DEFAULT_SIZE := 5
-const TARGETS: Array[int] = [8, 10, 12]
-const DEFAULT_TARGET := 10
 const LINE_WIDTH := 6.0
 const LINE_FADE_SECONDS := 0.35
 
 var _duration: int = DEFAULT_DURATION
 var _size: int = DEFAULT_SIZE
-var _target: int = DEFAULT_TARGET
-var _dynamic: bool = false
 var _chains: bool = false
 var _duration_option: OptionButton
 var _size_option: OptionButton
-var _target_option: OptionButton
-var _dynamic_check: CheckBox
 var _chains_check: CheckBox
 var _logic: SumPairsLogic
 var _target_label: Label
@@ -47,14 +41,9 @@ func _uses_trial_count() -> bool:
 func _build_extras(parent: VBoxContainer) -> void:
 	_duration_option = _add_option_row(parent, "SUMPAIRS_DURATION", DURATIONS, _duration)
 	_size_option = _add_option_row(parent, "SUMPAIRS_GRID", SIZES, _size)
-	_target_option = _add_option_row(parent, "SUMPAIRS_TARGET", TARGETS, _target)
-	_dynamic_check = CheckBox.new()
-	_dynamic_check.text = tr("SUMPAIRS_OPT_DYNAMIC")
-	parent.add_child(_dynamic_check)
 	_chains_check = CheckBox.new()
 	_chains_check.text = tr("SUMPAIRS_OPT_CHAINS")
 	parent.add_child(_chains_check)
-	_dynamic_check.toggled.connect(func(on: bool) -> void: _target_option.disabled = on)
 
 
 func _apply_extra_config(config: Dictionary) -> void:
@@ -64,37 +53,23 @@ func _apply_extra_config(config: Dictionary) -> void:
 	var grid_size: int = config.get("size", DEFAULT_SIZE)
 	if SIZES.has(grid_size):
 		_size = grid_size
-	var target: int = config.get("target", DEFAULT_TARGET)
-	if TARGETS.has(target):
-		_target = target
-	_dynamic = config.get("dynamic", false)
 	_chains = config.get("chains", false)
 	_duration_option.select(_duration_option.get_item_index(_duration))
 	_size_option.select(_size_option.get_item_index(_size))
-	_target_option.select(_target_option.get_item_index(_target))
-	_dynamic_check.button_pressed = _dynamic
 	_chains_check.button_pressed = _chains
-	_target_option.disabled = _dynamic
 
 
-## With a changing target the setup's target is only the seed of the first
-## one, so it stays out of the config (and of the variant key).
 func _collect_extra_config() -> Dictionary:
-	var config := {"duration_s": _duration, "size": _size, "dynamic": _dynamic, "chains": _chains}
-	if not _dynamic:
-		config["target"] = _target
-	return config
+	return {"duration_s": _duration, "size": _size, "chains": _chains}
 
 
 func _preview_extra_config() -> Dictionary:
-	return {"size": _size_option.get_selected_id(), "dynamic": _dynamic_check.button_pressed, "chains": _chains_check.button_pressed}
+	return {"size": _size_option.get_selected_id(), "chains": _chains_check.button_pressed}
 
 
 func _on_start_pressed() -> void:
 	_duration = _duration_option.get_selected_id()
 	_size = _size_option.get_selected_id()
-	_target = _target_option.get_selected_id()
-	_dynamic = _dynamic_check.button_pressed
 	_chains = _chains_check.button_pressed
 	super()
 
@@ -167,7 +142,7 @@ func _process(_delta: float) -> void:
 func _run_trials() -> void:
 	if _cells.size() != _size * _size:
 		_build_cells()
-	_logic = SumPairsLogic.new(_size, _target, _dynamic, _chains, _rng)
+	_logic = SumPairsLogic.new(_size, _chains, _rng)
 	_render()
 	_started_ms = Time.get_ticks_msec()
 	_ends_at_ms = _started_ms + _duration * 1000

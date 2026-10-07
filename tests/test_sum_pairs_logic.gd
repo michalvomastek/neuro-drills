@@ -10,11 +10,12 @@ func _rng(seed_value: int) -> RandomNumberGenerator:
 func _blank(logic: SumPairsLogic) -> void:
 	logic.grid.fill(0)
 	logic.selection.clear()
+	logic.target = 10
 
 
 func test_board_density_and_move_exists() -> void:
 	for size: int in [4, 5, 6]:
-		var logic := SumPairsLogic.new(size, 10, false, false, _rng(size))
+		var logic := SumPairsLogic.new(size, false, _rng(size))
 		var filled := 0
 		for v in logic.grid:
 			if v != 0:
@@ -23,7 +24,7 @@ func test_board_density_and_move_exists() -> void:
 		assert_eq(filled, logic.number_count())
 		assert_true(logic.valid_pairs().size() >= SumPairsLogic.MIN_PAIRS, "size %d starts with %d pairs" % [size, SumPairsLogic.MIN_PAIRS])
 	# A forced pair on a board where nothing sees anything.
-	var tiny := SumPairsLogic.new(4, 10, false, false, _rng(11))
+	var tiny := SumPairsLogic.new(4, false, _rng(11))
 	tiny.grid.fill(0)
 	tiny.grid[0] = 3
 	tiny.grid[15] = 3
@@ -32,7 +33,7 @@ func test_board_density_and_move_exists() -> void:
 
 
 func test_line_of_sight() -> void:
-	var logic := SumPairsLogic.new(4, 10, false, false, _rng(1))
+	var logic := SumPairsLogic.new(4, false, _rng(1))
 	_blank(logic)
 	logic.grid[0] = 3
 	logic.grid[3] = 7
@@ -53,7 +54,7 @@ func test_line_of_sight() -> void:
 
 
 func test_pair_completes_and_refills() -> void:
-	var logic := SumPairsLogic.new(4, 10, false, false, _rng(2))
+	var logic := SumPairsLogic.new(4, false, _rng(2))
 	_blank(logic)
 	logic.grid[0] = 4
 	logic.grid[3] = 6
@@ -79,7 +80,7 @@ func test_pair_completes_and_refills() -> void:
 
 
 func test_wrong_sum_and_blocked_count_as_invalid() -> void:
-	var logic := SumPairsLogic.new(4, 10, false, false, _rng(3))
+	var logic := SumPairsLogic.new(4, false, _rng(3))
 	_blank(logic)
 	logic.grid[0] = 4
 	logic.grid[1] = 5
@@ -96,7 +97,7 @@ func test_wrong_sum_and_blocked_count_as_invalid() -> void:
 
 
 func test_chains_sum_up_to_target() -> void:
-	var logic := SumPairsLogic.new(4, 10, false, true, _rng(4))
+	var logic := SumPairsLogic.new(4, true, _rng(4))
 	_blank(logic)
 	logic.grid[0] = 2
 	logic.grid[2] = 3
@@ -113,7 +114,7 @@ func test_chains_sum_up_to_target() -> void:
 	assert_eq(logic.cleared_count, 3)
 	assert_eq(logic.distances, [2, 2] as Array[int])
 	# Without chains the same second tap is a wrong sum.
-	var plain := SumPairsLogic.new(4, 10, false, false, _rng(4))
+	var plain := SumPairsLogic.new(4, false, _rng(4))
 	_blank(plain)
 	plain.grid[0] = 2
 	plain.grid[2] = 3
@@ -122,43 +123,13 @@ func test_chains_sum_up_to_target() -> void:
 	assert_eq(plain.tap(2, 200), SumPairsLogic.Outcome.WRONG_SUM)
 
 
-## After a pair is joined, the last refilled number must take part in a
-## valid pair on the board as it is after the whole refill.
-func test_refill_adds_a_playable_number() -> void:
+func test_target_changes_and_always_has_pairs() -> void:
+	var logic := SumPairsLogic.new(5, false, _rng(5))
+	var targets: Array[int] = []
 	for round in 30:
-		var trial := SumPairsLogic.new(5, 10, false, false, _rng(100 + round))
-		var pair: Vector2i = trial.valid_pairs()[0]
-		trial.tap(pair.x, 100)
-		assert_eq(trial.tap(pair.y, 200), SumPairsLogic.Outcome.COMPLETED)
-		assert_eq(trial.last_refilled.size(), 2)
-		var smart: int = trial.last_refilled[1]
-		var joins := false
-		for p in trial.valid_pairs():
-			if p.x == smart or p.y == smart:
-				joins = true
-		assert_true(joins, "round %d: the last new number pairs with a visible one" % round)
-	# Only the cleared cells are free, every other number is a 9: the refill
-	# must still put a 1 next to them.
-	var fixed := SumPairsLogic.new(4, 10, false, false, _rng(9))
-	_blank(fixed)
-	for i in range(2, 16):
-		fixed.grid[i] = 9
-	fixed.grid[0] = 1
-	fixed.grid[1] = 9
-	fixed.tap(0, 100)
-	assert_eq(fixed.tap(1, 200), SumPairsLogic.Outcome.COMPLETED)
-	var smart_cell: int = fixed.last_refilled[1]
-	var in_pair := false
-	for p in fixed.valid_pairs():
-		if p.x == smart_cell or p.y == smart_cell:
-			in_pair = true
-	assert_true(in_pair, "the last number pairs with a 9 or with the other new number")
-
-
-func test_dynamic_target_always_has_a_pair() -> void:
-	var logic := SumPairsLogic.new(5, 10, true, false, _rng(5))
-	for round in 30:
-		assert_true(logic.target >= SumPairsLogic.DYNAMIC_MIN and logic.target <= SumPairsLogic.DYNAMIC_MAX)
+		assert_true(logic.target >= SumPairsLogic.TARGET_MIN and logic.target <= SumPairsLogic.TARGET_MAX)
+		if not targets.has(logic.target):
+			targets.append(logic.target)
 		var pairs := logic.valid_pairs()
 		assert_false(pairs.is_empty(), "round %d has a pair for %d" % [round, logic.target])
 		var pair: Vector2i = pairs[0]
@@ -166,42 +137,24 @@ func test_dynamic_target_always_has_a_pair() -> void:
 		assert_eq(logic.tap(pair.y, round * 1000 + 500), SumPairsLogic.Outcome.COMPLETED)
 		assert_true(logic.valid_pairs().size() >= SumPairsLogic.MIN_PAIRS, "round %d keeps %d pairs" % [round, SumPairsLogic.MIN_PAIRS])
 	assert_eq(logic.completed, 30)
+	assert_true(targets.size() >= 3, "the target moved around: %s" % [targets])
 
 
-func test_fixed_target_values_stay_pairable() -> void:
-	for target: int in [8, 12]:
-		var logic := SumPairsLogic.new(6, target, false, false, _rng(target))
-		for round in 40:
-			for v in logic.grid:
-				if v != 0:
-					assert_true(v >= target - 9 and v <= target - 1, "value %d fits target %d" % [v, target])
-			var pair: Vector2i = logic.valid_pairs()[0]
-			logic.tap(pair.x, round * 100)
-			assert_eq(logic.tap(pair.y, round * 100 + 50), SumPairsLogic.Outcome.COMPLETED)
-
-
-## Many random boards and moves: the two-pair floor holds and the refilled
-## partner survives the top-up on every one of them.
+## Many random boards and moves: the two-pair floor holds on every one.
 func test_two_pairs_floor_holds_on_random_boards() -> void:
 	for seed_value in 40:
 		for size: int in [4, 5, 6]:
-			var logic := SumPairsLogic.new(size, 10, false, false, _rng(seed_value))
+			var logic := SumPairsLogic.new(size, false, _rng(seed_value))
 			for round in 15:
 				var pairs := logic.valid_pairs()
 				assert_true(pairs.size() >= SumPairsLogic.MIN_PAIRS, "seed %d size %d round %d: %d pairs" % [seed_value, size, round, pairs.size()])
 				var pair: Vector2i = pairs[seed_value % pairs.size()]
 				logic.tap(pair.x, round * 100)
 				assert_eq(logic.tap(pair.y, round * 100 + 50), SumPairsLogic.Outcome.COMPLETED)
-				var smart: int = logic.last_refilled[logic.last_refilled.size() - 1]
-				var joins := false
-				for p in logic.valid_pairs():
-					if p.x == smart or p.y == smart:
-						joins = true
-				assert_true(joins, "seed %d size %d round %d: refilled partner kept" % [seed_value, size, round])
 
 
 func test_build_result_metrics() -> void:
-	var logic := SumPairsLogic.new(4, 10, false, false, _rng(6))
+	var logic := SumPairsLogic.new(4, false, _rng(6))
 	_blank(logic)
 	logic.grid[0] = 1
 	logic.grid[1] = 9
@@ -219,7 +172,7 @@ func test_build_result_metrics() -> void:
 	assert_eq(result.metrics["pairs"], 1.0)
 	assert_eq(result.error_count, 1)
 	assert_eq(result.summary_rows.size(), 4)
-	var empty := SumPairsLogic.new(4, 10, false, false, _rng(7))
+	var empty := SumPairsLogic.new(4, false, _rng(7))
 	var none := empty.build_result(&"sum_pairs", {}, 30000)
 	assert_eq(none.metrics["ms_per_pair"], 30000.0)
 	assert_eq(none.metrics["invalid_rate"], 0.0)
