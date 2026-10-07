@@ -232,7 +232,9 @@ func _pairable_value() -> int:
 
 
 ## New numbers go to empty cells other than the ones just cleared, so a
-## joined number never seems to come straight back.
+## joined number never seems to come straight back. The first new number
+## is chosen so that it can be joined with a number it sees (fixed target),
+## which keeps the board playable at any pace; the others are random.
 func _refill(count: int, avoid: Array[int] = []) -> void:
 	var empty := _empty_cells()
 	if empty.size() - avoid.size() >= count:
@@ -240,7 +242,20 @@ func _refill(count: int, avoid: Array[int] = []) -> void:
 			empty.erase(cell)
 	for i in mini(count, empty.size()):
 		var cell: int = empty.pop_at(_rng.randi_range(0, empty.size() - 1))
-		grid[cell] = _random_value()
+		grid[cell] = _playable_value(cell) if i == 0 and not dynamic else _random_value()
+
+
+## A value for [param cell] that has a partner for the target among the
+## numbers the cell sees; a random pairable value when it sees none.
+func _playable_value(cell: int) -> int:
+	var values: Array[int] = []
+	for other in _filled_cells():
+		var needed: int = target - grid[other]
+		if needed >= MIN_VALUE and needed <= MAX_VALUE and not values.has(needed) and line_clear(cell, other):
+			values.append(needed)
+	if values.is_empty():
+		return _pairable_value()
+	return values[_rng.randi_range(0, values.size() - 1)]
 
 
 ## Every pair of numbers that see each other, each pair once.

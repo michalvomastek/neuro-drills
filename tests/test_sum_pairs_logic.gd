@@ -117,6 +117,27 @@ func test_chains_sum_up_to_target() -> void:
 	assert_eq(plain.tap(2, 200), SumPairsLogic.Outcome.WRONG_SUM)
 
 
+func test_refill_adds_a_playable_number() -> void:
+	for round in 20:
+		var trial := SumPairsLogic.new(4, 10, false, false, _rng(100 + round))
+		_blank(trial)
+		trial.grid[0] = 7
+		trial.grid[15] = 1
+		trial.grid[5] = 5
+		trial._refill(1, [])
+		var pairs := trial.valid_pairs()
+		assert_false(pairs.is_empty(), "round %d: the new number pairs with a visible one" % round)
+	# A board where the first refill completes a pair even though the only
+	# empty cells see just one number.
+	var fixed := SumPairsLogic.new(4, 10, false, false, _rng(9))
+	_blank(fixed)
+	for i in range(1, 16):
+		fixed.grid[i] = 9
+	fixed._refill(1, [])
+	assert_eq(fixed.value_at(0), 1, "9 needs a 1")
+	assert_true(fixed.has_move())
+
+
 func test_dynamic_target_always_has_a_pair() -> void:
 	var logic := SumPairsLogic.new(5, 10, true, false, _rng(5))
 	for round in 30:
