@@ -1,6 +1,7 @@
 ## Three short pages for the first start: what the drills are, how the
-## training works, where the data lives. Ends in a five-minute first training
-## or in the menu; reachable again from the settings.
+## training works, where the data lives. Back and Next page through them;
+## the run ends in a five-minute first training or in the menu, and the
+## introduction is reachable again from the settings.
 class_name OnboardingScreen
 extends Control
 
@@ -14,6 +15,7 @@ const PAGES: Array[String] = ["ONBOARDING_1", "ONBOARDING_2", "ONBOARDING_3"]
 @onready var _dots: HBoxContainer = %Dots
 @onready var _skip_button: Button = %SkipButton
 @onready var _menu_button: Button = %MenuButton
+@onready var _back_button: Button = %BackButton
 @onready var _next_button: Button = %NextButton
 @onready var _spacer: Control = %Spacer
 
@@ -23,6 +25,7 @@ var _page: int = 0
 func _ready() -> void:
 	_skip_button.pressed.connect(_finish.bind(false))
 	_menu_button.pressed.connect(_finish.bind(false))
+	_back_button.pressed.connect(_on_back_pressed)
 	_next_button.pressed.connect(_on_next_pressed)
 	for i in PAGES.size():
 		var dot := PanelContainer.new()
@@ -54,8 +57,14 @@ func _show_page(index: int) -> void:
 		dot.theme_type_variation = &"GoalPill" if i == index else &"Pill"
 	_skip_button.visible = not last
 	_menu_button.visible = last
+	_back_button.visible = index > 0
 	_next_button.text = tr("ONBOARDING_START_TRAINING" if last else "ONBOARDING_NEXT")
 	_next_button.grab_focus()
+
+
+func _on_back_pressed() -> void:
+	if _page > 0:
+		_show_page(_page - 1)
 
 
 func _on_next_pressed() -> void:
