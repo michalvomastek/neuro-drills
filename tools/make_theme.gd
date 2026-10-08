@@ -432,7 +432,7 @@ func _build(p: Dictionary) -> Theme:
 	# card-coloured controls inside; a Sunken panel vanished on the dark
 	# background.
 	t.set_type_variation("Section", "PanelContainer")
-	var section := _box(_c(p, "panel"), RADIUS, Vector4(16, 12, 16, 12))
+	var section := _box(_c(p, "panel"), RADIUS, Vector4(20, 18, 20, 20))
 	section.border_color = _c(p, "line")
 	section.set_border_width_all(1)
 	t.set_stylebox("panel", "Section", section)

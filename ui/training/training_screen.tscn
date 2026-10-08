@@ -148,6 +148,10 @@ layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "TRAINING_START"
 
+[node name="PlansGap" type="Control" parent="Scroll/Margin/Panel/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
 [node name="PlansCard" type="PanelContainer" parent="Scroll/Margin/Panel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -155,7 +159,7 @@ theme_type_variation = &"Section"
 
 [node name="PlansBox" type="VBoxContainer" parent="Scroll/Margin/Panel/VBox/PlansCard"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
 [node name="PlansTitle" type="Label" parent="Scroll/Margin/Panel/VBox/PlansCard/PlansBox"]
 layout_mode = 2
