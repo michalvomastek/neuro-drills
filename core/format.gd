@@ -39,15 +39,19 @@ static func ratio(value: float) -> String:
 
 ## A calendar date in local time ([param tz_bias_min] minutes east of UTC,
 ## the same bias the day arithmetic of Gamification uses): "14. 2. 2026"
-## in Czech, "2026-02-14" otherwise.
-static func date(unix: int, tz_bias_min: int) -> String:
+## in Czech, "14/2/2026" otherwise. With [param year_if_current] false the
+## year is left out inside the current year ("14. 2." / "14/2", chart labels).
+static func date(unix: int, tz_bias_min: int, year_if_current: bool = true) -> String:
 	var local := Time.get_datetime_dict_from_unix_time(unix + tz_bias_min * 60)
+	var today := Time.get_datetime_dict_from_unix_time(int(Time.get_unix_time_from_system()) + tz_bias_min * 60)
 	var year: int = local["year"]
 	var month: int = local["month"]
 	var day: int = local["day"]
+	var current_year: int = today["year"]
+	var with_year := year_if_current or year != current_year
 	if TranslationServer.get_locale().begins_with("cs"):
-		return "%d. %d. %d" % [day, month, year]
-	return "%04d-%02d-%02d" % [year, month, day]
+		return "%d. %d. %d" % [day, month, year] if with_year else "%d. %d." % [day, month]
+	return "%d/%d/%d" % [day, month, year] if with_year else "%d/%d" % [day, month]
 
 
 ## Seconds as "m:ss min" for durations of a whole training.

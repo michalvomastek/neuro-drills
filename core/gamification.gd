@@ -153,8 +153,20 @@ static func badges(records: Array[Dictionary], now_unix: int, tz_bias_min: int, 
 		var drill_id: String = record["drill_id"]
 		if categories.has(drill_id):
 			played_categories[categories[drill_id]] = true
-	var best := best_streak(records, tz_bias_min)
-	var checks := {
+	var checks := _badge_checks(runs, advanced, elite, played_categories.size(), category_count, best_streak(records, tz_bias_min), _days_in_window(records, now_unix, tz_bias_min, 7), goal_days(records, now_unix, tz_bias_min, goal_minutes, 7))
+	for id in BADGE_ORDER:
+		var ok: bool = checks[id]
+		if ok:
+			earned.append(id)
+	return earned
+
+
+## The rule of every badge in BADGE_ORDER from the numbers that decide them:
+## runs so far, the level flags, how many categories were played out of how
+## many exist, the longest streak, played days and goal days in the 7-day
+## window ending today. Shared by badges() and badge_times().
+static func _badge_checks(runs: int, advanced: bool, elite: bool, played_categories: int, category_count: int, best: int, week_days: int, goal_days_count: int) -> Dictionary:
+	return {
 		"first_run": runs >= 1,
 		"runs_10": runs >= 10,
 		"runs_100": runs >= 100,
@@ -164,15 +176,10 @@ static func badges(records: Array[Dictionary], now_unix: int, tz_bias_min: int, 
 		"streak_3": best >= 3,
 		"streak_7": best >= 7,
 		"streak_30": best >= 30,
-		"week_full": _days_in_window(records, now_unix, tz_bias_min, 7) >= 7,
-		"all_categories": category_count > 0 and played_categories.size() >= category_count,
-		"goal_7": goal_days(records, now_unix, tz_bias_min, goal_minutes, 7) >= 7,
+		"week_full": week_days >= 7,
+		"all_categories": category_count > 0 and played_categories >= category_count,
+		"goal_7": goal_days_count >= 7,
 	}
-	for id in BADGE_ORDER:
-		var ok: bool = checks[id]
-		if ok:
-			earned.append(id)
-	return earned
 
 
 ## When each earned badge was earned: the time of the run after which it
@@ -225,20 +232,7 @@ static func badge_times(records: Array[Dictionary], now_unix: int, tz_bias_min: 
 			if day_ms >= goal_ms:
 				goal_days_count += 1
 			i -= 1
-		var checks := {
-			"first_run": runs >= 1,
-			"runs_10": runs >= 10,
-			"runs_100": runs >= 100,
-			"runs_500": runs >= 500,
-			"first_advanced": advanced,
-			"first_elite": elite,
-			"streak_3": best >= 3,
-			"streak_7": best >= 7,
-			"streak_30": best >= 30,
-			"week_full": week_days >= 7,
-			"all_categories": category_count > 0 and played_categories.size() >= category_count,
-			"goal_7": goal_days_count >= 7,
-		}
+		var checks := _badge_checks(runs, advanced, elite, played_categories.size(), category_count, best, week_days, goal_days_count)
 		for id in BADGE_ORDER:
 			var ok: bool = checks[id]
 			if ok and not times.has(id):

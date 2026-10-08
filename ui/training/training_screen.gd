@@ -16,7 +16,6 @@ extends Control
 @onready var _empty_label: Label = %EmptyLabel
 @onready var _add_row: BoxContainer = %AddRow
 @onready var _drill_option: ListPickButton = %DrillOption
-@onready var _steps_scroll: ScrollContainer = %StepsScroll
 @onready var _add_button: Button = %AddButton
 @onready var _suggest_button: Button = %SuggestButton
 @onready var _save_button: Button = %SaveButton

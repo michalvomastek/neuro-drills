@@ -13,16 +13,16 @@ const BADGE_ICON_SIZE := 56.0
 
 
 func _ready() -> void:
-	GamiWidgets.add_profile_stats(_stats)
+	# Badge id -> time earned; its keys are exactly the earned badges.
+	var times := StatsStore.badge_times()
+	GamiWidgets.add_profile_stats(_stats, times.size())
 	var week := StatsStore.history.week_summary(int(Time.get_unix_time_from_system()))
 	var week_runs: int = week["runs"]
 	_week_label.text = tr("PROGRESS_WEEK") % [week_runs, week["minutes"], week["drills"], week["improved"]] if week_runs > 0 else tr("PROFILE_WEEK_EMPTY")
-	var earned := StatsStore.earned_badges()
-	var times := StatsStore.badge_times()
-	_badges_title.text = tr("GAMI_BADGES") % [earned.size(), Gamification.BADGE_ORDER.size()]
+	_badges_title.text = tr("GAMI_BADGES") % [times.size(), Gamification.BADGE_ORDER.size()]
 	for id in Gamification.BADGE_ORDER:
 		var at: int = times.get(id, 0)
-		_add_badge(id, earned.has(id), at)
+		_add_badge(id, times.has(id), at)
 	Layout.watch(self, _relayout)
 
 

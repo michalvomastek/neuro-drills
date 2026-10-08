@@ -109,12 +109,4 @@ func _draw() -> void:
 
 ## Day and month, with the year when it is not the current one.
 static func _date_text(unix: int) -> String:
-	var d := Time.get_date_dict_from_unix_time(unix)
-	var now := Time.get_date_dict_from_system()
-	var day: int = d["day"]
-	var month: int = d["month"]
-	var year: int = d["year"]
-	var current_year: int = now["year"]
-	if TranslationServer.get_locale().begins_with("cs"):
-		return "%d. %d." % [day, month] if year == current_year else "%d. %d. %d" % [day, month, year]
-	return "%d/%d" % [day, month] if year == current_year else "%d/%d/%d" % [day, month, year]
+	return Format.date(unix, StatsStore.tz_bias_min(), false)

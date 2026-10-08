@@ -89,7 +89,7 @@ static func add_stat_row(parent: Control, symbol: Control, title: String, detail
 
 ## The four numbers of the top bar written out for the profile: level with
 ## the XP to go, streak, daily goal and badges.
-static func add_profile_stats(parent: Control) -> void:
+static func add_profile_stats(parent: Control, earned_badges: int) -> void:
 	var info := StatsStore.level_info()
 	var level: int = info["level"]
 	var into: int = info["into"]
@@ -110,7 +110,7 @@ static func add_profile_stats(parent: Control) -> void:
 	if done:
 		goal_detail = TranslationServer.translate("PROFILE_GOAL_DONE_DETAIL") % minutes
 	add_stat_row(parent, make_stat_disc(parent.get_theme_color("green" if done else "primary", "App"), "stat_today"), TranslationServer.translate("PROFILE_GOAL_TITLE"), goal_detail)
-	var earned := StatsStore.earned_badges().size()
+	var earned := earned_badges
 	var total := Gamification.BADGE_ORDER.size()
 	add_stat_row(parent, make_stat_disc(parent.get_theme_color("yellow", "App"), "stat_badges", parent.get_theme_color("on_yellow", "App")), TranslationServer.translate("PROFILE_BADGES_TITLE"), TranslationServer.translate("PROFILE_BADGES_DETAIL") % [earned, total])
 

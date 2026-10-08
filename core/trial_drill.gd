@@ -368,8 +368,7 @@ func _build_ui() -> void:
 	_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(_description_label)
 	_help_label = Label.new()
-	_help_label.theme_type_variation = &"DimLabel"
-	_help_label.add_theme_font_size_override("font_size", 16)
+	_help_label.theme_type_variation = &"NoteLabel"
 	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(_help_label)
 
