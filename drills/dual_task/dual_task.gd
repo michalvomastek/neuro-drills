@@ -2,12 +2,15 @@
 ## arithmetic problems appear on the right, answered with the keypad or number
 ## keys, while the tapping must go on. The keypad is on screen from the start
 ## (greyed out), so nothing moves under the tapping finger when the load
-## begins; a phone stacks the pad above the problem instead of beside it.
+## begins; a phone stacks the pad above the problem instead of beside it. The
+## problem and the digits typed so far share one line ("54 + 39 = 9"), which
+## fits a short phone screen above the keypad.
 extends TrialDrill
 
 const TEMPOS: Array[int] = [60, 90, 120]
 const DEFAULT_BPM := 90
 const PULSE_SECONDS := 0.12
+const PROBLEM_FONT_SIZE := 72
 
 var _bpm: int = DEFAULT_BPM
 var _bpm_option: OptionButton
@@ -16,7 +19,7 @@ var _tap_pad: Button
 var _disc_style: StyleBoxFlat
 var _hint: Label
 var _problem: Label
-var _input: Label
+var _problem_text: String = ""
 var _keypad: GridContainer
 var _halves: BoxContainer
 var _answer: String = ""
@@ -61,6 +64,10 @@ func _build_play_area(parent: Control) -> void:
 	_tap_pad.pressed.connect(_on_tap)
 	halves.add_child(_tap_pad)
 	var left_overlay := CenterContainer.new()
+	# Anchors go on before the overlay has a parent: set_anchors_preset() on a
+	# parented control keeps its current rect by rewriting the offsets, which
+	# froze the overlay at the pad's minimum size.
+	left_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	left_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var disc := Panel.new()
 	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -71,7 +78,6 @@ func _build_play_area(parent: Control) -> void:
 	disc.add_theme_stylebox_override("panel", _disc_style)
 	left_overlay.add_child(disc)
 	_tap_pad.add_child(left_overlay)
-	left_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -86,12 +92,10 @@ func _build_play_area(parent: Control) -> void:
 	var stage := Control.new()
 	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(stage)
-	_problem = _make_stimulus_label(stage, 72)
-	_input = Label.new()
-	_input.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_input.add_theme_font_size_override("font_size", 40)
-	_input.custom_minimum_size = Vector2(0, 52)
-	right.add_child(_input)
+	_problem = _make_stimulus_label(stage, PROBLEM_FONT_SIZE)
+	# The stage reserves the line: with no minimum the keypad squeezed it to
+	# nothing on a phone and the equation spilled over the row below.
+	stage.custom_minimum_size = Vector2(0, _problem.get_theme_font("font").get_height(PROBLEM_FONT_SIZE))
 	var center := CenterContainer.new()
 	right.add_child(center)
 	_keypad = _make_keypad(center, _on_key)
@@ -142,8 +146,9 @@ func _process(_delta: float) -> void:
 func _run_trials() -> void:
 	_logic = DualTaskLogic.new(_bpm, _rng)
 	_loaded = false
+	_problem_text = ""
 	_problem.text = ""
-	_input.text = ""
+	_problem.remove_theme_color_override("font_color")
 	_set_keypad_enabled(false)
 	_hint.text = tr("DUAL_HINT_TAP")
 	_set_progress_text("%d BPM   0 / %d" % [_bpm, _logic.total_taps()])
@@ -173,9 +178,14 @@ func _on_tap() -> void:
 
 func _next_problem() -> void:
 	_answer = ""
-	_input.text = ""
-	_input.remove_theme_color_override("font_color")
-	_problem.text = _logic.arithmetic.new_problem()
+	_problem_text = _logic.arithmetic.new_problem()
+	_problem.remove_theme_color_override("font_color")
+	_show_equation()
+
+
+## "54 + 39 =" with the digits typed so far after the equals sign.
+func _show_equation() -> void:
+	_problem.text = ("%s = %s" % [_problem_text, _answer]).strip_edges()
 
 
 func _on_key(key: String) -> void:
@@ -188,12 +198,13 @@ func _on_key(key: String) -> void:
 			if _logic.answer_problem(int(_answer)):
 				_next_problem()
 			else:
-				_input.add_theme_color_override("font_color", get_theme_color("wrong", "Pad"))
+				# The wrong digits stay on screen in red until the next answer.
+				_problem.add_theme_color_override("font_color", get_theme_color("wrong", "Pad"))
 				_answer = ""
 		return
 	elif _answer.length() < 4:
 		_answer += key
-	_input.text = _answer
+	_show_equation()
 
 
 func _reset_play_state() -> void:
@@ -202,5 +213,7 @@ func _reset_play_state() -> void:
 	_loaded = false
 	if _disc_style != null:
 		_disc_style.bg_color = get_theme_color("cell", "Board")
+	if _problem != null:
+		_problem.remove_theme_color_override("font_color")
 	if _keypad != null:
 		_set_keypad_enabled(false)
