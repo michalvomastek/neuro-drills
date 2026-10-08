@@ -160,8 +160,7 @@ func _show_setup() -> void:
 	_play_panel.visible = false
 	_countdown_panel.visible = false
 	_start_button.grab_focus()
-	if definition != null:
-		phase_changed.emit(true)
+	_announce_phase(true)
 
 
 ## A column of at most 640 units with the screen margins around it, full
@@ -192,7 +191,7 @@ func _on_play_back_pressed() -> void:
 
 func _begin_run() -> void:
 	Drill.set_leave_guard(true)
-	phase_changed.emit(false)
+	_announce_phase(false)
 	_table_times_ms.clear()
 	_test_errors = 0
 	_table_index = 0

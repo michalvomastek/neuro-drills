@@ -30,6 +30,13 @@ func _on_setup(_config: Dictionary, _autostart: bool) -> void:
 	pass
 
 
+## Tells the router (and through it the app bars) which phase is on screen;
+## silent before setup(), when _ready() shows the panel for the first time.
+func _announce_phase(in_setup: bool) -> void:
+	if definition != null:
+		phase_changed.emit(in_setup)
+
+
 ## Makes [param button] fire once per touch tap while reacting on press.
 ## Godot hands a button both the touch event and the mouse event emulated
 ## from it; in ACTION_MODE_BUTTON_PRESS BaseButton acts on each, so one tap

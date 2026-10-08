@@ -69,11 +69,12 @@ func _on_drill_phase_changed(in_setup: bool, drill: Drill) -> void:
 	screen_changed.emit(DRILL_SETUP if in_setup else &"")
 
 
-## The back arrow of the app bar on a setup panel: leaves the drill the way
-## its own Back button did (to the training screen when a training ran).
+## The back arrow of the app bar on a setup panel: leaves the drill through
+## its own `aborted` signal, the same path Escape takes (to the training
+## screen when a training ran).
 func abort_drill() -> void:
 	if current_drill != null:
-		_on_drill_aborted()
+		current_drill.aborted.emit()
 
 
 func _on_drill_aborted() -> void:

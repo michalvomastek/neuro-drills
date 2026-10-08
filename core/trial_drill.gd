@@ -173,13 +173,6 @@ func _show_setup() -> void:
 	_announce_phase(true)
 
 
-## Tells the router (and through it the app bars) which phase is on screen;
-## silent before setup(), when _ready() shows the panel for the first time.
-func _announce_phase(in_setup: bool) -> void:
-	if definition != null:
-		phase_changed.emit(in_setup)
-
-
 func _on_start_pressed() -> void:
 	trials = _trials_option.get_selected_id()
 	countdown = _countdown_check.button_pressed

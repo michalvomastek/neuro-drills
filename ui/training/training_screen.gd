@@ -220,13 +220,16 @@ func _finish_drag() -> void:
 	_drag_row.modulate.a = 1.0
 	_drag_row = null
 	var reordered: Array[Dictionary] = []
+	var moved := false
 	for child in _step_list.get_children():
 		var index: int = child.get_meta(&"step_index", -1)
 		if index >= 0 and index < _steps.size():
+			moved = moved or index != reordered.size()
 			reordered.append(_steps[index])
-	if reordered.size() == _steps.size():
+	# A drag that ended where it started changes nothing.
+	if reordered.size() == _steps.size() and moved:
 		_steps = reordered
-	_mark_edited()
+		_mark_edited()
 	_rebuild_steps()
 
 
