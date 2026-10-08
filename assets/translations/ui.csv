@@ -627,7 +627,7 @@ SETTINGS_TEXT_SIZE,Velikost písma,Text size
 SETTINGS_TEXT_SMALL,Menší,Smaller
 SETTINGS_TEXT_NORMAL,Běžná,Normal
 SETTINGS_TEXT_LARGE,Větší,Larger
-SETTINGS_DATA_HINT,Data: historie kol a poznámky zůstávají v tomto prohlížeči či počítači. Zálohu a import najdeš v Pokroku.,Data: run history and notes stay in this browser or computer. Backup and import live on the Progress screen.
+SETTINGS_DATA_HINT,Data: historie kol a poznámky zůstávají v tomto zařízení. Zálohu a import najdeš v Pokroku.,Data: run history and notes stay on this device. Backup and import live on the Progress screen.
 HELP_MEASURES_LOWER,Měří: %s · méně je lépe,Measures: %s · lower is better
 HELP_MEASURES_HIGHER,Měří: %s · více je lépe,Measures: %s · higher is better
 HELP_BANDS,Pásma (orientačně): pokročilý od %s · zkušený od %s,Bands (indicative): advanced from %s · elite from %s
