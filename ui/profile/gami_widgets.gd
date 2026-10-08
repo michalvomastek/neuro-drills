@@ -142,8 +142,13 @@ static func add_stat_chip(parent: Control, color: Color, icon_name: String, text
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		chip.set_anchors_preset(Control.PRESET_FULL_RECT)
 		button.add_child(chip)
-		button.custom_minimum_size = chip.get_combined_minimum_size()
+		# The chip's minimum size is right only inside the tree, where the
+		# theme is known: outside it the disc counted the default panel
+		# margins and the button came out twice as tall as the row.
+		var fit := func() -> void: button.custom_minimum_size = chip.get_combined_minimum_size()
+		chip.minimum_size_changed.connect(fit)
 		parent.add_child(button)
+		fit.call()
 	else:
 		parent.add_child(chip)
 	return chip

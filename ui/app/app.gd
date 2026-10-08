@@ -8,6 +8,11 @@ extends Control
 
 const DEFAULT_LOCALE := "cs"
 const ICON_DIR := "res://assets/icons/"
+## One gap, in design units, between the top bar's edges, its two rows and
+## the title's glyphs: the stat discs stand this far below the bar's top
+## (after the safe-area inset) and above the title's capitals, and the
+## title's baseline this far above the bar's bottom edge.
+const TOP_BAR_GAP := 22.0
 
 ## Bottom bar tabs in order: screen id (as SceneRouter names it), label key, icon.
 const NAV_ITEMS: Array[Dictionary] = [
@@ -28,6 +33,7 @@ const TITLES: Dictionary = {
 }
 
 @onready var _top_bar: PanelContainer = %TopBar
+@onready var _top_rows: VBoxContainer = %TopRows
 @onready var _bottom_bar: PanelContainer = %BottomBar
 @onready var _host: Control = %Host
 @onready var _back_button: Button = %BackButton
@@ -75,6 +81,9 @@ func _build_bars() -> void:
 	_quit_button.icon = _icon("nav_quit")
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
+	# The title's box carries empty line spacing above the capitals; the row
+	# gap is shorter by it, so the discs stand TOP_BAR_GAP from the caps.
+	_top_rows.add_theme_constant_override("separation", roundi(TOP_BAR_GAP - _title_caps_offset()))
 	var actions: Dictionary = {
 		&"menu": SceneRouter.show_menu,
 		&"training": SceneRouter.show_training,
@@ -212,17 +221,32 @@ func _apply_insets() -> void:
 	var chrome := _top_bar.visible
 	offset_top = 0.0 if chrome else _insets.x
 	offset_bottom = 0.0 if chrome else -_insets.y
-	_pad_bar(_top_bar, &"TopBar", SIDE_TOP, _insets.x)
-	_pad_bar(_bottom_bar, &"BottomBar", SIDE_BOTTOM, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
+	# Below the title only the part of the gap its descent does not cover.
+	_pad_bar(_top_bar, &"TopBar", TOP_BAR_GAP + _insets.x, TOP_BAR_GAP - _title_descent())
+	_pad_bar(_bottom_bar, &"BottomBar", 0.0, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
 
 
-func _pad_bar(bar: PanelContainer, variation: StringName, side: Side, extra: float) -> void:
+## Adds [param top] and [param bottom] to the bar's vertical content margins.
+func _pad_bar(bar: PanelContainer, variation: StringName, top: float, bottom: float) -> void:
 	bar.remove_theme_stylebox_override("panel")
-	if extra <= 0.0:
+	if top <= 0.0 and bottom <= 0.0:
 		return
 	var style := get_theme_stylebox("panel", variation).duplicate() as StyleBox
-	style.set_content_margin(side, style.get_content_margin(side) + extra)
+	style.content_margin_top += maxf(top, 0.0)
+	style.content_margin_bottom += maxf(bottom, 0.0)
 	bar.add_theme_stylebox_override("panel", style)
+
+
+## Empty line spacing between the top of the title's box and its capitals.
+func _title_caps_offset() -> float:
+	var font := _title_label.get_theme_font("font")
+	var size := _title_label.get_theme_font_size("font_size")
+	return font.get_ascent(size) - size * GamiWidgets.CAP_HEIGHT_RATIO
+
+
+## Space the title's box keeps below its baseline.
+func _title_descent() -> float:
+	return _title_label.get_theme_font("font").get_descent(_title_label.get_theme_font_size("font_size"))
 
 
 static func _icon(name: String) -> Texture2D:
