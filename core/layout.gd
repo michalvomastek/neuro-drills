@@ -11,6 +11,10 @@ const PORTRAIT_SHORT_SIDE := 480.0
 ## Below this width (in design units) screens use their narrow layout.
 const NARROW_WIDTH := 700.0
 const NARROW_MARGIN := 12
+## Share of the font size above the baseline that the capitals and digits of
+## Nunito and Baloo 2 reach; a label's box starts higher, at the font's
+## ascent, so a gap measured to the glyphs is shorter than one to the box.
+const CAP_HEIGHT_RATIO := 0.72
 
 
 ## Global zoom chosen in the settings (0.9 small, 1.0 normal, 1.15 large):
@@ -119,3 +123,11 @@ static func panel_width(control: Control, design_width: float, panel_type: Strin
 	# the viewport, e.g. under the app bars); the viewport before that.
 	var available := control.size.x if control.size.x > 0.0 else viewport_width(control)
 	return minf(design_width, available - 2.0 * NARROW_MARGIN - padding)
+
+
+## Empty space between the top of [param label]'s box and the top of its
+## capitals: subtract it from a gap that should end at the glyphs.
+static func caps_offset(label: Label) -> float:
+	var font := label.get_theme_font("font")
+	var size := label.get_theme_font_size("font_size")
+	return maxf(0.0, font.get_ascent(size) - size * CAP_HEIGHT_RATIO)

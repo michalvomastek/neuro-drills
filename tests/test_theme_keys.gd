@@ -1,12 +1,14 @@
-## Every colour, stylebox, constant or font that a script asks the theme for
-## by name and type must exist in both generated themes. A lookup that misses
-## returns black (or the engine default) without any error: dropping the Board
-## type from make_theme.gd once left every drawn board black for two days.
+## Every colour, stylebox, constant or font that a script asks for by name
+## and type (Control.get_theme_*, Theme.get_*) must exist in both generated
+## themes, and so must every theme_type_variation named in a script or
+## scene. A lookup that misses returns black (or the engine default) without
+## any error: dropping the Board type from make_theme.gd once left every
+## drawn board black for two days.
 extends TestCase
 
 const THEMES: Array[String] = ["res://ui/theme/dark_theme.tres", "res://ui/theme/light_theme.tres"]
 const SOURCE_DIRS: Array[String] = ["res://autoload", "res://core", "res://drills", "res://ui"]
-const CALL_PATTERN := "(?:get|has)_theme_(color|stylebox|constant|font_size|font)\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)"
+const CALL_PATTERN := "(?:get|has)_(?:theme_)?(color|stylebox|constant|font_size|font)\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)"
 const STRING_PATTERN := "\"([A-Za-z0-9_]+)\""
 
 
@@ -89,14 +91,17 @@ func _collect_lookups() -> Array[Dictionary]:
 	return lookups
 
 
-## theme_type_variation assignments in scripts and scenes -> where they appear.
+## theme_type_variation assignments in scripts and scenes -> where they
+## appear; every literal of the right-hand side counts, a conditional names two.
 func _collect_variations() -> Dictionary:
 	var variations := {}
-	var pattern := RegEx.create_from_string("theme_type_variation\\s*=\\s*&?\"([A-Za-z0-9_]+)\"")
+	var assignment := RegEx.create_from_string("theme_type_variation\\s*=\\s*(.+)")
+	var literal := RegEx.create_from_string(STRING_PATTERN)
 	for path in _source_files() + _scene_files():
 		var source := FileAccess.get_file_as_string(path)
-		for found in pattern.search_all(source):
-			variations[StringName(found.get_string(1))] = path.get_file()
+		for found in assignment.search_all(source):
+			for part in literal.search_all(found.get_string(1)):
+				variations[StringName(part.get_string(1))] = path.get_file()
 	return variations
 
 

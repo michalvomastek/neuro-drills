@@ -91,16 +91,41 @@ func _build_play_area(parent: Control) -> void:
 	right.add_child(_hint)
 	var stage := Control.new()
 	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# The stage reserves the digits' height, not the whole line box: with no
+	# minimum the keypad squeezed it to nothing on a phone and the equation
+	# spilled over the row below. The box's empty line spacing overhangs the
+	# stage both ways, so the digits stay centred in it.
+	stage.custom_minimum_size = Vector2(0, roundi(PROBLEM_FONT_SIZE * Layout.CAP_HEIGHT_RATIO))
 	right.add_child(stage)
-	_problem = _make_stimulus_label(stage, PROBLEM_FONT_SIZE)
-	# The stage reserves the line: with no minimum the keypad squeezed it to
-	# nothing on a phone and the equation spilled over the row below.
-	stage.custom_minimum_size = Vector2(0, _problem.get_theme_font("font").get_height(PROBLEM_FONT_SIZE))
+	_problem = Label.new()
+	_problem.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_problem.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_problem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_problem.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_problem.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_problem.add_theme_font_size_override("font_size", PROBLEM_FONT_SIZE)
+	stage.add_child(_problem)
+	stage.resized.connect(_size_equation.bind(stage))
 	var center := CenterContainer.new()
 	right.add_child(center)
 	_keypad = _make_keypad(center, _on_key)
 	_set_keypad_enabled(false)
 	_relayout_setup()
+
+
+## Sizes the equation's font once per layout so the widest equation the
+## drill can show fits [param stage]; the line then stays put while the
+## answer is typed instead of shrinking with every digit.
+func _size_equation(stage: Control) -> void:
+	var available := stage.size.x - 32.0
+	if available <= 0.0:
+		return
+	var font := _problem.get_theme_font("font")
+	var widest := 0.0
+	for symbol: String in ["+", "−", "×"]:
+		widest = maxf(widest, font.get_string_size("88 %s 88 = 8888" % symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, PROBLEM_FONT_SIZE).x)
+	var fitted := PROBLEM_FONT_SIZE if widest <= available else maxi(16, int(PROBLEM_FONT_SIZE * available / widest))
+	_problem.add_theme_font_size_override("font_size", fitted)
 
 
 ## Side by side on a wide screen, the pad above the problem on a phone.

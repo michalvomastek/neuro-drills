@@ -83,7 +83,7 @@ func _build_bars() -> void:
 	_quit_button.visible = not OS.has_feature("web")
 	# The title's box carries empty line spacing above the capitals; the row
 	# gap is shorter by it, so the discs stand TOP_BAR_GAP from the caps.
-	_top_rows.add_theme_constant_override("separation", roundi(TOP_BAR_GAP - _title_caps_offset()))
+	_top_rows.add_theme_constant_override("separation", roundi(TOP_BAR_GAP - Layout.caps_offset(_title_label)))
 	var actions: Dictionary = {
 		&"menu": SceneRouter.show_menu,
 		&"training": SceneRouter.show_training,
@@ -235,13 +235,6 @@ func _pad_bar(bar: PanelContainer, variation: StringName, top: float, bottom: fl
 	style.content_margin_top += maxf(top, 0.0)
 	style.content_margin_bottom += maxf(bottom, 0.0)
 	bar.add_theme_stylebox_override("panel", style)
-
-
-## Empty line spacing between the top of the title's box and its capitals.
-func _title_caps_offset() -> float:
-	var font := _title_label.get_theme_font("font")
-	var size := _title_label.get_theme_font_size("font_size")
-	return font.get_ascent(size) - size * GamiWidgets.CAP_HEIGHT_RATIO
 
 
 ## Space the title's box keeps below its baseline.

@@ -44,20 +44,12 @@ static func make_stat_disc(color: Color, icon_name: String, icon_color: Color = 
 	return disc
 
 
-## Share of the font size above which capitals start, for Baloo 2 and
-## Nunito; the label box itself begins higher (ascent plus line spacing).
-const CAP_HEIGHT_RATIO := 0.72
-
-
 ## Places [param symbol] on the row so that its top meets the top of the
 ## capitals of [param title_label], not the top of the label box, which
 ## has empty line spacing above the glyphs. Returns the wrapper to add.
 static func align_to_caps(symbol: Control, title_label: Label) -> MarginContainer:
-	var font := title_label.get_theme_font("font")
-	var font_size := title_label.get_theme_font_size("font_size")
-	var pad := maxi(0, roundi(font.get_ascent(font_size) - font_size * CAP_HEIGHT_RATIO))
 	var holder := MarginContainer.new()
-	holder.add_theme_constant_override("margin_top", pad)
+	holder.add_theme_constant_override("margin_top", roundi(Layout.caps_offset(title_label)))
 	holder.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	# Inside a card button the holder must not swallow the tap on the icon.
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
