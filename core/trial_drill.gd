@@ -519,6 +519,21 @@ func _make_stimulus_label(parent: Control, font_size: int) -> Label:
 	return label
 
 
+## Side room a stimulus keeps inside its label, and the smallest font the fit goes down to.
+const STIMULUS_PADDING := 32.0
+const MIN_STIMULUS_FONT := 16
+
+
+## The largest font size up to [param design] at which [param text] fits a
+## label [param width] units wide, the stimulus padding left free.
+static func _fitted_font_size(font: Font, text: String, design: int, width: float) -> int:
+	var available := width - STIMULUS_PADDING
+	var text_width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, design).x
+	if text_width <= available:
+		return design
+	return maxi(MIN_STIMULUS_FONT, int(design * available / text_width))
+
+
 ## Sets the largest font size up to the design size at which the text fits.
 func _fit_stimulus_label(label: Label) -> void:
 	if label.text.is_empty() or label.size.x <= 0.0:
@@ -531,10 +546,7 @@ func _fit_stimulus_label(label: Label) -> void:
 	if current != last_fitted:
 		design = current
 		label.set_meta(&"design_font_size", design)
-	var font := label.get_theme_font("font")
-	var available := label.size.x - 32.0
-	var width := font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_CENTER, -1, design).x
-	var fitted := design if width <= available else maxi(16, int(design * available / width))
+	var fitted := _fitted_font_size(label.get_theme_font("font"), label.text, design, label.size.x)
 	label.set_meta(&"fitted_font_size", fitted)
 	if current != fitted:
 		label.add_theme_font_size_override("font_size", fitted)

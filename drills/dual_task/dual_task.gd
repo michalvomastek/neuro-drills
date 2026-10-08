@@ -117,14 +117,12 @@ func _build_play_area(parent: Control) -> void:
 ## drill can show fits [param stage]; the line then stays put while the
 ## answer is typed instead of shrinking with every digit.
 func _size_equation(stage: Control) -> void:
-	var available := stage.size.x - 32.0
-	if available <= 0.0:
+	if stage.size.x <= 0.0:
 		return
 	var font := _problem.get_theme_font("font")
-	var widest := 0.0
+	var fitted := PROBLEM_FONT_SIZE
 	for symbol: String in ["+", "−", "×"]:
-		widest = maxf(widest, font.get_string_size("88 %s 88 = 8888" % symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, PROBLEM_FONT_SIZE).x)
-	var fitted := PROBLEM_FONT_SIZE if widest <= available else maxi(16, int(PROBLEM_FONT_SIZE * available / widest))
+		fitted = mini(fitted, _fitted_font_size(font, "88 %s 88 = 8888" % symbol, PROBLEM_FONT_SIZE, stage.size.x))
 	_problem.add_theme_font_size_override("font_size", fitted)
 
 
@@ -223,12 +221,13 @@ func _on_key(key: String) -> void:
 			if _logic.answer_problem(int(_answer)):
 				_next_problem()
 			else:
-				# The wrong digits stay on screen in red until the next answer.
+				# The wrong digits stay on screen in red until a new answer starts.
 				_problem.add_theme_color_override("font_color", get_theme_color("wrong", "Pad"))
 				_answer = ""
 		return
 	elif _answer.length() < 4:
 		_answer += key
+	_problem.remove_theme_color_override("font_color")
 	_show_equation()
 
 

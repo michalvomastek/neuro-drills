@@ -3,7 +3,9 @@
 ## themes, and so must every theme_type_variation named in a script or
 ## scene. A lookup that misses returns black (or the engine default) without
 ## any error: dropping the Board type from make_theme.gd once left every
-## drawn board black for two days.
+## drawn board black for two days. An entry that falls back to an ancestor
+## (a variation without its own stylebox) passes: the test guards types and
+## names, not every override.
 extends TestCase
 
 const THEMES: Array[String] = ["res://ui/theme/dark_theme.tres", "res://ui/theme/light_theme.tres"]
@@ -69,6 +71,8 @@ func _has(theme: Theme, kind: String, name: StringName, type: StringName) -> boo
 
 ## Explicit lookups: the last string literal in the call is the type, the
 ## others are names; a literal right after a comparison is an ordinary value.
+## A conditional type ("Label" if x else "DimLabel") would be misread as a
+## name; no call writes one today.
 func _collect_lookups() -> Array[Dictionary]:
 	var lookups: Array[Dictionary] = []
 	var call := RegEx.create_from_string(CALL_PATTERN)
