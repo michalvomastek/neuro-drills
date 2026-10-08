@@ -46,16 +46,25 @@ var _screen: StringName = &""
 var _tabs: Dictionary = {}
 ## Top and bottom safe-area insets of the device in design units.
 var _insets: Vector2 = Vector2.ZERO
-## While iOS shows a share or file sheet the page reports no safe area, and
-## the resize that follows the sheet is often the last one. A reading that
-## drops an inset to zero is therefore held back until a later re-check
-## confirms it; the last re-check is trusted as it is, so a real change
-## (another device state, multitasking) still gets through.
-const INSET_RECHECK_SECONDS: Array[float] = [0.5, 2.0]
+## iOS reports the safe area in steps while a rotation or a system sheet
+## settles, and every applied change moves the whole layout. A sequence of
+## re-checks therefore follows each window change, and a new reading is
+## applied once two readings in a row agree, or at the last check as it is.
+## While a share or file sheet is up the page reports no safe area, and the
+## resize that follows the sheet is often the last one: unless the window
+## changed orientation (zeros are then real), a drop to zero waits for the
+## last check.
+const INSET_RECHECK_SECONDS: Array[float] = [0.25, 0.5, 1.0, 2.0]
 ## Window size the current re-check sequence was started for; a new
 ## sequence supersedes the pending timers of the old one.
 var _inset_sequence: int = 0
 var _inset_window_size: Vector2i = Vector2i.ZERO
+var _inset_rotated: bool = false
+## The last reading of the sequence that differed from the applied insets.
+var _inset_candidate: Vector2 = Vector2(-1.0, -1.0)
+## What the bars were last padded for (chrome, insets, side margin); the
+## same input does not rebuild their styleboxes.
+var _bar_key: Array = []
 
 
 func _ready() -> void:
@@ -171,9 +180,11 @@ func _apply_scale() -> void:
 	_apply_insets()
 	# App.resized also lands here (every inset change moves the App), so a
 	# new re-check sequence starts only when the window itself changed.
-	if get_tree().root.size != _inset_window_size:
-		_inset_window_size = get_tree().root.size
-		_schedule_inset_checks()
+	var size := get_tree().root.size
+	if size != _inset_window_size:
+		var rotated := _inset_window_size != Vector2i.ZERO and (size.x > size.y) != (_inset_window_size.x > _inset_window_size.y)
+		_inset_window_size = size
+		_schedule_inset_checks(rotated)
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
@@ -181,39 +192,45 @@ func _apply_scale() -> void:
 	_nav_buttons.custom_minimum_size.x = minf(Layout.viewport_width(self) - padding, NAV_MAX_WIDTH)
 
 
-## Measures now (holding back drops to zero) and again after each delay in
-## INSET_RECHECK_SECONDS, the last time trusting the reading; timers of an
-## older sequence do nothing.
-func _schedule_inset_checks() -> void:
+## Measures now and again after each delay in INSET_RECHECK_SECONDS, the
+## last time taking the reading as it is; timers of an older sequence do
+## nothing. [param rotated] says the window changed orientation.
+func _schedule_inset_checks(rotated: bool) -> void:
 	_inset_sequence += 1
 	var sequence := _inset_sequence
+	_inset_rotated = rotated
+	_inset_candidate = Vector2(-1.0, -1.0)
 	_measure_insets(false)
 	for i in INSET_RECHECK_SECONDS.size():
-		var trusted := i == INSET_RECHECK_SECONDS.size() - 1
+		var last := i == INSET_RECHECK_SECONDS.size() - 1
 		get_tree().create_timer(INSET_RECHECK_SECONDS[i]).timeout.connect(func() -> void:
 			if sequence == _inset_sequence:
-				_measure_insets(trusted))
+				_measure_insets(last))
 
 
-## Reads the safe-area insets and applies them when they changed. Unless
-## [param trusted], an inset that fell to zero keeps its previous value
-## (a system sheet is probably up); a non-zero reading is always taken.
-func _measure_insets(trusted: bool) -> void:
+## Reads the safe-area insets; a changed reading is applied once it agrees
+## with the previous one of the sequence, or at the [param last] check. A
+## drop to zero without a rotation waits for the last check (a sheet).
+func _measure_insets(last: bool) -> void:
 	var measured := Layout.safe_insets(get_tree().root)
-	if not trusted:
+	if not last and not _inset_rotated:
 		if measured.x == 0.0:
 			measured.x = _insets.x
 		if measured.y == 0.0:
 			measured.y = _insets.y
-	if measured != _insets:
+	if measured == _insets:
+		_inset_candidate = measured
+		return
+	if last or measured == _inset_candidate:
 		_insets = measured
 		_apply_insets()
+	_inset_candidate = measured
 
 
 ## Focus coming back (a sheet closed) starts a re-check sequence too.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		_schedule_inset_checks()
+		_schedule_inset_checks(false)
 
 
 ## With the bars shown they reach the edges of the screen and grow their
@@ -221,6 +238,10 @@ func _notification(what: int) -> void:
 ## a screen without bars is inset as a whole instead.
 func _apply_insets() -> void:
 	var chrome := _top_bar.visible
+	var key: Array = [chrome, _insets, _bar_side_margin()]
+	if key == _bar_key:
+		return
+	_bar_key = key
 	offset_top = 0.0 if chrome else _insets.x
 	offset_bottom = 0.0 if chrome else -_insets.y
 	# Below the title only the part of the gap its descent does not cover.
@@ -267,6 +288,8 @@ func _on_node_added(node: Node) -> void:
 
 func _on_theme_changed(name: String) -> void:
 	apply_theme(self, name)
+	# The bars' padded styleboxes were duplicated from the old theme.
+	_bar_key = []
 	_apply_insets()
 	# The chips and the ring carry colours read when they were built; a
 	# switch to the light theme left near-white numbers on a white bar.
