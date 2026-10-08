@@ -37,10 +37,11 @@ static func ratio(value: float) -> String:
 	return text
 
 
-## A calendar date in local time: "14. 2. 2026" in Czech, "2026-02-14" otherwise.
-static func date(unix: int) -> String:
-	var bias: int = Time.get_time_zone_from_system().get("bias", 0)
-	var local := Time.get_datetime_dict_from_unix_time(unix + bias * 60)
+## A calendar date in local time ([param tz_bias_min] minutes east of UTC,
+## the same bias the day arithmetic of Gamification uses): "14. 2. 2026"
+## in Czech, "2026-02-14" otherwise.
+static func date(unix: int, tz_bias_min: int) -> String:
+	var local := Time.get_datetime_dict_from_unix_time(unix + tz_bias_min * 60)
 	var year: int = local["year"]
 	var month: int = local["month"]
 	var day: int = local["day"]

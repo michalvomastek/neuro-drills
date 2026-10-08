@@ -61,3 +61,34 @@ func test_daily_goal_and_badges() -> void:
 	assert_eq(times["all_categories"], NOW - 6 * DAY + 60, "second run")
 	assert_false(times.has("first_elite"))
 	assert_eq(Gamification.badge_times([], NOW, 0, 10, categories, 2), {})
+
+
+## The one-pass badge_times must agree with replaying badges() on every
+## prefix of the history, on random histories.
+func test_badge_times_match_prefix_replay() -> void:
+	var categories := {"reaction_time": "CATEGORY_REACTION", "schulte_table": "CATEGORY_ATTENTION", "n_back": "CATEGORY_MEMORY"}
+	var ids: Array[String] = ["reaction_time", "schulte_table", "n_back"]
+	for seed_value in 6:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = seed_value
+		var records: Array[Dictionary] = []
+		for i in 70:
+			var at := NOW - rng.randi_range(0, 40) * DAY + rng.randi_range(0, 86399)
+			records.append(_rec(at, rng.randi_range(0, 8) * 60000, rng.randi_range(-1, 2), ids[rng.randi_range(0, 2)]))
+		var ordered: Array[Dictionary] = records.duplicate()
+		ordered.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			var at_a: int = a["at"]
+			var at_b: int = b["at"]
+			return at_a < at_b)
+		var expected: Dictionary = {}
+		var prefix: Array[Dictionary] = []
+		for record in ordered:
+			prefix.append(record)
+			var at: int = record["at"]
+			for id in Gamification.badges(prefix, at, 60, 5, categories, 3):
+				if not expected.has(id):
+					expected[id] = at
+		for id: String in expected.keys():
+			if not Gamification.badges(records, NOW, 60, 5, categories, 3).has(id):
+				expected.erase(id)
+		assert_eq(Gamification.badge_times(records, NOW, 60, 5, categories, 3), expected, "seed %d" % seed_value)

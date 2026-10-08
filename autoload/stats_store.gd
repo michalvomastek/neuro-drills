@@ -198,25 +198,32 @@ func level_info() -> Dictionary:
 
 ## Ids of all earned badges, in display order.
 func earned_badges(now_unix: int = int(Time.get_unix_time_from_system())) -> Array[String]:
+	var categories := _drill_categories()
+	return Gamification.badges(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, _category_count(categories))
+
+
+## Badge id -> unix time of the run that earned it, for the profile.
+func badge_times(now_unix: int = int(Time.get_unix_time_from_system())) -> Dictionary:
+	var categories := _drill_categories()
+	return Gamification.badge_times(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, _category_count(categories))
+
+
+## Drill id -> category key of every registered drill (the "all categories" badge).
+func _drill_categories() -> Dictionary:
 	var categories: Dictionary = {}
-	var category_keys: Dictionary = {}
 	for definition in DrillRegistry.get_all():
 		categories[String(definition.id)] = definition.category_key
-		category_keys[definition.category_key] = true
-	return Gamification.badges(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, category_keys.size())
+	return categories
+
+
+func _category_count(categories: Dictionary) -> int:
+	var keys: Dictionary = {}
+	for key: String in categories.values():
+		keys[key] = true
+	return keys.size()
 
 
 ## Earned badges not announced yet; marks them as seen.
-## Badge id -> unix time of the run that earned it, for the profile.
-func badge_times(now_unix: int = int(Time.get_unix_time_from_system())) -> Dictionary:
-	var categories: Dictionary = {}
-	var category_keys: Dictionary = {}
-	for definition in DrillRegistry.get_all():
-		categories[String(definition.id)] = definition.category_key
-		category_keys[definition.category_key] = true
-	return Gamification.badge_times(history.records, now_unix, tz_bias_min(), Gamification.DAILY_GOAL_MINUTES, categories, category_keys.size())
-
-
 func take_new_badges() -> Array[String]:
 	var fresh: Array[String] = []
 	for id in earned_badges():

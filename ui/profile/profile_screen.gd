@@ -65,7 +65,7 @@ func _add_badge(id: String, earned: bool, earned_at: int) -> void:
 	var state := Label.new()
 	state.text = tr("PROFILE_BADGE_LOCKED")
 	if earned:
-		state.text = tr("PROFILE_BADGE_EARNED_ON") % Format.date(earned_at) if earned_at > 0 else tr("PROFILE_BADGE_EARNED")
+		state.text = tr("PROFILE_BADGE_EARNED_ON") % Format.date(earned_at, StatsStore.tz_bias_min()) if earned_at > 0 else tr("PROFILE_BADGE_EARNED")
 	state.theme_type_variation = &"PillLabel"
 	state.add_theme_color_override("font_color", get_theme_color("green" if earned else "dim", "App"))
 	box.add_child(state)

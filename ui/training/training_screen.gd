@@ -28,6 +28,8 @@ var _steps: Array[Dictionary] = []
 var _plan_name: String = ""
 ## True once the player loaded or edited the list, so a new length keeps it.
 var _custom: bool = false
+## The steps changed since the plan was loaded or saved under _plan_name.
+var _dirty: bool = false
 var _rng := RandomNumberGenerator.new()
 ## Row being dragged by its handle, or null.
 var _drag_row: Control
@@ -68,12 +70,10 @@ func _relayout() -> void:
 	_footer.columns = 2 if narrow else 4
 	for button: Button in [_suggest_button, _save_button, _start_button]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL if narrow else Control.SIZE_FILL
-	# A phone: short button texts so two fit side by side. The step list
-	# grows with its content on every screen size; the whole screen scrolls.
+	# A phone: short button texts so two fit side by side. (The step list
+	# grows with its content on every screen size; the whole screen scrolls.)
 	_suggest_button.text = tr("TRAINING_SUGGEST_SHORT" if narrow else "TRAINING_SUGGEST")
 	_save_button.text = tr("TRAINING_SAVE_SHORT" if narrow else "TRAINING_SAVE")
-	_steps_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	_steps_scroll.size_flags_vertical = Control.SIZE_FILL
 	if not _steps.is_empty():
 		_rebuild_steps()
 
@@ -104,6 +104,7 @@ func _suggest() -> void:
 	_steps = TrainingPlan.suggest(definitions, _minutes(), order, _rng, harder)
 	_plan_name = ""
 	_custom = false
+	_dirty = false
 	_rebuild_steps()
 
 
@@ -111,7 +112,7 @@ func _rebuild_steps() -> void:
 	for child in _step_list.get_children():
 		child.queue_free()
 	_empty_label.visible = _steps.is_empty()
-	_plan_name_label.text = _plan_name if not _plan_name.is_empty() else tr("TRAINING_PLAN_SUGGESTED" if not _custom else "TRAINING_PLAN_EDITED")
+	_refresh_plan_name()
 	for i in _steps.size():
 		_step_list.add_child(_make_step_row(i))
 	var seconds := TrainingPlan.total_seconds(_steps)
@@ -226,7 +227,7 @@ func _finish_drag() -> void:
 			reordered.append(_steps[index])
 	if reordered.size() == _steps.size():
 		_steps = reordered
-	_custom = true
+	_mark_edited()
 	_rebuild_steps()
 
 
@@ -234,7 +235,7 @@ func _move_step(index: int, delta: int) -> void:
 	var target := index + delta
 	if target < 0 or target >= _steps.size():
 		return
-	_custom = true
+	_mark_edited()
 	var step := _steps[index]
 	_steps.remove_at(index)
 	_steps.insert(target, step)
@@ -242,7 +243,7 @@ func _move_step(index: int, delta: int) -> void:
 
 
 func _remove_step(index: int) -> void:
-	_custom = true
+	_mark_edited()
 	_steps.remove_at(index)
 	_rebuild_steps()
 
@@ -252,7 +253,7 @@ func _on_add_pressed() -> void:
 		return
 	var drill_id: String = _drill_option.get_item_metadata(_drill_option.selected)
 	_steps.append(TrainingPlan.make_step(StringName(drill_id)))
-	_custom = true
+	_mark_edited()
 	_rebuild_steps()
 
 
@@ -281,12 +282,36 @@ func _on_load_pressed() -> void:
 	_steps = steps.duplicate(true)
 	_plan_name = plan["name"]
 	_custom = true
+	_dirty = false
 	_rebuild_steps()
 
 
+## Deleting the plan on screen keeps its steps as an unsaved custom plan.
 func _on_delete_pressed() -> void:
-	StatsStore.delete_plan(_selected_plan_name())
+	var deleted := _selected_plan_name()
+	StatsStore.delete_plan(deleted)
+	if deleted == _plan_name:
+		_plan_name = ""
 	_refresh_plans()
+	_refresh_plan_name()
+
+
+## An edit of the steps: the plan is the player's own and, when it carries
+## a saved plan's name, differs from the saved copy.
+func _mark_edited() -> void:
+	_custom = true
+	_dirty = true
+
+
+## The line under the "Plan" heading: suggested, edited, or the saved plan's
+## name (with a note when the steps were changed since).
+func _refresh_plan_name() -> void:
+	if _plan_name.is_empty():
+		_plan_name_label.text = tr("TRAINING_PLAN_EDITED" if _custom else "TRAINING_PLAN_SUGGESTED")
+	elif _dirty:
+		_plan_name_label.text = tr("TRAINING_PLAN_MODIFIED") % _plan_name
+	else:
+		_plan_name_label.text = _plan_name
 
 
 func _on_save_pressed() -> void:
@@ -306,6 +331,8 @@ func _on_save_pressed() -> void:
 			return
 		StatsStore.save_plan(plan_name, _steps)
 		_plan_name = plan_name
+		_dirty = false
+		_refresh_plan_name()
 		_refresh_plans()
 		_plans_option.select(_plans_option.item_count - 1))
 	dialog.visibility_changed.connect(func() -> void:

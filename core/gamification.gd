@@ -176,7 +176,12 @@ static func badges(records: Array[Dictionary], now_unix: int, tz_bias_min: int, 
 
 
 ## When each earned badge was earned: the time of the run after which it
-## first counted, keyed by badge id (records are replayed in time order).
+## first counted, keyed by badge id. One pass over the records in time
+## order keeps the running state the checks of [method badges] need (run
+## count, level flags, played categories, distinct days for the streak and
+## the week window, play per day for the goal window), so the profile does
+## not replay the whole history per record. A window badge that lapsed and
+## is not earned now is left out.
 static func badge_times(records: Array[Dictionary], now_unix: int, tz_bias_min: int, goal_minutes: int, categories: Dictionary, category_count: int) -> Dictionary:
 	var ordered: Array[Dictionary] = records.duplicate()
 	ordered.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
@@ -184,16 +189,62 @@ static func badge_times(records: Array[Dictionary], now_unix: int, tz_bias_min: 
 		var at_b: int = b["at"]
 		return at_a < at_b)
 	var times: Dictionary = {}
-	var prefix: Array[Dictionary] = []
+	var runs := 0
+	var advanced := false
+	var elite := false
+	var played_categories: Dictionary = {}
+	var days: Array[int] = []
+	var streak_length := 0
+	var best := 0
+	var ms_per_day: Dictionary = {}
+	var goal_ms := goal_minutes * 60000
 	for record in ordered:
-		prefix.append(record)
 		var at: int = record["at"]
-		for id in badges(prefix, at, tz_bias_min, goal_minutes, categories, category_count):
-			if not times.has(id):
+		runs += 1
+		var level: int = record.get("level", -1)
+		advanced = advanced or level >= Benchmarks.Level.ADVANCED
+		elite = elite or level >= Benchmarks.Level.ELITE
+		var drill_id: String = record["drill_id"]
+		if categories.has(drill_id):
+			played_categories[categories[drill_id]] = true
+		var today := day_of(at, tz_bias_min)
+		if days.is_empty() or days[days.size() - 1] != today:
+			streak_length = streak_length + 1 if not days.is_empty() and days[days.size() - 1] == today - 1 else 1
+			best = maxi(best, streak_length)
+			days.append(today)
+		var ms: int = record.get("total_ms", 0)
+		var so_far: int = ms_per_day.get(today, 0)
+		ms_per_day[today] = so_far + ms
+		# Days inside the 7-day window ending today, and those that reached the goal.
+		var week_days := 0
+		var goal_days_count := 0
+		var i := days.size() - 1
+		while i >= 0 and days[i] > today - 7:
+			week_days += 1
+			var day_ms: int = ms_per_day[days[i]]
+			if day_ms >= goal_ms:
+				goal_days_count += 1
+			i -= 1
+		var checks := {
+			"first_run": runs >= 1,
+			"runs_10": runs >= 10,
+			"runs_100": runs >= 100,
+			"runs_500": runs >= 500,
+			"first_advanced": advanced,
+			"first_elite": elite,
+			"streak_3": best >= 3,
+			"streak_7": best >= 7,
+			"streak_30": best >= 30,
+			"week_full": week_days >= 7,
+			"all_categories": category_count > 0 and played_categories.size() >= category_count,
+			"goal_7": goal_days_count >= 7,
+		}
+		for id in BADGE_ORDER:
+			var ok: bool = checks[id]
+			if ok and not times.has(id):
 				times[id] = at
 		if times.size() == BADGE_ORDER.size():
 			break
-	# A window badge (a full week) can lapse and come back: the final set decides.
 	var final := badges(records, now_unix, tz_bias_min, goal_minutes, categories, category_count)
 	for id: String in times.keys():
 		if not final.has(id):

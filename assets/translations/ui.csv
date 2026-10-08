@@ -524,6 +524,7 @@ TRAINING_SAVED_PLANS,Uložené sestavy,Saved plans
 TRAINING_PLAN_HEADING,Sestava,Plan
 TRAINING_PLAN_SUGGESTED,Navržená podle tvých slabších oblastí; uprav ji nebo ulož.,Suggested from your weaker areas; edit it or save it.
 TRAINING_PLAN_EDITED,Vlastní sestava (neuložená),Custom plan (not saved)
+TRAINING_PLAN_MODIFIED,%s · upraveno (neuloženo),%s · edited (not saved)
 TRAINING_LOAD,Načíst,Load
 TRAINING_DELETE,Smazat,Delete
 TRAINING_PLAN_NAME,Název sestavy,Plan name

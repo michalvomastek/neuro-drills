@@ -182,6 +182,11 @@ func _swap(node: Node, screen: StringName = &"") -> void:
 	assert(_host != null, "SceneRouter: attach() a host first")
 	if _current != null:
 		_current.queue_free()
+	# A top-level screen ends a training that was still in progress: the
+	# bottom tabs and the badge chip can leave a drill's setup panel during
+	# one, and the next run must not count as its step.
+	if not screen.is_empty():
+		training = null
 	_current = node
 	current_drill = node as Drill
 	_host.add_child(node)
