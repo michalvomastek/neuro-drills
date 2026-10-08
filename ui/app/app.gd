@@ -256,6 +256,9 @@ func _on_node_added(node: Node) -> void:
 func _on_theme_changed(name: String) -> void:
 	apply_theme(self, name)
 	_apply_insets()
+	# The chips and the ring carry colours read when they were built; a
+	# switch to the light theme left near-white numbers on a white bar.
+	_refresh_stats()
 
 
 ## Loads ui/theme/<name>_theme.tres onto [param host] (every screen inherits it)
