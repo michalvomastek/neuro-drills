@@ -427,6 +427,15 @@ func _build(p: Dictionary) -> Theme:
 	t.set_stylebox("panel", "Card", _box(_c(p, "card"), CARD_RADIUS, Vector4(18, 14, 18, 14)))
 	t.set_type_variation("Sunken", "PanelContainer")
 	t.set_stylebox("panel", "Sunken", _box(_c(p, "sunken"), RADIUS, Vector4(16, 12, 16, 12)))
+	# A grouped section of a screen (the saved plans): the bar colour with a
+	# hairline, so it stands out from the background and still shows the
+	# card-coloured controls inside; a Sunken panel vanished on the dark
+	# background.
+	t.set_type_variation("Section", "PanelContainer")
+	var section := _box(_c(p, "panel"), RADIUS, Vector4(16, 12, 16, 12))
+	section.border_color = _c(p, "line")
+	section.set_border_width_all(1)
+	t.set_stylebox("panel", "Section", section)
 	t.set_type_variation("Pill", "PanelContainer")
 	t.set_stylebox("panel", "Pill", _box(_c(p, "sunken"), PILL, Vector4(14, 6, 14, 6)))
 	var pill_margins := Vector4(14, 6, 14, 6)
