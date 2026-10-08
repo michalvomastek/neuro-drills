@@ -16,6 +16,14 @@ var _grids: Array[GridContainer] = []
 ## the bottom bar (so the scroll indicator sits at the window edge like on
 ## every other screen), and the content keeps the screen margin inside.
 var _tab_margins: Array[MarginContainer] = []
+## Disc colour (an App colour) per category for the drill icons.
+const CATEGORY_COLORS: Dictionary = {
+	"CATEGORY_ATTENTION": "primary", "CATEGORY_REACTION": "orange", "CATEGORY_EXECUTIVE": "accent",
+	"CATEGORY_MEMORY": "green", "CATEGORY_VISION": "yellow", "CATEGORY_TIMING": "red",
+	"CATEGORY_MOTOR": "primary", "CATEGORY_3D": "accent", "CATEGORY_DUAL": "orange",
+}
+const DRILL_DISC_SIZE := 48.0
+const DRILL_ICON_SIZE := 28.0
 ## Room above and under the pinned filter strip (the TabContainer's own top
 ## padding is zeroed in _ready, so this is the whole gap); the same on both
 ## sides, so the strip sits evenly between the top bar and the list.
@@ -155,25 +163,36 @@ func _focus_current_tab() -> void:
 		_first_buttons[index].grab_focus()
 
 
-## One card per drill, the whole card is the button: title and description
-## inside. A Button does not size itself to children, so the card follows
-## the minimum size of its text column.
+## One card per drill, the whole card is the button: the drill's icon on a
+## disc in its category colour, title and description beside it. A Button
+## does not size itself to children, so the card follows the minimum size
+## of its content row.
 func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Button:
 	var card := Button.new()
 	card.theme_type_variation = &"CardButton"
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.pressed.connect(SceneRouter.start_drill.bind(definition.id))
 	grid.add_child(card)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 14)
+	var style := card.get_theme_stylebox("normal")
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = style.get_margin(SIDE_LEFT)
+	row.offset_top = style.get_margin(SIDE_TOP)
+	row.offset_right = -style.get_margin(SIDE_RIGHT)
+	row.offset_bottom = -style.get_margin(SIDE_BOTTOM)
+	card.add_child(row)
+	var color_name: String = CATEGORY_COLORS.get(definition.category_key, "primary")
+	var icon_color := get_theme_color("on_yellow", "App") if color_name == "yellow" else Color.WHITE
+	var disc := GamiWidgets.make_stat_disc(get_theme_color(color_name, "App"), "drills/" + String(definition.id), icon_color, DRILL_DISC_SIZE, DRILL_ICON_SIZE)
+	disc.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	row.add_child(disc)
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 4)
-	var style := card.get_theme_stylebox("normal")
-	column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	column.offset_left = style.get_margin(SIDE_LEFT)
-	column.offset_top = style.get_margin(SIDE_TOP)
-	column.offset_right = -style.get_margin(SIDE_RIGHT)
-	column.offset_bottom = -style.get_margin(SIDE_BOTTOM)
-	card.add_child(column)
+	row.add_child(column)
 	var title := Label.new()
 	title.text = tr(definition.title_key)
 	title.theme_type_variation = &"ItemLabel"
@@ -186,7 +205,7 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	description.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(description)
 	var fit := func() -> void:
-		card.custom_minimum_size = Vector2(0, column.get_combined_minimum_size().y + style.get_margin(SIDE_TOP) + style.get_margin(SIDE_BOTTOM))
-	column.minimum_size_changed.connect(fit)
+		card.custom_minimum_size = Vector2(0, row.get_combined_minimum_size().y + style.get_margin(SIDE_TOP) + style.get_margin(SIDE_BOTTOM))
+	row.minimum_size_changed.connect(fit)
 	fit.call()
 	return card

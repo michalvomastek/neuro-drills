@@ -22,20 +22,20 @@ static func days_text(days: int) -> String:
 
 
 ## A disc like the top bar's, not yet in the tree; the caller places it.
-static func make_stat_disc(color: Color, icon_name: String, icon_color: Color = Color.WHITE) -> PanelContainer:
+static func make_stat_disc(color: Color, icon_name: String, icon_color: Color = Color.WHITE, size: float = STAT_DISC_SIZE, icon_size: float = STAT_ICON_SIZE) -> PanelContainer:
 	var disc := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
-	style.set_corner_radius_all(roundi(STAT_DISC_SIZE / 2.0))
+	style.set_corner_radius_all(roundi(size / 2.0))
 	disc.add_theme_stylebox_override("panel", style)
-	disc.custom_minimum_size = Vector2(STAT_DISC_SIZE, STAT_DISC_SIZE)
+	disc.custom_minimum_size = Vector2(size, size)
 	disc.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var icon := TextureRect.new()
 	icon.texture = load(ICON_DIR + icon_name + ".svg") as Texture2D
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.custom_minimum_size = Vector2(STAT_ICON_SIZE, STAT_ICON_SIZE)
+	icon.custom_minimum_size = Vector2(icon_size, icon_size)
 	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
