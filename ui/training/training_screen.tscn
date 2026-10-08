@@ -149,6 +149,7 @@ theme_type_variation = &"PrimaryButton"
 text = "TRAINING_START"
 
 [node name="PlansGap" type="Control" parent="Scroll/Margin/Panel/VBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 

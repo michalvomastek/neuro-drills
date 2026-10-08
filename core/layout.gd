@@ -82,6 +82,12 @@ static func side_margin(control: Control) -> int:
 	return clampi(int(viewport_width(control) * 0.09), 24, 120)
 
 
+## Left edge of a tab screen's content: the side margin plus the Screen
+## panel's own padding. The menu's strip and lists and the app bars use it.
+static func content_side_margin(control: Control) -> int:
+	return side_margin(control) + roundi(control.get_theme_stylebox("panel", &"Screen").get_margin(SIDE_LEFT))
+
+
 ## Vertical margin of a top-level screen: room under the top bar on a phone.
 const SCREEN_MARGIN_NARROW := 24
 const SCREEN_MARGIN_WIDE := 32

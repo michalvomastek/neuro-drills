@@ -7,6 +7,7 @@ extends Control
 @onready var _minutes_slider: HSlider = %MinutesSlider
 @onready var _minutes_label: Label = %MinutesLabel
 @onready var _plans_card: PanelContainer = %PlansCard
+@onready var _plans_gap: Control = %PlansGap
 @onready var _plans_row: BoxContainer = %PlansRow
 @onready var _plan_name_label: Label = %PlanNameLabel
 @onready var _plans_option: ListPickButton = %PlansOption
@@ -266,6 +267,7 @@ func _refresh_plans() -> void:
 		_plans_option.add_item(plan_name)
 	var has_plans := _plans_option.item_count > 0
 	_plans_card.visible = has_plans
+	_plans_gap.visible = has_plans
 	_load_button.disabled = not has_plans
 	_delete_button.disabled = not has_plans
 

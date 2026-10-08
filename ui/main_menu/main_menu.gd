@@ -55,7 +55,7 @@ func _ready() -> void:
 func _relayout() -> void:
 	var narrow := Layout.is_narrow(self)
 	var screen := get_theme_stylebox("panel", "Screen")
-	var side := Layout.side_margin(self) + roundi(screen.get_margin(SIDE_LEFT))
+	var side := Layout.content_side_margin(self)
 	var bottom := (Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE) + roundi(screen.get_margin(SIDE_BOTTOM))
 	Layout.set_margins_each(_strip_frame, 0, STRIP_GAP, STRIP_GAP)
 	Layout.set_margins_each(_strip_margin, side, 0, 0)

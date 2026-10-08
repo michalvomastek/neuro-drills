@@ -59,6 +59,12 @@ const INSET_RECHECK_SECONDS: Array[float] = [0.25, 0.5, 1.0, 2.0]
 ## sequence supersedes the pending timers of the old one.
 var _inset_sequence: int = 0
 var _inset_window_size: Vector2i = Vector2i.ZERO
+## Whether the window was landscape when the applied insets were read; a
+## sequence in the other orientation takes zeros as real.
+var _insets_landscape: bool = false
+## A non-zero inset has been applied: before that the first reading counts
+## at once, so the start does not draw under the notch for a quarter second.
+var _insets_known: bool = false
 var _inset_rotated: bool = false
 ## The last reading of the sequence that differed from the applied insets.
 var _inset_candidate: Vector2 = Vector2(-1.0, -1.0)
@@ -182,9 +188,8 @@ func _apply_scale() -> void:
 	# new re-check sequence starts only when the window itself changed.
 	var size := get_tree().root.size
 	if size != _inset_window_size:
-		var rotated := _inset_window_size != Vector2i.ZERO and (size.x > size.y) != (_inset_window_size.x > _inset_window_size.y)
 		_inset_window_size = size
-		_schedule_inset_checks(rotated)
+		_schedule_inset_checks()
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
 	var bar_style := _bottom_bar.get_theme_stylebox("panel")
@@ -194,11 +199,11 @@ func _apply_scale() -> void:
 
 ## Measures now and again after each delay in INSET_RECHECK_SECONDS, the
 ## last time taking the reading as it is; timers of an older sequence do
-## nothing. [param rotated] says the window changed orientation.
-func _schedule_inset_checks(rotated: bool) -> void:
+## nothing.
+func _schedule_inset_checks() -> void:
 	_inset_sequence += 1
 	var sequence := _inset_sequence
-	_inset_rotated = rotated
+	_inset_rotated = _window_landscape() != _insets_landscape
 	_inset_candidate = Vector2(-1.0, -1.0)
 	_measure_insets(false)
 	for i in INSET_RECHECK_SECONDS.size():
@@ -221,16 +226,23 @@ func _measure_insets(last: bool) -> void:
 	if measured == _insets:
 		_inset_candidate = measured
 		return
-	if last or measured == _inset_candidate:
+	if last or measured == _inset_candidate or not _insets_known:
 		_insets = measured
+		_insets_landscape = _window_landscape()
+		_insets_known = _insets_known or measured != Vector2.ZERO
 		_apply_insets()
 	_inset_candidate = measured
+
+
+func _window_landscape() -> bool:
+	var size := get_tree().root.size
+	return size.x > size.y
 
 
 ## Focus coming back (a sheet closed) starts a re-check sequence too.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		_schedule_inset_checks(false)
+		_schedule_inset_checks()
 
 
 ## With the bars shown they reach the edges of the screen and grow their
@@ -238,22 +250,16 @@ func _notification(what: int) -> void:
 ## a screen without bars is inset as a whole instead.
 func _apply_insets() -> void:
 	var chrome := _top_bar.visible
-	var key: Array = [chrome, _insets, _bar_side_margin()]
+	var side := Layout.content_side_margin(self)
+	var key: Array = [chrome, _insets, side]
 	if key == _bar_key:
 		return
 	_bar_key = key
 	offset_top = 0.0 if chrome else _insets.x
 	offset_bottom = 0.0 if chrome else -_insets.y
 	# Below the title only the part of the gap its descent does not cover.
-	_pad_bar(_top_bar, &"TopBar", _bar_side_margin(), TOP_BAR_GAP + _insets.x, TOP_BAR_GAP - _title_descent())
+	_pad_bar(_top_bar, &"TopBar", side, TOP_BAR_GAP + _insets.x, TOP_BAR_GAP - _title_descent())
 	_pad_bar(_bottom_bar, &"BottomBar", 0.0, 0.0, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
-
-
-## Side padding of the top bar: the screens' side margin plus the Screen
-## panel's own padding, so the ring and the title start where the content
-## of a tab screen does (generous on a wide screen, slim on a phone).
-func _bar_side_margin() -> float:
-	return Layout.side_margin(self) + get_theme_stylebox("panel", &"Screen").get_margin(SIDE_LEFT)
 
 
 ## Adds [param horizontal] to both side margins of the bar's panel and
