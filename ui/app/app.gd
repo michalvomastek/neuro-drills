@@ -167,6 +167,8 @@ const BOTTOM_INSET_MAX := 12.0
 
 func _apply_scale() -> void:
 	Layout.apply_scale(get_tree().root)
+	# The bars' side padding follows the screens' side margin, which depends on the width.
+	_apply_insets()
 	# App.resized also lands here (every inset change moves the App), so a
 	# new re-check sequence starts only when the window itself changed.
 	if get_tree().root.size != _inset_window_size:
@@ -222,16 +224,26 @@ func _apply_insets() -> void:
 	offset_top = 0.0 if chrome else _insets.x
 	offset_bottom = 0.0 if chrome else -_insets.y
 	# Below the title only the part of the gap its descent does not cover.
-	_pad_bar(_top_bar, &"TopBar", TOP_BAR_GAP + _insets.x, TOP_BAR_GAP - _title_descent())
-	_pad_bar(_bottom_bar, &"BottomBar", 0.0, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
+	_pad_bar(_top_bar, &"TopBar", _bar_side_margin(), TOP_BAR_GAP + _insets.x, TOP_BAR_GAP - _title_descent())
+	_pad_bar(_bottom_bar, &"BottomBar", 0.0, 0.0, minf(_insets.y * BOTTOM_INSET_SHARE, BOTTOM_INSET_MAX))
 
 
-## Adds [param top] and [param bottom] to the bar's vertical content margins.
-func _pad_bar(bar: PanelContainer, variation: StringName, top: float, bottom: float) -> void:
+## Side padding of the top bar: the screens' side margin plus the Screen
+## panel's own padding, so the ring and the title start where the content
+## of a tab screen does (generous on a wide screen, slim on a phone).
+func _bar_side_margin() -> float:
+	return Layout.side_margin(self) + get_theme_stylebox("panel", &"Screen").get_margin(SIDE_LEFT)
+
+
+## Adds [param horizontal] to both side margins of the bar's panel and
+## [param top] and [param bottom] to its vertical ones.
+func _pad_bar(bar: PanelContainer, variation: StringName, horizontal: float, top: float, bottom: float) -> void:
 	bar.remove_theme_stylebox_override("panel")
-	if top <= 0.0 and bottom <= 0.0:
+	if horizontal <= 0.0 and top <= 0.0 and bottom <= 0.0:
 		return
 	var style := get_theme_stylebox("panel", variation).duplicate() as StyleBox
+	style.content_margin_left += maxf(horizontal, 0.0)
+	style.content_margin_right += maxf(horizontal, 0.0)
 	style.content_margin_top += maxf(top, 0.0)
 	style.content_margin_bottom += maxf(bottom, 0.0)
 	bar.add_theme_stylebox_override("panel", style)

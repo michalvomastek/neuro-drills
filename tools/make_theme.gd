@@ -316,10 +316,11 @@ func _build(p: Dictionary) -> Theme:
 	t.set_type_variation("NavBar", "PanelContainer")
 	t.set_stylebox("panel", "NavBar", _box(_c(p, "panel"), 0, Vector4(12, 6, 12, 6)))
 	t.set_type_variation("TopBar", "NavBar")
-	# No vertical padding here: App adds it (App.TOP_BAR_GAP, the safe-area
-	# inset and the title font's metrics), so the gaps above the stats row,
+	# No padding here: App adds it (the screens' side margin, App.TOP_BAR_GAP,
+	# the safe-area inset and the title font's metrics), so the bar's content
+	# starts where a tab screen's does and the gaps above the stats row,
 	# between the rows and under the title's baseline come out equal.
-	var top_bar := _box(_c(p, "panel"), 0, Vector4(12, 0, 12, 0))
+	var top_bar := _box(_c(p, "panel"), 0, Vector4(0, 0, 0, 0))
 	top_bar.border_color = _c(p, "line")
 	top_bar.border_width_bottom = 1
 	t.set_stylebox("panel", "TopBar", top_bar)
