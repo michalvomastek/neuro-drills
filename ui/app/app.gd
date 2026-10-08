@@ -1,7 +1,9 @@
 ## Main scene: a fixed top bar (level, streak, goal and badges, quit on the
 ## desktop, the screen title), the host of the current screen and a fixed
-## bottom bar with the five main destinations. The bars show on the top-level screens only; a drill,
-## the results, a training brief or the onboarding take the whole window.
+## bottom bar with the five main destinations. The bars show on the top-level
+## screens and around a drill's setup panel (its title, the back arrow leaves
+## the drill); a running drill, the results, a training brief or the
+## onboarding take the whole window.
 extends Control
 
 const DEFAULT_LOCALE := "cs"
@@ -69,7 +71,7 @@ func _ready() -> void:
 
 func _build_bars() -> void:
 	_back_button.icon = _icon("nav_back")
-	_back_button.pressed.connect(SceneRouter.show_menu)
+	_back_button.pressed.connect(_on_back_pressed)
 	_quit_button.icon = _icon("nav_quit")
 	_quit_button.pressed.connect(get_tree().quit)
 	_quit_button.visible = not OS.has_feature("web")
@@ -104,16 +106,29 @@ func _build_bars() -> void:
 		_tabs[screen] = button
 
 
+func _on_back_pressed() -> void:
+	if _screen == SceneRouter.DRILL_SETUP:
+		SceneRouter.abort_drill()
+	else:
+		SceneRouter.show_menu()
+
+
 func _on_screen_changed(screen: StringName) -> void:
 	_screen = screen
-	var chrome := TITLES.has(screen)
+	var drill_setup := screen == SceneRouter.DRILL_SETUP
+	var chrome := TITLES.has(screen) or drill_setup
 	_top_bar.visible = chrome
 	_bottom_bar.visible = chrome
-	if not chrome:
-		_apply_insets()
-		return
 	_apply_insets()
-	var title_key: String = TITLES[screen]
+	if not chrome:
+		return
+	# The label holds the key itself; a language switch re-translates it.
+	var title_key: String = ""
+	if drill_setup:
+		if SceneRouter.current_drill != null and SceneRouter.current_drill.definition != null:
+			title_key = SceneRouter.current_drill.definition.title_key
+	else:
+		title_key = TITLES[screen]
 	_title_label.text = title_key
 	_back_button.visible = not _tabs.has(screen)
 	for id: StringName in _tabs:

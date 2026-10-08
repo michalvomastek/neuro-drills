@@ -113,8 +113,8 @@ static func set_margins_each(margin: MarginContainer, horizontal: int, top: int,
 ## Width of the content of a centred PanelContainer: the design width on a
 ## wide screen, the whole width minus slim margins and the panel's own
 ## padding on a narrow one.
-static func panel_width(control: Control, design_width: float) -> float:
-	var padding := control.get_theme_stylebox("panel", "PanelContainer").get_minimum_size().x
+static func panel_width(control: Control, design_width: float, panel_type: StringName = &"PanelContainer") -> float:
+	var padding := control.get_theme_stylebox("panel", panel_type).get_minimum_size().x
 	# The control's own width once it is laid out (it may be narrower than
 	# the viewport, e.g. under the app bars); the viewport before that.
 	var available := control.size.x if control.size.x > 0.0 else viewport_width(control)

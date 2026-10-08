@@ -8,6 +8,10 @@ extends Control
 signal finished(result: DrillResult)
 ## Emitted when the player leaves the drill without finishing a run.
 signal aborted
+## Emitted when the drill shows its setup panel (true) or starts a countdown
+## or run (false). The app shell keeps its bars around the setup panel and
+## hides them for the run; only emitted once the drill is set up.
+signal phase_changed(in_setup: bool)
 
 var definition: DrillDefinition
 

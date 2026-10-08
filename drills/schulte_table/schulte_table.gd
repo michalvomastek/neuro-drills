@@ -13,6 +13,7 @@ const COUNTDOWN_FROM := 3
 const DIM_FOUND_ALPHA := 0.3
 
 @onready var _setup_panel: Control = %SetupPanel
+@onready var _setup_margin: MarginContainer = %SetupMargin
 @onready var _setup_vbox: VBoxContainer = %SetupVBox
 @onready var _help_label: Label = %HelpLabel
 @onready var _options_grid: GridContainer = %Options
@@ -30,7 +31,6 @@ const DIM_FOUND_ALPHA := 0.3
 @onready var _highlight_correct_check: CheckBox = %HighlightCorrectCheck
 @onready var _show_timer_check: CheckBox = %ShowTimerCheck
 @onready var _start_button: Button = %StartButton
-@onready var _setup_back_button: Button = %SetupBackButton
 @onready var _play_panel: Control = %PlayPanel
 @onready var _play_back_button: Button = %PlayBackButton
 @onready var _next_target_label: Label = %NextTargetLabel
@@ -65,7 +65,6 @@ func _ready() -> void:
 	_red_black_check.toggled.connect(_on_red_black_toggled)
 	_start_button.pressed.connect(_on_start_pressed)
 	Layout.watch(self, _relayout_setup)
-	_setup_back_button.pressed.connect(_on_setup_back_pressed)
 	_play_back_button.pressed.connect(_on_play_back_pressed)
 	_grid.resized.connect(_update_cell_font_size)
 	_apply_config_to_controls()
@@ -161,13 +160,19 @@ func _show_setup() -> void:
 	_play_panel.visible = false
 	_countdown_panel.visible = false
 	_start_button.grab_focus()
+	if definition != null:
+		phase_changed.emit(true)
 
 
-## Full width and one column of options on a phone.
+## A column of at most 640 units with the screen margins around it, full
+## width and one column of options on a phone.
 func _relayout_setup() -> void:
-	_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0), 0)
+	var narrow := Layout.is_narrow(self)
+	var vertical := Layout.SCREEN_MARGIN_NARROW if narrow else Layout.SCREEN_MARGIN_WIDE
+	Layout.set_margins_each(_setup_margin, Layout.NARROW_MARGIN, vertical, vertical)
+	_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 640.0, &"Screen"), 0)
 	Layout.wrap_check_boxes(_setup_vbox)
-	_options_grid.columns = 1 if Layout.is_narrow(self) else 2
+	_options_grid.columns = 1 if narrow else 2
 
 
 func _on_start_pressed() -> void:
@@ -175,6 +180,7 @@ func _on_start_pressed() -> void:
 	_begin_run()
 
 
+## Escape on the setup panel; the app bar's arrow does the same through the router.
 func _on_setup_back_pressed() -> void:
 	aborted.emit()
 
@@ -186,6 +192,7 @@ func _on_play_back_pressed() -> void:
 
 func _begin_run() -> void:
 	Drill.set_leave_guard(true)
+	phase_changed.emit(false)
 	_table_times_ms.clear()
 	_test_errors = 0
 	_table_index = 0

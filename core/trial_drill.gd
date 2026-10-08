@@ -21,8 +21,7 @@ var _run_token: int = 0
 var _running: bool = false
 var _rng := RandomNumberGenerator.new()
 
-var _setup_panel: CenterContainer
-var _title_label: Label
+var _setup_panel: MarginContainer
 var _description_label: Label
 var _help_label: Label
 var _trials_row: HBoxContainer
@@ -120,7 +119,6 @@ func _handle_response(_event: InputEvent) -> void:
 # --- lifecycle -------------------------------------------------------------
 
 func _on_setup(config: Dictionary, autostart: bool) -> void:
-	_title_label.text = tr(definition.title_key)
 	_description_label.text = Drill.describe(definition.description_key)
 	var requested: int = config.get("trials", _default_trials())
 	if _trial_options().has(requested):
@@ -172,6 +170,14 @@ func _show_setup() -> void:
 	_play_panel.visible = false
 	_countdown_panel.visible = false
 	_start_button.grab_focus()
+	_announce_phase(true)
+
+
+## Tells the router (and through it the app bars) which phase is on screen;
+## silent before setup(), when _ready() shows the panel for the first time.
+func _announce_phase(in_setup: bool) -> void:
+	if definition != null:
+		phase_changed.emit(in_setup)
 
 
 func _on_start_pressed() -> void:
@@ -187,6 +193,7 @@ func _begin_run() -> void:
 	_setup_scroll.visible = false
 	_play_panel.visible = false
 	Drill.set_leave_guard(true)
+	_announce_phase(false)
 	if countdown:
 		_countdown_panel.visible = true
 		# A fixed width keeps the hint from rewrapping when the count turns into the short "Go!".
@@ -316,11 +323,15 @@ func _complete(result: DrillResult) -> void:
 
 # --- UI construction ---------------------------------------------------------
 
-## The setup panel is 560 units wide on a wide screen and fills a phone.
+## The setup panel is a column of at most 560 units, centred, with the
+## screen margins of the other screens around it; it fills a phone.
 func _relayout_setup() -> void:
-	if _setup_vbox != null:
-		_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 560.0), 0)
-		Layout.wrap_check_boxes(_setup_vbox)
+	if _setup_vbox == null:
+		return
+	var vertical := Layout.SCREEN_MARGIN_NARROW if Layout.is_narrow(self) else Layout.SCREEN_MARGIN_WIDE
+	Layout.set_margins_each(_setup_panel, Layout.NARROW_MARGIN, vertical, vertical)
+	_setup_vbox.custom_minimum_size = Vector2(Layout.panel_width(self, 560.0, &"Screen"), 0)
+	Layout.wrap_check_boxes(_setup_vbox)
 
 
 func _build_ui() -> void:
@@ -333,12 +344,18 @@ func _build_ui() -> void:
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
-	_setup_panel = CenterContainer.new()
+	_setup_panel = MarginContainer.new()
 	_setup_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_setup_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_setup_panel)
 	_setup_scroll = scroll
+	# The same flat look as the other screens of the app: no card, the
+	# content sits on the background under the app bars (which carry the
+	# drill's title and the back arrow), top-aligned and centred.
 	var panel := PanelContainer.new()
+	panel.theme_type_variation = &"Screen"
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_setup_panel.add_child(panel)
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 12)
@@ -346,10 +363,6 @@ func _build_ui() -> void:
 	_setup_vbox = vbox
 	Layout.watch(self, _relayout_setup)
 
-	_title_label = Label.new()
-	_title_label.theme_type_variation = &"HeadingLabel"
-	_title_label.add_theme_font_size_override("font_size", 32)
-	vbox.add_child(_title_label)
 	_description_label = Label.new()
 	_description_label.theme_type_variation = &"DimLabel"
 	_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -386,21 +399,17 @@ func _build_ui() -> void:
 	_trials_option.item_selected.connect(func(_index: int) -> void: _refresh_help())
 	Drill.watch_setup_controls(_extras_box, _refresh_help)
 
-	var buttons := HBoxContainer.new()
-	buttons.add_theme_constant_override("separation", 12)
-	vbox.add_child(buttons)
-	var back_button := Button.new()
-	back_button.text = tr("COMMON_BACK")
-	back_button.pressed.connect(aborted.emit)
-	buttons.add_child(back_button)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	buttons.add_child(spacer)
+	# Back lives in the app bar; Start takes the whole width like the main
+	# action of the other screens.
+	var start_gap := Control.new()
+	start_gap.custom_minimum_size = Vector2(0, 4)
+	vbox.add_child(start_gap)
 	_start_button = Button.new()
 	_start_button.text = tr("COMMON_START")
 	_start_button.theme_type_variation = &"PrimaryButton"
+	_start_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_start_button.pressed.connect(_on_start_pressed)
-	buttons.add_child(_start_button)
+	vbox.add_child(_start_button)
 	# The watch above ran before the options existed; size them now.
 	_relayout_setup()
 

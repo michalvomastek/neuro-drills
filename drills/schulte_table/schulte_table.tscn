@@ -22,144 +22,134 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="Center" type="CenterContainer" parent="SetupPanel"]
+[node name="SetupMargin" type="MarginContainer" parent="SetupPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panel" type="PanelContainer" parent="SetupPanel/Center"]
+[node name="Panel" type="PanelContainer" parent="SetupPanel/SetupMargin"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_type_variation = &"Screen"
 
-[node name="SetupVBox" type="VBoxContainer" parent="SetupPanel/Center/Panel"]
+[node name="SetupVBox" type="VBoxContainer" parent="SetupPanel/SetupMargin/Panel"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="TitleLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox"]
-layout_mode = 2
-theme_type_variation = &"HeadingLabel"
-theme_override_font_sizes/font_size = 32
-text = "SCHULTE_TITLE"
-
-[node name="InstructionLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="InstructionLabel" type="Label" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "SCHULTE_DESCRIPTION"
 autowrap_mode = 3
 
-[node name="HelpLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="HelpLabel" type="Label" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 theme_override_font_sizes/font_size = 16
 autowrap_mode = 3
 
-[node name="GridSizeRow" type="HBoxContainer" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="GridSizeRow" type="HBoxContainer" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="GridSizeLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox/GridSizeRow"]
+[node name="GridSizeLabel" type="Label" parent="SetupPanel/SetupMargin/Panel/SetupVBox/GridSizeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SCHULTE_GRID_SIZE"
 
-[node name="GridSizeOption" type="OptionButton" parent="SetupPanel/Center/Panel/SetupVBox/GridSizeRow"]
+[node name="GridSizeOption" type="OptionButton" parent="SetupPanel/SetupMargin/Panel/SetupVBox/GridSizeRow"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SymbolsRow" type="HBoxContainer" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="SymbolsRow" type="HBoxContainer" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="SymbolsLabel" type="Label" parent="SetupPanel/Center/Panel/SetupVBox/SymbolsRow"]
+[node name="SymbolsLabel" type="Label" parent="SetupPanel/SetupMargin/Panel/SetupVBox/SymbolsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SCHULTE_SYMBOLS"
 
-[node name="SymbolsOption" type="OptionButton" parent="SetupPanel/Center/Panel/SetupVBox/SymbolsRow"]
+[node name="SymbolsOption" type="OptionButton" parent="SetupPanel/SetupMargin/Panel/SetupVBox/SymbolsRow"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Options" type="GridContainer" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="Options" type="GridContainer" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 8
 columns = 2
 
-[node name="CountdownCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="CountdownCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_COUNTDOWN"
 
-[node name="ShowTimerCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="ShowTimerCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHOW_TIMER"
 
-[node name="FixationCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="FixationCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_FIXATION"
 
-[node name="ShowNextCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="ShowNextCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHOW_NEXT"
 
-[node name="ShowErrorsCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="ShowErrorsCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHOW_ERRORS"
 
-[node name="HighlightCorrectCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="HighlightCorrectCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_HIGHLIGHT_CORRECT"
 
-[node name="DimFoundCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="DimFoundCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_DIM_FOUND"
 
-[node name="ReverseCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="ReverseCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_REVERSE"
 
-[node name="ShuffleCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="ShuffleCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_SHUFFLE"
 
-[node name="RedBlackCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="RedBlackCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_RED_BLACK"
 
-[node name="TestModeCheck" type="CheckBox" parent="SetupPanel/Center/Panel/SetupVBox/Options"]
+[node name="TestModeCheck" type="CheckBox" parent="SetupPanel/SetupMargin/Panel/SetupVBox/Options"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "SCHULTE_OPT_TEST_MODE"
 
-[node name="Buttons" type="HBoxContainer" parent="SetupPanel/Center/Panel/SetupVBox"]
+[node name="StartGap" type="Control" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
-theme_override_constants/separation = 12
 
-[node name="SetupBackButton" type="Button" parent="SetupPanel/Center/Panel/SetupVBox/Buttons"]
+[node name="StartButton" type="Button" parent="SetupPanel/SetupMargin/Panel/SetupVBox"]
 unique_name_in_owner = true
-layout_mode = 2
-text = "COMMON_BACK"
-
-[node name="Spacer" type="Control" parent="SetupPanel/Center/Panel/SetupVBox/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="StartButton" type="Button" parent="SetupPanel/Center/Panel/SetupVBox/Buttons"]
-unique_name_in_owner = true
-layout_mode = 2
 theme_type_variation = &"PrimaryButton"
 text = "SCHULTE_START"
 

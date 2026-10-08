@@ -13,12 +13,19 @@ const TRAINING_BRIEF_SCENE_PATH := "res://ui/training/training_brief.tscn"
 const TRAINING_SUMMARY_SCENE_PATH := "res://ui/training/training_summary.tscn"
 
 ## Emitted after every swap with the screen's id (menu, training, progress,
-## profile, settings, feedback) or an empty name for a screen without the
-## app bars (drill, results, brief, summary, onboarding).
+## profile, settings, feedback), with DRILL_SETUP while a drill shows its
+## setup panel, or with an empty name for a screen without the app bars (a
+## running drill, results, brief, summary, onboarding).
 signal screen_changed(screen: StringName)
+
+## Screen id of a drill's setup panel: the bars stay, the title is the
+## drill's name and the back arrow leaves the drill.
+const DRILL_SETUP := &"drill_setup"
 
 ## The training in progress, or null when drills are played one by one.
 var training: TrainingSession
+## The drill on screen (setup panel, countdown or run), or null.
+var current_drill: Drill
 
 var _host: Control
 var _current: Node
@@ -49,8 +56,20 @@ func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = fals
 	drill.finished.connect(show_results)
 	drill.finished.connect(func(_result: DrillResult) -> void: Sfx.play("done"))
 	drill.aborted.connect(_on_drill_aborted)
+	drill.phase_changed.connect(_on_drill_phase_changed)
 	_swap(drill)
 	drill.setup(definition, config, autostart)
+
+
+func _on_drill_phase_changed(in_setup: bool) -> void:
+	screen_changed.emit(DRILL_SETUP if in_setup else &"")
+
+
+## The back arrow of the app bar on a setup panel: leaves the drill the way
+## its own Back button did (to the training screen when a training ran).
+func abort_drill() -> void:
+	if current_drill != null:
+		_on_drill_aborted()
 
 
 func _on_drill_aborted() -> void:
@@ -164,5 +183,6 @@ func _swap(node: Node, screen: StringName = &"") -> void:
 	if _current != null:
 		_current.queue_free()
 	_current = node
+	current_drill = node as Drill
 	_host.add_child(node)
 	screen_changed.emit(screen)
