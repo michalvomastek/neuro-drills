@@ -12,6 +12,8 @@ var _failures: PackedStringArray = PackedStringArray()
 
 func _initialize() -> void:
 	Layout.apply_scale(root)
+	# The window still reports its default size here; the real one arrives a frame later.
+	root.size_changed.connect(func() -> void: Layout.apply_scale(root))
 	_host = Control.new()
 	_host.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(_host)
