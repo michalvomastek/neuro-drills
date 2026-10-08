@@ -186,7 +186,6 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	var color_name: String = CATEGORY_COLORS.get(definition.category_key, "primary")
 	var icon_color := get_theme_color("on_yellow", "App") if color_name == "yellow" else Color.WHITE
 	var disc := GamiWidgets.make_stat_disc(get_theme_color(color_name, "App"), "drills/" + String(definition.id), icon_color, DRILL_DISC_SIZE, DRILL_ICON_SIZE)
-	row.add_child(disc)
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -197,6 +196,9 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	title.theme_type_variation = &"ItemLabel"
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(title)
+	# The disc's top meets the top of the title's capitals, like the profile rows.
+	row.add_child(GamiWidgets.align_to_caps(disc, title))
+	row.move_child(column, 1)
 	var description := Label.new()
 	description.text = Drill.describe(definition.description_key)
 	description.theme_type_variation = &"NoteLabel"

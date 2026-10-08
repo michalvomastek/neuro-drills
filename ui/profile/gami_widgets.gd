@@ -59,6 +59,8 @@ static func align_to_caps(symbol: Control, title_label: Label) -> MarginContaine
 	var holder := MarginContainer.new()
 	holder.add_theme_constant_override("margin_top", pad)
 	holder.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	# Inside a card button the holder must not swallow the tap on the icon.
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	symbol.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	holder.add_child(symbol)
 	return holder
