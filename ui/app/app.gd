@@ -55,10 +55,11 @@ var _insets: Vector2 = Vector2.ZERO
 ## changed orientation (zeros are then real), a drop to zero waits for the
 ## last check.
 const INSET_RECHECK_SECONDS: Array[float] = [0.25, 0.5, 1.0, 2.0]
-## Window size the current re-check sequence was started for; a new
-## sequence supersedes the pending timers of the old one.
+## Content size (design units, so a text-size change counts too) the
+## current re-check sequence was started for; a new sequence supersedes
+## the pending timers of the old one.
 var _inset_sequence: int = 0
-var _inset_window_size: Vector2i = Vector2i.ZERO
+var _inset_scale_size: Vector2i = Vector2i.ZERO
 ## Whether the window was landscape when the applied insets were read; a
 ## sequence in the other orientation takes zeros as real.
 var _insets_landscape: bool = false
@@ -185,10 +186,11 @@ func _apply_scale() -> void:
 	# The bars' side padding follows the screens' side margin, which depends on the width.
 	_apply_insets()
 	# App.resized also lands here (every inset change moves the App), so a
-	# new re-check sequence starts only when the window itself changed.
-	var size := get_tree().root.size
-	if size != _inset_window_size:
-		_inset_window_size = size
+	# new re-check sequence starts only when the window or its scale changed
+	# (the insets are kept in design units).
+	var size := get_tree().root.content_scale_size
+	if size != _inset_scale_size:
+		_inset_scale_size = size
 		_schedule_inset_checks()
 	# The tabs stay together in the middle of a wide window instead of
 	# spreading across it; on a phone they take the bar's inner width.
@@ -224,6 +226,9 @@ func _measure_insets(last: bool) -> void:
 		if measured.y == 0.0:
 			measured.y = _insets.y
 	if measured == _insets:
+		# A matching reading confirms the applied insets for this orientation
+		# too (an iPad reports the same ones both ways).
+		_insets_landscape = _window_landscape()
 		_inset_candidate = measured
 		return
 	if last or measured == _inset_candidate or not _insets_known:
