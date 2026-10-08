@@ -186,7 +186,6 @@ func _add_drill_entry(grid: GridContainer, definition: DrillDefinition) -> Butto
 	var color_name: String = CATEGORY_COLORS.get(definition.category_key, "primary")
 	var icon_color := get_theme_color("on_yellow", "App") if color_name == "yellow" else Color.WHITE
 	var disc := GamiWidgets.make_stat_disc(get_theme_color(color_name, "App"), "drills/" + String(definition.id), icon_color, DRILL_DISC_SIZE, DRILL_ICON_SIZE)
-	disc.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(disc)
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE

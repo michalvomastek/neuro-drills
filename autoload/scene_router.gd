@@ -56,12 +56,16 @@ func start_drill(id: StringName, config: Dictionary = {}, autostart: bool = fals
 	drill.finished.connect(show_results)
 	drill.finished.connect(func(_result: DrillResult) -> void: Sfx.play("done"))
 	drill.aborted.connect(_on_drill_aborted)
-	drill.phase_changed.connect(_on_drill_phase_changed)
+	drill.phase_changed.connect(_on_drill_phase_changed.bind(drill))
 	_swap(drill)
 	drill.setup(definition, config, autostart)
 
 
-func _on_drill_phase_changed(in_setup: bool) -> void:
+## A drill that was already swapped out (its last trial and a window blur in
+## one frame) may still emit; only the drill on screen moves the bars.
+func _on_drill_phase_changed(in_setup: bool, drill: Drill) -> void:
+	if drill != current_drill:
+		return
 	screen_changed.emit(DRILL_SETUP if in_setup else &"")
 
 
