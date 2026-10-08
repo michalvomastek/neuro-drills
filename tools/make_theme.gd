@@ -441,6 +441,20 @@ func _build(p: Dictionary) -> Theme:
 	t.set_font("font", "BadgeOffLabel", bold)
 	t.set_font_size("font_size", "BadgeOffLabel", 15)
 	t.set_color("font_color", "BadgeOffLabel", _c(p, "muted"))
+	# Drawn boards (grids, discs, tracking stages, polyominoes) read these by
+	# name: get_theme_color("cell", "Board") and friends. No scene uses the
+	# variation itself, so a usage search finds nothing; tests/test_theme_keys.gd
+	# fails when any of them goes missing.
+	t.set_type_variation("Board", "Panel")
+	t.set_stylebox("panel", "Board", _box(_c(p, "pad"), CARD_RADIUS, Vector4(0, 0, 0, 0)))
+	t.set_color("cell", "Board", _c(p, "cell"))
+	t.set_color("lit", "Board", _c(p, "lit"))
+	t.set_color("occluder", "Board", _c(p, "occluder"))
+	t.set_color("selected", "Board", _c(p, "selected"))
+	t.set_color("task_magnitude", "Board", _c(p, "orange"))
+	t.set_color("task_parity", "Board", _c(p, "lit"))
+	t.set_color("ink", "Board", _c(p, "ink"))
+	t.set_color("line", "Board", _c(p, "line"))
 	# Tabs as pills, content without a frame.
 	var tab_margins := Vector4(18, 8, 18, 8)
 	t.set_stylebox("tab_selected", "TabContainer", _box(_c(p, "primary"), PILL, tab_margins))
